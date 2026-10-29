@@ -15,7 +15,8 @@ Open `http://localhost:3000`. In development, the generation route streams a dem
 
 Copy `.env.example` to `.env.local` and set `GROQ_API_KEY`. For Codespaces, define `GROQ_API_KEY` as a repository Codespaces secret. It is consumed only by the server route and is never prefixed with `NEXT_PUBLIC_`.
 
-`GROQ_MODEL` is optional and defaults to `llama-3.3-70b-versatile`.
+AI models are selected by task. Override `AI_MODEL_FAST`, `AI_MODEL_STRONG`, or
+`AI_MODEL_FALLBACK` only when needed.
 
 ## Main surfaces
 

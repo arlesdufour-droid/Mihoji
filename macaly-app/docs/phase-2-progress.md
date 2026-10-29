@@ -39,3 +39,33 @@
 4. Copier la clé `service_role` dans `SUPABASE_SERVICE_ROLE_KEY` uniquement côté serveur.
 5. Ajouter ces valeurs comme secrets Codespaces ou dans `macaly-app/.env.local`, puis exécuter `npm run db:seed` depuis `macaly-app`.
 6. Dans Supabase Auth, activer Email et, si souhaité, Google avec ses identifiants OAuth.
+
+## Lot 1 — routeur multi-modèles
+
+### Fait
+
+- Routeur par tâche avec modèles fast, strong et fallback configurables.
+- Fournisseurs Groq et mock derrière l'interface `LlmProvider`.
+- Vérification des modèles au premier appel puis avec cache d'une heure.
+- Bascule sur le modèle de secours pour les modèles retirés et erreurs serveur.
+- Route `/api/generate` branchée sur le routeur et protégée par `getSession()`.
+- Section AI status visible au propriétaire dans les réglages généraux.
+- Tests de routage et absence de modèle obsolète dans le code applicatif.
+
+### Réel
+
+- Les appels Groq et la liste distante des modèles sont réels si `GROQ_API_KEY` est configurée.
+
+### Simulé
+
+- Sans clé Groq en développement, le fournisseur mock répond sans appel externe.
+
+### Stub restant
+
+- La disponibilité est affichée au niveau de l'espace; le rôle propriétaire provient actuellement des métadonnées Supabase et sera renforcé par les membres de workspace dans les lots de données suivants.
+
+### Validation
+
+- `npm run build` ✅
+- `npm run lint` ✅
+- `npx vitest run` ✅ (4 tests)
