@@ -1,0 +1,9 @@
+'use client';
+
+import { ChevronDown, ChevronLeft, ChevronRight, ExternalLink, Maximize2, Monitor, RefreshCw, Smartphone } from 'lucide-react';
+import { useState } from 'react';
+
+export function PreviewToolbar({ onReload }: { onReload: () => void }) {
+  const [mobile, setMobile] = useState(false);
+  return <div className="flex flex-wrap items-center gap-2 border-b border-slate-800 px-3 py-2"><div className="flex items-center gap-1"><button type="button" title="Previous page" className="rounded-md p-1.5 text-slate-400 hover:bg-slate-800 hover:text-white"><ChevronLeft className="h-4 w-4" /></button><button type="button" title="Next page" className="rounded-md p-1.5 text-slate-400 hover:bg-slate-800 hover:text-white"><ChevronRight className="h-4 w-4" /></button><button type="button" title="Reload preview" onClick={onReload} className="rounded-md p-1.5 text-slate-400 hover:bg-slate-800 hover:text-white"><RefreshCw className="h-4 w-4" /></button><button type="button" title="Select page" className="rounded-md p-1.5 text-slate-400 hover:bg-slate-800 hover:text-white"><ChevronDown className="h-4 w-4" /></button></div><div className="min-w-[140px] flex-1 rounded-lg border border-slate-800 bg-slate-950 px-3 py-2 font-mono text-xs text-slate-500">/</div><div className="flex items-center gap-1"><button type="button" title="Open in new tab" className="rounded-md p-1.5 text-slate-400 hover:bg-slate-800 hover:text-white"><ExternalLink className="h-4 w-4" /></button><button type="button" title="Toggle mobile preview" onClick={() => setMobile((value) => !value)} className="rounded-md p-1.5 text-slate-400 hover:bg-slate-800 hover:text-white">{mobile ? <Smartphone className="h-4 w-4 text-indigo-400" /> : <Monitor className="h-4 w-4" />}</button><button type="button" title="Fullscreen preview" className="rounded-md p-1.5 text-slate-400 hover:bg-slate-800 hover:text-white"><Maximize2 className="h-4 w-4" /></button></div></div>;
+}
