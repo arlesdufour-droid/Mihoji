@@ -143,3 +143,26 @@
 - `npm run build` ✅
 - `npm run lint` ✅
 - `npx vitest run` ✅ (7 tests)
+
+## Lot 4 — audit de sécurité
+
+### Fait
+
+- Audit composable avec règles séparées pour secrets client, authentification API, filtrage des données, fichiers `.env`, identifiants en dur et validation des formulaires.
+- Publication bloquée lorsqu'un problème critique est trouvé.
+- Dépendances marquées explicitement comme non auditées tant que le bac à sable réel est bloqué.
+
+### Réel
+
+- Détection locale déterministe et testée des règles de sécurité.
+
+### Simulé / blocage
+
+- `npm audit` dans le bac à sable est marqué `skipped` jusqu'à l'activation d'E2B.
+- Le bouton de publication et l'affichage Settings restent à relier au module d'audit.
+
+### Validation
+
+- `npm run build` ✅
+- `npm run lint` ✅
+- `npx vitest run` ✅ (9 tests)
