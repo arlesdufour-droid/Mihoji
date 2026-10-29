@@ -9,6 +9,7 @@ import { tokensToCredits } from '@/lib/ai/pricing';
 const requestSchema = z.object({
   projectId: z.string().min(1),
   messages: z.array(z.object({ role: z.enum(['user', 'assistant']), content: z.string().min(1) })).min(1),
+  task: z.enum(['chat', 'plan', 'generate', 'edit', 'fix', 'summarize']).default('chat'),
 });
 
 function jsonError(error: string, status: number) {
@@ -34,7 +35,7 @@ export async function POST(request: Request) {
     const stream = new ReadableStream<Uint8Array>({
       async start(controller) {
         try {
-          for await (const chunk of aiRouter.stream('chat', parsed.data.messages, abortController.signal)) {
+          for await (const chunk of aiRouter.stream(parsed.data.task, parsed.data.messages, abortController.signal)) {
             totalTokens = chunk.totalTokens ?? totalTokens;
             if (chunk.content) controller.enqueue(encoder.encode(chunk.content));
           }

@@ -62,3 +62,18 @@ export const projectVersions = pgTable('project_versions', {
   filesSnapshot: jsonb('files_snapshot').notNull(),
   status: text('status', { enum: ['draft', 'built', 'failed', 'published'] }).notNull(),
 });
+
+export const creditLedger = pgTable('credit_ledger', {
+  id: uuid('id').defaultRandom().primaryKey(),
+  workspaceId: uuid('workspace_id').notNull().references(() => workspaces.id),
+  projectId: uuid('project_id'),
+  versionId: uuid('version_id'),
+  task: text('task').notNull(),
+  model: text('model').notNull(),
+  promptTokens: integer('prompt_tokens').notNull().default(0),
+  completionTokens: integer('completion_tokens').notNull().default(0),
+  amount: integer('amount').notNull(),
+  shadowCost: integer('shadow_cost').notNull().default(0),
+  reason: text('reason').notNull(),
+  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+});

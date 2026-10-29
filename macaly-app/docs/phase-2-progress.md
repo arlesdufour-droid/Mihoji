@@ -116,3 +116,30 @@
 
 - Le contrat de sélection et les erreurs de configuration sont réels.
 - Le mock reste actif en développement; l'exécution E2B réelle reste en stub bloqué.
+
+## Lot 3 — crédits prévisibles
+
+### Fait
+
+- Table `credit_ledger` et migration dédiée.
+- Débit PostgreSQL transactionnel avec contrôle du solde et journalisation.
+- Estimation basse/haute selon le contexte et la tâche, affichée dans le compositeur.
+- Bascule Plan/Build et transmission de la tâche au routeur.
+
+### Réel
+
+- Débits et écritures du ledger sont réels avec PostgreSQL configuré.
+
+### Simulé
+
+- Le mode démo conserve les valeurs de démonstration et ne persiste pas les débits.
+
+### Stub restant
+
+- Les corrections gratuites, le plafond configurable et l'agrégation complète de la page Usage seront reliés aux écrans et à la boucle de génération dans les lots sécurité/restauration.
+
+### Validation
+
+- `npm run build` ✅
+- `npm run lint` ✅
+- `npx vitest run` ✅ (7 tests)
