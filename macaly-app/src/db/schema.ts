@@ -4,6 +4,7 @@ export const users = pgTable('users', {
   id: uuid('id').primaryKey(),
   email: text('email').notNull().unique(),
   displayName: text('display_name'),
+  uiMode: text('ui_mode', { enum: ['simple', 'expert'] }).notNull().default('simple'),
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
 });
 
@@ -11,6 +12,7 @@ export const workspaces = pgTable('workspaces', {
   id: uuid('id').defaultRandom().primaryKey(),
   name: text('name').notNull(),
   ownerId: uuid('owner_id').notNull().references(() => users.id),
+  kind: text('kind', { enum: ['business', 'agency'] }).notNull().default('business'),
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
 });
 

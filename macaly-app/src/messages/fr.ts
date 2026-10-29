@@ -6,6 +6,11 @@ export const fr = {
   settings: 'Réglages',
   preview: 'Aperçu',
   code: 'Code',
-  publish: 'Publier',
+  publish: 'Mettre en ligne',
   share: 'Partager',
+  simpleMode: 'Mode simple',
+  expertMode: 'Mode expert',
+  business: 'Mon entreprise',
+  agency: 'Mes clients (agence, freelance)',
+  chooseWorkspace: 'Vous créez un site pour…',
 } as const;

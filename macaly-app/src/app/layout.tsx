@@ -14,14 +14,14 @@ const fraunces = Fraunces({
 });
 
 export const metadata: Metadata = {
-  title: "Mihoji | Build with your ideas",
-  description: "Build and publish web apps with Mihoji.",
+  title: "Mihoji | Le site de votre entreprise",
+  description: "Créez et mettez en ligne le site de votre entreprise avec Mihoji.",
 };
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html
-      lang="en"
+      lang="fr"
       className={`${inter.variable} ${fraunces.variable} dark h-full antialiased`}
       suppressHydrationWarning
     >

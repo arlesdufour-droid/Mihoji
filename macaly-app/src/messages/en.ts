@@ -8,4 +8,9 @@ export const en = {
   code: 'Code',
   publish: 'Publish',
   share: 'Share',
+  simpleMode: 'Simple mode',
+  expertMode: 'Expert mode',
+  business: 'My business',
+  agency: 'My clients (agency, freelance)',
+  chooseWorkspace: 'You are creating a website for…',
 } as const;
