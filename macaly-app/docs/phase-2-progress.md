@@ -209,3 +209,24 @@
 - `npm run build` ✅
 - `npm run lint` ✅
 - `npx vitest run` ✅ (13 tests attendus)
+
+## Bilan final de la phase 2
+
+### Réel
+
+- Auth Supabase SSR, schéma/migrations Drizzle, routeur IA, fournisseur Groq, ledger PostgreSQL, validations d'opérations, audits sécurité/SEO et garde-fous de restauration.
+
+### Simulé
+
+- Mode démo sans clés, fournisseur IA mock, bac à sable mock et soldes de démonstration.
+
+### Blocages
+
+- L'intégration E2B réelle et `npm audit` dans un bac à sable restent bloqués sans compte, quota et clé E2B.
+- Les écrans Studio pour l'historique, la sécurité, le SEO et les versions restent à relier aux modules.
+
+### Clés à fournir
+
+- `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `DATABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`
+- `GROQ_API_KEY`
+- `E2B_API_KEY`
