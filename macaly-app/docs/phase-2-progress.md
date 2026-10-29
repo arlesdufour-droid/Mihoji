@@ -69,3 +69,32 @@
 - `npm run build` ✅
 - `npm run lint` ✅
 - `npx vitest run` ✅ (4 tests)
+
+## Lot 2a — moteur de génération avec bac à sable simulé
+
+### Fait
+
+- Schéma et migration des projets, fichiers, blobs dédupliqués et versions.
+- Protocole d'opérations Zod avec validation des chemins et rejet des éditions ambiguës.
+- Bac à sable simulé avec installation, build, URL d'aperçu et marqueur d'erreur contrôlé.
+- Boucle de génération avec versions de travail, événements de progression, trois corrections maximum et état `built`/`failed`/`draft`.
+- Gabarit de base minimal Next.js/Tailwind.
+
+### Réel
+
+- Validation des opérations, hachage des fichiers et logique de boucle sont exécutables et testés.
+
+### Simulé
+
+- L'exécution `npm run build` et l'URL de prévisualisation sont simulées dans `MockSandboxProvider`.
+- Le branchement de cette boucle à l'interface Studio reste à faire.
+
+### Stub restant
+
+- Persistance applicative des versions et affichage de l'onglet Code seront reliés aux écrans Studio dans un complément dédié.
+
+### Validation
+
+- `npm run build` ✅
+- `npm run lint` ✅
+- `npx vitest run` ✅ (6 tests)

@@ -1,4 +1,4 @@
-import { pgTable, text, timestamp, uuid, integer, primaryKey } from 'drizzle-orm/pg-core';
+import { pgTable, text, timestamp, uuid, integer, primaryKey, jsonb } from 'drizzle-orm/pg-core';
 
 export const users = pgTable('users', {
   id: uuid('id').primaryKey(),
@@ -30,4 +30,35 @@ export const subscriptions = pgTable('subscriptions', {
   monthlyAllowance: integer('monthly_allowance').notNull().default(1000000),
   periodEnd: timestamp('period_end', { withTimezone: true }).notNull(),
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+});
+
+export const projects = pgTable('projects', {
+  id: uuid('id').defaultRandom().primaryKey(),
+  workspaceId: uuid('workspace_id').notNull().references(() => workspaces.id),
+  name: text('name').notNull(),
+  currentVersionId: uuid('current_version_id'),
+  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+});
+
+export const fileBlobs = pgTable('file_blobs', {
+  hash: text('hash').primaryKey(),
+  content: text('content').notNull(),
+});
+
+export const projectFiles = pgTable('project_files', {
+  projectId: uuid('project_id').notNull().references(() => projects.id),
+  path: text('path').notNull(),
+  hash: text('hash').notNull().references(() => fileBlobs.hash),
+  updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
+}, (table) => [primaryKey({ columns: [table.projectId, table.path] })]);
+
+export const projectVersions = pgTable('project_versions', {
+  id: uuid('id').defaultRandom().primaryKey(),
+  projectId: uuid('project_id').notNull().references(() => projects.id),
+  parentVersionId: uuid('parent_version_id'),
+  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+  createdBy: text('created_by', { enum: ['user', 'agent'] }).notNull(),
+  summary: text('summary').notNull(),
+  filesSnapshot: jsonb('files_snapshot').notNull(),
+  status: text('status', { enum: ['draft', 'built', 'failed', 'published'] }).notNull(),
 });
