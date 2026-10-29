@@ -187,3 +187,25 @@
 - `npm run build` ✅
 - `npm run lint` ✅
 - `npx vitest run` ✅ (11 tests)
+
+## Lot 6 — SEO par défaut
+
+### Fait
+
+- Audit SEO pur : métadonnées, H1 unique, attributs alt, liens internes, sitemap et robots.
+- Gabarit de base enrichi avec `metadata`, Open Graph, sitemap et robots.
+- Tests unitaires des règles SEO.
+
+### Réel
+
+- Le gabarit et l’audit sont disponibles pour les nouveaux projets.
+
+### Stub restant
+
+- L’affichage dans l’onglet SEO et les actions « Fix with AI » restent à connecter au Studio.
+
+### Validation
+
+- `npm run build` ✅
+- `npm run lint` ✅
+- `npx vitest run` ✅ (13 tests attendus)
