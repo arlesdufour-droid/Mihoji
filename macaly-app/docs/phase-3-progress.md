@@ -18,3 +18,10 @@
 - **Simulé :** la recherche d’entreprise utilise encore des données de démonstration ; les informations sont conservées dans le navigateur.
 - **Démo :** « Réinitialiser la démo » supprime l’espace et l’entreprise simulés et renvoie vers l’écran de choix.
 - **À compléter :** brancher la recherche à l’API publique Recherche d’entreprises et persister les données dans Supabase.
+
+## Parcours projet métier — terminé en démo
+
+- **Réel :** la fin de l’onboarding crée un projet nommé d’après l’entreprise, sélectionne sa famille métier, génère un premier site avec activité, adresse et coordonnées, et ajoute le lien vers les mentions légales.
+- **Réel :** le Studio charge le projet actif en mode simple et affiche un message d’accueil personnalisé.
+- **Réel :** Réglages généraux expose « Mon site › Mes informations » et l’écran de conformité avec les informations de l’entreprise et l’avertissement juridique.
+- **Simulé :** le projet, les données d’entreprise et les modifications sont conservés dans `localStorage` en mode démo.
