@@ -98,3 +98,21 @@
 - `npm run build` ✅
 - `npm run lint` ✅
 - `npx vitest run` ✅ (6 tests)
+
+## Lot 2b — sélection du bac à sable réel
+
+### Fait
+
+- Sélecteur unique : E2B si `E2B_API_KEY` existe, mock en développement sinon.
+- En production, une clé E2B absente renvoie `e2b_not_configured`.
+- Interface E2B isolée derrière `SandboxProvider` pour éviter de coupler le moteur.
+
+### Blocage externe
+
+- L'implémentation E2B réelle est bloquée par l'absence de compte, de quota et de validation du SDK/licence dans cet environnement; elle renvoie une erreur explicite plutôt qu'une fausse exécution.
+- Pour débloquer : créer un compte E2B, obtenir `E2B_API_KEY` et l'ajouter aux secrets Codespaces ou à `macaly-app/.env.local` sans la committer.
+
+### Réel et simulé
+
+- Le contrat de sélection et les erreurs de configuration sont réels.
+- Le mock reste actif en développement; l'exécution E2B réelle reste en stub bloqué.
