@@ -166,3 +166,24 @@
 - `npm run build` ✅
 - `npm run lint` ✅
 - `npx vitest run` ✅ (9 tests)
+
+## Lot 5 — restauration et protection des données
+
+### Fait
+
+- Restauration immuable : une ancienne version devient une nouvelle version `draft` avec parent conservé.
+- Garde-fous SQL contre `DROP`, `TRUNCATE`, suppression sans `WHERE` et suppression de colonne en production.
+
+### Réel
+
+- Les règles de restauration et de sécurité SQL sont pures et testées.
+
+### Stub restant
+
+- Le panneau d'historique Studio, la confirmation UI des migrations et les sauvegardes automatiques restent à brancher aux tables et à l'interface.
+
+### Validation
+
+- `npm run build` ✅
+- `npm run lint` ✅
+- `npx vitest run` ✅ (11 tests)
