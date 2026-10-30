@@ -10,7 +10,11 @@ export async function persistChatVersion(projectId: string, prompt: string, gene
     if (!project) throw new Error('project_not_found');
     const [current] = await tx.select({ content: fileBlobs.content }).from(projectFiles).innerJoin(fileBlobs, eq(projectFiles.hash, fileBlobs.hash)).where(and(eq(projectFiles.projectId, projectId), eq(projectFiles.path, 'index.html'))).limit(1);
     const currentHtml = current?.content ?? '';
-    const nextHtml = /horaires|heures|lundi|8h/i.test(prompt)
+    const nextHtml = /accueil|chaleureuse|bienvenue/i.test(prompt)
+      ? currentHtml.includes('data-mihoji="accueil"')
+        ? currentHtml
+        : currentHtml.replace(/(<main[^>]*>)/i, '$1<section data-mihoji="accueil" class="mb-6 rounded-xl bg-indigo-50 p-5"><p class="text-xl font-semibold text-indigo-900">Bienvenue, nous sommes heureux de vous accueillir.</p></section>')
+      : /horaires|heures|lundi|8h/i.test(prompt)
       ? currentHtml.includes('data-mihoji="horaires"')
         ? currentHtml
         : currentHtml.replace('</main>', '<section data-mihoji="horaires" class="mt-8 rounded-xl bg-slate-100 p-5"><h2 class="text-2xl font-bold">Horaires</h2><p class="mt-2">Du lundi au vendredi, de 8h à 18h.</p></section></main>')

@@ -1,0 +1,49 @@
+import { createHash, randomUUID } from 'node:crypto';
+import { readFileSync, writeFileSync } from 'node:fs';
+import { createClient } from '@supabase/supabase-js';
+import postgres from 'postgres';
+import type { FullConfig } from '@playwright/test';
+
+function loadEnv() {
+  for (const line of readFileSync('.env.local', 'utf8').split(/\r?\n/)) {
+    const match = line.match(/^\s*([A-Z][A-Z0-9_]*)\s*=\s*(.*)\s*$/);
+    if (match && !process.env[match[1]]) process.env[match[1]] = match[2].replace(/^(['"])(.*)\1$/, '$2');
+  }
+}
+
+export default async function globalSetup(_config: FullConfig) {
+  void _config;
+  loadEnv();
+  const email = `e2e-${Date.now()}@mihoji.local`;
+  const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!);
+  const created = await supabase.auth.admin.createUser({ email, email_confirm: true });
+  if (created.error || !created.data.user) throw created.error ?? new Error('e2e_user_creation_failed');
+  const userId = created.data.user.id;
+  const siret = String(Date.now()).slice(-9).padStart(9, '3') + String(Math.floor(Math.random() * 100000)).padStart(5, '0');
+  const workspaceId = randomUUID();
+  const projectId = randomUUID();
+  const versionId = randomUUID();
+  const hash = createHash('sha256').update('<main><h1>Boulangerie de test</h1><p>Activité : Boulangerie et boulangerie-pâtisserie</p><p>Forme : SAS, société par actions simplifiée</p></main>').digest('hex');
+  const sql = postgres(process.env.DATABASE_URL!, { prepare: false });
+  await sql.begin(async (tx) => {
+    await tx`insert into users (id, email) values (${userId}, ${email}) on conflict (id) do update set email = excluded.email`;
+    await tx`insert into workspaces (id, name, owner_id) values (${workspaceId}, 'Espace E2E réel', ${userId})`;
+    await tx`insert into workspace_members (workspace_id, user_id, role) values (${workspaceId}, ${userId}, 'owner')`;
+    await tx`insert into subscriptions (workspace_id, plan_id, credits_remaining, credits_used, monthly_allowance, period_end) values (${workspaceId}, 'free', 100000, 0, 100000, now() + interval '30 days')`;
+    await tx`insert into companies (workspace_id, siret, siren, name, legal_form, address, activity, vat_number, status, missing_fields) values (${workspaceId}, ${siret}, ${siret.slice(0, 9)}, 'Boulangerie E2E', 'SAS, société par actions simplifiée', '1 rue du Test, 17000 La Rochelle', 'Boulangerie et boulangerie-pâtisserie', 'FR12356000000', 'active', ${JSON.stringify({ email: 'contact@e2e.test', phone: '0500000000' })})`;
+    await tx`insert into projects (id, workspace_id, name, current_version_id) values (${projectId}, ${workspaceId}, 'Projet E2E', ${versionId})`;
+    await tx`insert into file_blobs (hash, content) values (${hash}, '<main><h1>Boulangerie de test</h1><p>Activité : Boulangerie et boulangerie-pâtisserie</p><p>Forme : SAS, société par actions simplifiée</p></main>') on conflict (hash) do nothing`;
+    await tx`insert into project_files (project_id, path, hash) values (${projectId}, 'index.html', ${hash})`;
+    await tx`insert into project_versions (id, project_id, created_by, summary, files_snapshot, status) values (${versionId}, ${projectId}, 'agent', 'Version E2E', ${JSON.stringify({ 'index.html': hash })}, 'built')`;
+  });
+  await sql.end();
+  const link = await supabase.auth.admin.generateLink({ type: 'magiclink', email });
+  const tokenHash = link.data.properties?.hashed_token;
+  if (link.error || !tokenHash) throw link.error ?? new Error('e2e_magic_link_failed');
+  const verifier = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!, {
+    auth: { persistSession: false, autoRefreshToken: false },
+  });
+  const verified = await verifier.auth.verifyOtp({ token_hash: tokenHash, type: 'email' });
+  if (verified.error || !verified.data.session) throw verified.error ?? new Error('e2e_session_failed');
+  writeFileSync('e2e/.state.json', JSON.stringify({ email, userId, workspaceId, projectId, session: verified.data.session }));
+}

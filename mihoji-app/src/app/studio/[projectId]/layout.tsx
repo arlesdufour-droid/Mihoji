@@ -4,10 +4,11 @@ import { getSession } from '@/lib/auth';
 import { assertProjectAccess } from '@/lib/auth';
 import { notFound } from 'next/navigation';
 import { connection } from 'next/server';
+import type { ReactNode } from 'react';
 
 export const instant = false;
 
-export default async function StudioProjectLayout({ children, params }: LayoutProps<'/studio/[projectId]'>) {
+export default async function StudioProjectLayout({ children, params }: { children: ReactNode; params: Promise<{ projectId: string }> }) {
   await connection();
   const { projectId } = await params;
   const session = await getSession();

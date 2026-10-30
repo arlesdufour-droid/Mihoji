@@ -2,7 +2,7 @@ import { Check, Pencil, ShieldAlert, ToggleLeft } from 'lucide-react';
 
 type SettingsKind = 'preferences' | 'general' | 'members' | 'connections' | 'integrations' | 'mcp' | 'domains';
 
-type Props = { title: string; description: string; kind: SettingsKind };
+type Props = { title: string; description: string; kind: SettingsKind; workspaceName?: string };
 
 const groups: Record<string, string[]> = {
   connections: ['Agents', 'Messaging'],
@@ -10,12 +10,12 @@ const groups: Record<string, string[]> = {
   mcp: ['Developer', 'Productivity', 'Research'],
 };
 
-export function SimpleSettingsPage({ title, description, kind }: Props) {
+export function SimpleSettingsPage({ title, description, kind, workspaceName = 'Mon espace' }: Props) {
   const kindGroups = groups[kind];
   return <div>
     <div className="mb-8"><p className="text-sm font-medium text-indigo-400">Réglages de l&apos;espace</p><h1 className="mt-2 text-3xl font-bold tracking-tight">{title}</h1><p className="mt-2 text-sm text-slate-400">{description}</p></div>
     {kindGroups ? <div className="space-y-8">{kindGroups.map((group) => <section key={group}><h2 className="mb-3 text-xs font-semibold uppercase tracking-widest text-slate-500">{group}</h2><div className="grid gap-4 md:grid-cols-2">{['Slack', 'Notion'].map((name) => <div key={name} className="rounded-xl bg-slate-900 p-5 ring-1 ring-slate-800"><div className="flex items-start justify-between gap-4"><div><h3 className="text-sm font-semibold">{name}</h3><p className="mt-2 text-xs leading-5 text-slate-500">Connect this service to your Mihoji workspace.</p></div><button type="button" className="rounded-lg border border-slate-700 px-3 py-1.5 text-xs text-slate-300 hover:border-indigo-500 hover:text-white">+ Connect</button></div></div>)}</div></section>)}</div> : <div className="space-y-4">
-      <div className="rounded-xl bg-slate-900 p-6 ring-1 ring-slate-800"><div className="flex items-center justify-between gap-4"><div><h2 className="text-sm font-semibold">{kind === 'general' ? 'Workspace name' : kind === 'members' ? 'Invite teammates' : 'Appearance'}</h2><p className="mt-2 text-xs text-slate-500">{kind === 'general' ? 'Mihoji workspace' : kind === 'members' ? 'Invite people by email or share a link.' : 'Choose the way Mihoji looks for you.'}</p></div><Pencil className="h-4 w-4 text-slate-500" /></div>
+      <div className="rounded-xl bg-slate-900 p-6 ring-1 ring-slate-800"><div className="flex items-center justify-between gap-4"><div><h2 className="text-sm font-semibold">{kind === 'general' ? 'Nom de l’espace' : kind === 'members' ? 'Inviter des équipiers' : 'Apparence'}</h2><p className="mt-2 text-xs text-slate-500">{kind === 'general' ? workspaceName : kind === 'members' ? 'Invitez des personnes par email ou partagez un lien.' : 'Choisissez l’apparence de Mihoji.'}</p></div><Pencil className="h-4 w-4 text-slate-500" /></div>
         {kind === 'preferences' && <div className="mt-5 grid gap-3 sm:grid-cols-2"><button type="button" className="rounded-xl border-2 border-slate-700 bg-slate-800 p-5 text-left text-sm">Dark <Check className="mt-3 h-4 w-4 text-indigo-400" /></button><button type="button" disabled className="cursor-not-allowed rounded-xl border border-slate-700 p-5 text-left text-sm text-slate-500">Light — Bientôt disponible</button></div>}
         {kind === 'members' && <div className="mt-5 flex gap-2"><input type="email" placeholder="teammate@example.com" disabled className="min-w-0 flex-1 rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm outline-none" /><button type="button" disabled className="cursor-not-allowed rounded-lg bg-slate-700 px-4 py-2 text-xs font-semibold text-slate-400">Bientôt disponible</button></div>}
       </div>

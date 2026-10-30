@@ -12,4 +12,4 @@ export const studioTabs = [
 ] as const;
 
 export type StudioTabId = (typeof studioTabs)[number]['id'];
-export const simpleStudioTabIds: StudioTabId[] = ['preview'];
+export const simpleStudioTabIds: StudioTabId[] = ['preview', 'settings'];

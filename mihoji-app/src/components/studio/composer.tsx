@@ -5,6 +5,7 @@ import { FormEvent, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { CreditCounter } from '@/components/studio/credit-counter';
 import { estimateCredits } from '@/lib/ai/estimate';
+import { simpleSummary } from '@/lib/ai/simple-summary';
 
 export type ChatMessage = { role: 'user' | 'assistant'; content: string };
 
@@ -16,9 +17,10 @@ type Props = {
   streaming: boolean;
   onStreamingChange: (streaming: boolean) => void;
   onStop: () => void;
+  uiMode: 'simple' | 'expert';
 };
 
-export function Composer({ projectId, remaining, messages, onMessages, streaming, onStreamingChange, onStop }: Props) {
+export function Composer({ projectId, remaining, messages, onMessages, streaming, onStreamingChange, onStop, uiMode }: Props) {
   const [value, setValue] = useState('');
   const [mode, setMode] = useState<'plan' | 'build'>('build');
   const controller = useRef<AbortController | null>(null);
@@ -55,6 +57,9 @@ export function Composer({ projectId, remaining, messages, onMessages, streaming
         if (chunk.done) break;
         assistant += decoder.decode(chunk.value, { stream: true });
         onMessages([...next.slice(0, -1), { role: 'assistant', content: assistant }]);
+      }
+      if (uiMode === 'simple') {
+        onMessages([...next.slice(0, -1), { role: 'assistant', content: simpleSummary(content) }]);
       }
       router.refresh();
     } catch (error) {

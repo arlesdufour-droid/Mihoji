@@ -20,9 +20,9 @@ export function formatAmount(value: number, withPerMonth = false): string {
 }
 
 export function formatDate(value: Date | string): string {
-  return new Intl.DateTimeFormat('en-US', { dateStyle: 'long' }).format(new Date(value));
+  return new Intl.DateTimeFormat('fr-FR', { dateStyle: 'long', timeZone: 'UTC' }).format(new Date(value));
 }
 
 export function formatDateTime(value: Date | string): string {
-  return new Intl.DateTimeFormat('en-US', { dateStyle: 'long', timeStyle: 'short' }).format(new Date(value));
+  return new Intl.DateTimeFormat('fr-FR', { dateStyle: 'long', timeStyle: 'short', timeZone: 'UTC' }).format(new Date(value));
 }

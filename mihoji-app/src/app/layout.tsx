@@ -4,6 +4,8 @@ import { Fraunces, Inter } from "next/font/google";
 import "./globals.css";
 import { EnvironmentBadge } from "@/components/environment-badge";
 
+export const instant = false;
+
 const inter = Inter({
   variable: "--font-inter",
   subsets: ["latin"],

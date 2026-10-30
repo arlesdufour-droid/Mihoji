@@ -5,13 +5,28 @@ type Company = {
   address: string;
   activity: string;
   missingFields?: unknown;
+  email?: string | null;
+  phone?: string | null;
 };
 
-const requiredFields = ['director', 'email', 'phone'];
+const requiredFields = ['director', 'capital', 'registry', 'email', 'phone'];
+
+export const complianceFieldLabels: Record<string, string> = {
+  director: 'Directeur de la publication',
+  capital: 'Capital social',
+  registry: 'Numéro RCS ou RM',
+  email: 'Email de contact',
+  phone: 'Téléphone de contact',
+};
+
+export function complianceMissingLabels(missing: string[]) {
+  return missing.map((field) => complianceFieldLabels[field] ?? field);
+}
 
 export function complianceStatus(company: Company | null) {
   const fields = company?.missingFields && typeof company.missingFields === 'object' ? company.missingFields as Record<string, string> : {};
-  const missing = company ? requiredFields.filter((field) => !(fields[field] ?? '').trim()) : requiredFields;
+  const values: Record<string, string> = { ...fields, email: fields.email ?? company?.email ?? '', phone: fields.phone ?? company?.phone ?? '' };
+  const missing = company ? requiredFields.filter((field) => !(values[field] ?? '').trim()) : requiredFields;
   return { complete: Boolean(company) && missing.length === 0, missing };
 }
 

@@ -28,3 +28,4 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 - Aucun bouton visible ne doit être sans action. Une fonction non disponible est soit masquée, soit affichée désactivée avec la mention « Bientôt disponible ».
 - Aucune donnée métier (entreprise, projet, onboarding, version) n'est stockée dans `localStorage`. `localStorage` est réservé aux préférences d'affichage.
 - Chaque résumé de fin de lot contient une section « Comment vérifier », avec les clics exacts à faire dans l'aperçu.
+- Toute section « Comment vérifier » doit être couverte par un test Playwright qui passe. Un lot n'est pas terminé si ses tests e2e échouent.

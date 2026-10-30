@@ -12,8 +12,8 @@ export function PublishActions({ projectId }: { projectId: string }) {
   const publish = async () => {
     setStatus('Vérification…');
     const response = await fetch(`/api/projects/${projectId}/publish`, { method: 'POST' });
-    const result = await response.json() as { url?: string; error?: string };
-    setStatus(response.ok ? `En ligne : ${result.url}` : result.error === 'database_required' ? 'Publication indisponible en mode démo.' : 'Publication impossible : vérifiez la conformité.');
+    const result = await response.json() as { url?: string; error?: string; missing?: string[]; reasons?: string[] };
+    setStatus(response.ok ? `En ligne : ${result.url}` : result.error === 'database_required' ? 'Publication indisponible en mode démo.' : result.error === 'compliance_incomplete' ? `Publication bloquée : ${result.missing?.join(', ') ?? 'mentions légales incomplètes'}.` : result.error === 'site_blocked' ? `Publication bloquée : ${result.reasons?.join(', ') ?? 'contenu suspect'}.` : 'Publication impossible : vérifiez la conformité.');
   };
   return <div className="relative flex shrink-0 items-center gap-2">
     <button type="button" onClick={() => setShareOpen((open) => !open)} className="inline-flex items-center gap-2 rounded-lg border border-slate-700 px-3 py-2 text-xs font-medium text-slate-300 hover:border-slate-500 hover:text-white focus-visible:ring-2 focus-visible:ring-indigo-500"><Share2 className="h-3.5 w-3.5" />Partager</button>

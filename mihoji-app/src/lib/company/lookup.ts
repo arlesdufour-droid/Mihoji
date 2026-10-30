@@ -26,6 +26,7 @@ const nafLabels: Record<string, string> = {
 
 export function legalFormLabel(code: string | null | undefined) {
   if (!code) return 'Forme juridique non renseignée';
+  if (code === 'Entreprise enregistrée') return 'Entreprise individuelle';
   return legalForms[code] ?? code;
 }
 
