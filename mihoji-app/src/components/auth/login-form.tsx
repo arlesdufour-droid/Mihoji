@@ -48,7 +48,7 @@ export function LoginForm() {
       <label className="block text-sm text-slate-300" htmlFor="email">Adresse email</label>
       <input id="email" type="email" required value={email} onChange={(event) => setEmail(event.target.value)} className="w-full rounded-xl border border-slate-700 bg-slate-950 px-4 py-3 text-sm outline-none focus:border-indigo-400" placeholder="vous@exemple.fr" />
       <button disabled={pending} className="w-full rounded-xl bg-indigo-600 px-4 py-3 text-sm font-semibold transition hover:bg-indigo-500 disabled:opacity-60">{pending ? 'Envoi…' : 'Recevoir un lien magique'}</button>
-      <button type="button" onClick={signInWithGoogle} className="w-full rounded-xl border border-slate-700 px-4 py-3 text-sm font-semibold hover:bg-slate-800">Continuer avec Google</button>
+      {process.env.NEXT_PUBLIC_GOOGLE_AUTH_ENABLED === 'true' && <button type="button" onClick={signInWithGoogle} className="w-full rounded-xl border border-slate-700 px-4 py-3 text-sm font-semibold hover:bg-slate-800">Continuer avec Google</button>}
     </form> : <Link href="/studio/demo" className="mt-8 block rounded-xl bg-indigo-600 px-4 py-3 text-center text-sm font-semibold hover:bg-indigo-500">Entrer en mode démo</Link>}
     {message && <div className="mt-4 space-y-2" role="status"><p className="text-sm text-slate-400">{message}</p>{message.includes('expiré') && <button type="button" onClick={() => void sendMagicLink()} className="text-sm font-semibold text-indigo-300 hover:text-indigo-200">Renvoyer un lien magique</button>}</div>}
   </section>;

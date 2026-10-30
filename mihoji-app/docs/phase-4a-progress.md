@@ -93,3 +93,23 @@
 
 - Créer un compte sur [e2b.dev](https://e2b.dev), créer une clé API et renseigner `E2B_API_KEY` dans l’environnement de développement.
 - Redémarrer le serveur puis relancer une génération pour vérifier une vraie URL d’aperçu.
+
+## Lot 5 — terminé
+
+### Réel
+
+- Interface `Mailer` ajoutée avec implémentation Brevo et simulation locale.
+- Textes français préparés pour bienvenue, mise en ligne et crédits faibles.
+- Le bouton Google est affiché uniquement si `NEXT_PUBLIC_GOOGLE_AUTH_ENABLED=true`.
+- Documentation Supabase SMTP et Google Cloud ajoutée au README.
+
+### Simulé ou restant
+
+- Sans `BREVO_API_KEY`, les emails transactionnels sont journalisés sans envoi.
+- Les emails d’authentification restent envoyés par Supabase après configuration SMTP.
+
+### À faire côté utilisateur
+
+- Créer/configurer Brevo et renseigner `BREVO_API_KEY`, `MAILER_FROM_EMAIL`, `MAILER_FROM_NAME`.
+- Configurer SMTP Supabase.
+- Configurer Google Cloud et Supabase, puis passer `NEXT_PUBLIC_GOOGLE_AUTH_ENABLED=true`.

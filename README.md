@@ -43,3 +43,20 @@ relancé sur chaque base indépendamment.
 6. Dans **Settings → Domains**, ajoutez votre domaine principal. Renseignez la
    même URL HTTPS (sans chemin) dans `NEXT_PUBLIC_SITE_URL`, redéployez, puis
    vérifiez le callback Supabase avec cette URL.
+
+## Emails et connexion Google
+
+Pour les emails d’authentification, créez un compte [Brevo](https://app.brevo.com),
+vérifiez votre expéditeur, puis dans Supabase ouvrez **Authentication → SMTP
+Settings** et saisissez le relais SMTP Brevo, son port, votre identifiant et
+votre clé SMTP. Pour les emails transactionnels Mihoji, renseignez
+`BREVO_API_KEY`, `MAILER_FROM_EMAIL` et `MAILER_FROM_NAME`.
+
+Pour Google : dans [Google Cloud Console](https://console.cloud.google.com),
+créez un projet, configurez l’écran d’autorisation OAuth, puis créez un
+identifiant OAuth « Application Web ». Dans Supabase → Authentication →
+Providers → Google, saisissez l’identifiant et le secret. Ajoutez comme URL de
+retour autorisée :
+`https://<projet>.supabase.co/auth/v1/callback`.
+Enfin, définissez `NEXT_PUBLIC_GOOGLE_AUTH_ENABLED=true`. Le bouton reste
+masqué tant que cette variable vaut `false`.
