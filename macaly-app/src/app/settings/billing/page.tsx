@@ -3,6 +3,8 @@ import { getCreditBalance, getInvoices, getSubscription, getUsageSnapshot } from
 import { getSession } from '@/lib/auth';
 import { redirect } from 'next/navigation';
 
+export const instant = false;
+
 export default async function BillingPage() {
   const session = await getSession();
   if (!session) redirect('/login');

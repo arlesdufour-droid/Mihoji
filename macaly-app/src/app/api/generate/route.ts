@@ -8,7 +8,7 @@ import { tokensToCredits } from '@/lib/ai/pricing';
 
 const requestSchema = z.object({
   projectId: z.string().min(1),
-  messages: z.array(z.object({ role: z.enum(['user', 'assistant']), content: z.string().min(1) })).min(1),
+  messages: z.array(z.object({ role: z.enum(['user', 'assistant']), content: z.string().min(1).max(8_000) })).min(1).max(30),
   task: z.enum(['chat', 'plan', 'generate', 'edit', 'fix', 'summarize']).default('chat'),
 });
 
@@ -30,7 +30,9 @@ export async function POST(request: Request) {
     throw error;
   }
   const balance = await getCreditBalance(workspaceId);
-  if (balance.remaining <= 0 && process.env.NODE_ENV !== 'development') return jsonError('insufficient_credits', 402);
+  const taskLimit = parsed.data.task === 'plan' ? 2_000 : 4_000;
+  const maxTokens = Math.min(taskLimit, balance.remaining);
+  if (maxTokens < 16 && !session.isDemo) return jsonError('insufficient_credits', 402);
 
   const abortController = new AbortController();
   const timeout = setTimeout(() => abortController.abort(), 30_000);
@@ -38,8 +40,10 @@ export async function POST(request: Request) {
   try {
     const encoder = new TextEncoder();
     let totalTokens = 0;
+    let promptTokens = 0;
+    let completionTokens = 0;
     let isMock = !process.env.GROQ_API_KEY;
-    const iterator = aiRouter.stream(parsed.data.task, parsed.data.messages, abortController.signal)[Symbol.asyncIterator]();
+    const iterator = aiRouter.stream(parsed.data.task, parsed.data.messages, abortController.signal, maxTokens)[Symbol.asyncIterator]();
     const firstChunk = await iterator.next();
     isMock ||= firstChunk.value?.mock === true;
     const stream = new ReadableStream<Uint8Array>({
@@ -52,7 +56,9 @@ export async function POST(request: Request) {
           }
           let chunk = firstChunk.value;
           while (chunk) {
-            totalTokens = chunk.totalTokens ?? totalTokens;
+            promptTokens = chunk.promptTokens ?? promptTokens;
+            completionTokens = chunk.completionTokens ?? completionTokens;
+            totalTokens = chunk.totalTokens ?? ((promptTokens + completionTokens) || totalTokens);
             isMock ||= chunk.mock === true;
             if (chunk.content) controller.enqueue(encoder.encode(chunk.content));
             const nextChunk = await iterator.next();
@@ -62,8 +68,12 @@ export async function POST(request: Request) {
           if (!isMock) await debitCredits(workspaceId, tokensToCredits(totalTokens), 'chat');
           controller.close();
         } catch (error) {
-          console.warn('AI generation stream failed.', error);
+          const estimatedTokens = totalTokens || Math.ceil(parsed.data.messages.reduce((total, message) => total + message.content.length, 0) / 4);
+          if (!isMock) await debitCredits(workspaceId, tokensToCredits(estimatedTokens), 'chat');
+          console.error('AI generation stream failed.', error);
           controller.error(error);
+        } finally {
+          clearTimeout(timeout);
         }
       },
       cancel() {
@@ -75,7 +85,5 @@ export async function POST(request: Request) {
     if (error instanceof DOMException && error.name === 'AbortError') return jsonError('ai_timeout', 504);
     if (error instanceof Error && error.message === 'ai_not_configured') return jsonError('ai_not_configured', 503);
     return jsonError('ai_upstream_error', 502);
-  } finally {
-    clearTimeout(timeout);
   }
 }

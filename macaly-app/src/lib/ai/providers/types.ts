@@ -1,7 +1,7 @@
 export type CompletionMessage = { role: 'user' | 'assistant' | 'system'; content: string };
-export type CompletionRequest = { model: string; messages: CompletionMessage[]; signal?: AbortSignal };
-export type CompletionChunk = { content?: string; totalTokens?: number };
-export type CompletionResult = { content: string; totalTokens?: number };
+export type CompletionRequest = { model: string; messages: CompletionMessage[]; maxTokens?: number; signal?: AbortSignal };
+export type CompletionChunk = { content?: string; totalTokens?: number; promptTokens?: number; completionTokens?: number; mock?: boolean };
+export type CompletionResult = { content: string; totalTokens?: number; promptTokens?: number; completionTokens?: number };
 
 export interface LlmProvider {
   stream(req: CompletionRequest): AsyncIterable<CompletionChunk>;

@@ -1,4 +1,5 @@
 import { LlmProviderError } from './providers/types';
+import { defaultGroqModel } from './models';
 
 export type AiTask = 'chat' | 'plan' | 'generate' | 'edit' | 'fix' | 'summarize';
 
@@ -6,7 +7,7 @@ export function modelConfig(env: Partial<NodeJS.ProcessEnv> = process.env) {
   return {
     fast: env.AI_MODEL_FAST || 'openai/gpt-oss-20b',
     strong: env.AI_MODEL_STRONG || 'openai/gpt-oss-120b',
-    fallback: env.AI_MODEL_FALLBACK || 'qwen/qwen3.6-27b',
+    fallback: env.AI_MODEL_FALLBACK || defaultGroqModel,
   };
 }
 

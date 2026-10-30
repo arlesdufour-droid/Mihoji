@@ -25,7 +25,10 @@ export function resetModelCache() {
 }
 
 export class AiRouter {
-  constructor(private readonly provider: LlmProvider = process.env.GROQ_API_KEY ? new GroqProvider() : new MockProvider()) {}
+  constructor(
+    private readonly provider: LlmProvider = process.env.GROQ_API_KEY ? new GroqProvider() : new MockProvider(),
+    private readonly mockProvider: LlmProvider = new MockProvider(),
+  ) {}
 
   async getStatus(): Promise<AiStatus[]> {
     const config = modelConfig();
@@ -39,20 +42,28 @@ export class AiRouter {
     }
   }
 
-  async *stream(task: AiTask, messages: CompletionMessage[], signal: AbortSignal) {
+  async *stream(task: AiTask, messages: CompletionMessage[], signal: AbortSignal, maxTokens?: number) {
     const config = modelConfig();
     let model = selectModel(task, config);
+    if (!process.env.GROQ_API_KEY && process.env.NODE_ENV !== 'production') {
+      console.warn(`Groq model "${model}" is not configured; using simulated response in development.`);
+    }
     try {
       const models = await availableModels(this.provider);
       if (!models.includes(model)) {
         console.error(`Configured AI model "${model}" is unavailable; using fallback "${config.fallback}".`);
         model = config.fallback;
       }
-      yield* this.provider.stream({ model, messages, signal });
+      yield* this.provider.stream({ model, messages, signal, maxTokens });
     } catch (error) {
+      if (!process.env.GROQ_API_KEY && process.env.NODE_ENV !== 'production') {
+        console.warn(`Groq model "${model}" failed; using simulated response in development.`, error);
+        yield* this.mockProvider.stream({ model: config.fallback, messages, signal, maxTokens });
+        return;
+      }
       if (!shouldFallback(error) || model === config.fallback) throw error;
-      console.error(`AI model "${model}" failed; retrying with fallback "${config.fallback}".`);
-      yield* this.provider.stream({ model: config.fallback, messages, signal });
+      console.warn(`AI model "${model}" failed; retrying with fallback "${config.fallback}".`);
+      yield* this.provider.stream({ model: config.fallback, messages, signal, maxTokens });
     }
   }
 }

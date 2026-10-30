@@ -5,12 +5,12 @@ const mockText = 'Mihoji a préparé une réponse de démonstration. Décrivez u
 export class MockProvider implements LlmProvider {
   async *stream(req: CompletionRequest) {
     void req;
-    yield { content: mockText, totalTokens: 24 };
+    yield { content: mockText, totalTokens: 24, promptTokens: 12, completionTokens: 12, mock: true };
   }
 
   async complete(req: CompletionRequest): Promise<CompletionResult> {
     void req;
-    return { content: mockText, totalTokens: 24 };
+    return { content: mockText, totalTokens: 24, promptTokens: 12, completionTokens: 12 };
   }
 
   async listModels() {

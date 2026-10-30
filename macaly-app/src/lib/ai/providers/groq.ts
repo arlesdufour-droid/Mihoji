@@ -30,10 +30,9 @@ export class GroqProvider implements LlmProvider {
       method: 'POST',
       signal: req.signal,
       headers: { Authorization: `Bearer ${requireApiKey()}`, 'Content-Type': 'application/json' },
-      body: JSON.stringify({ model: req.model, messages: [{ role: 'system', content: systemPrompt }, ...req.messages], stream: true }),
+      body: JSON.stringify({ model: req.model, messages: [{ role: 'system', content: systemPrompt }, ...req.messages], stream: true, stream_options: { include_usage: true }, ...(req.maxTokens ? { max_tokens: req.maxTokens } : {}) }),
     });
     if (!response.ok || !response.body) await responseError(response);
-
     const body = response.body;
     if (!body) throw new LlmProviderError('ai_empty_response', 502);
     const reader = body.getReader();
@@ -50,8 +49,9 @@ export class GroqProvider implements LlmProvider {
           if (!line.startsWith('data: ')) continue;
           const payload = line.slice(6).trim();
           if (!payload || payload === '[DONE]') continue;
-          const chunk = JSON.parse(payload) as { choices?: { delta?: { content?: string } }[]; usage?: { total_tokens?: number } };
-          yield { content: chunk.choices?.[0]?.delta?.content, totalTokens: chunk.usage?.total_tokens };
+          const chunk = JSON.parse(payload) as { choices?: { delta?: { content?: string } }[]; usage?: { prompt_tokens?: number; completion_tokens?: number; total_tokens?: number }; x_groq?: { usage?: { prompt_tokens?: number; completion_tokens?: number; total_tokens?: number } } };
+          const usage = chunk.usage ?? chunk.x_groq?.usage;
+          yield { content: chunk.choices?.[0]?.delta?.content, totalTokens: usage?.total_tokens, promptTokens: usage?.prompt_tokens, completionTokens: usage?.completion_tokens };
         }
       }
     } finally {
@@ -64,11 +64,12 @@ export class GroqProvider implements LlmProvider {
       method: 'POST',
       signal: req.signal,
       headers: { Authorization: `Bearer ${requireApiKey()}`, 'Content-Type': 'application/json' },
-      body: JSON.stringify({ model: req.model, messages: [{ role: 'system', content: systemPrompt }, ...req.messages] }),
+      body: JSON.stringify({ model: req.model, messages: [{ role: 'system', content: systemPrompt }, ...req.messages], ...(req.maxTokens ? { max_tokens: req.maxTokens } : {}) }),
     });
     if (!response.ok) await responseError(response);
-    const data = await response.json() as { choices?: { message?: { content?: string } }[]; usage?: { total_tokens?: number } };
-    return { content: data.choices?.[0]?.message?.content || '', totalTokens: data.usage?.total_tokens };
+    const data = await response.json() as { choices?: { message?: { content?: string } }[]; usage?: { prompt_tokens?: number; completion_tokens?: number; total_tokens?: number }; x_groq?: { usage?: { prompt_tokens?: number; completion_tokens?: number; total_tokens?: number } } };
+    const usage = data.usage ?? data.x_groq?.usage;
+    return { content: data.choices?.[0]?.message?.content || '', totalTokens: usage?.total_tokens, promptTokens: usage?.prompt_tokens, completionTokens: usage?.completion_tokens };
   }
 
   async listModels() {
