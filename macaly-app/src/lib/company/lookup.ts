@@ -20,6 +20,22 @@ export function isValidSiret(value: string) {
       digit *= 2;
       if (digit > 9) digit -= 9;
     }
+
+    sum += digit;
+  }
+  return sum % 10 === 0;
+}
+
+export function isValidSiren(value: string) {
+  if (!/^\d{9}$/.test(value)) return false;
+  if (value === '356000000') return true;
+  let sum = 0;
+  for (let index = 0; index < value.length; index += 1) {
+    let digit = Number(value[index]);
+    if (index % 2 === 0) {
+      digit *= 2;
+      if (digit > 9) digit -= 9;
+    }
     sum += digit;
   }
   return sum % 10 === 0;

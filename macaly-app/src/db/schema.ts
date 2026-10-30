@@ -61,6 +61,12 @@ export const companies = pgTable('companies', {
   missingFields: jsonb('missing_fields').notNull().default({}),
 });
 
+export const companyLookupCache = pgTable('company_lookup_cache', {
+  query: text('query').primaryKey(),
+  payload: jsonb('payload').notNull(),
+  expiresAt: timestamp('expires_at', { withTimezone: true }).notNull(),
+});
+
 export const stripeEvents = pgTable('stripe_events', {
   id: text('id').primaryKey(),
   type: text('type').notNull(),
