@@ -22,6 +22,7 @@ export default async function globalSetup(_config: FullConfig) {
   const siret = String(Date.now()).slice(-9).padStart(9, '3') + String(Math.floor(Math.random() * 100000)).padStart(5, '0');
   const workspaceId = randomUUID();
   const projectId = randomUUID();
+  let legacyProjectId = '';
   const versionId = randomUUID();
   const seedHtml = '<main><h1>{{company.name}}</h1><p>Activité : {{company.activity}}</p><p>Forme : {{company.legalForm}}</p><p>Code historique : 10.71C</p><p>Adresse : {{company.address}}</p><p>Contact : {{company.email}} — {{company.phone}}</p></main>';
   const hash = createHash('sha256').update(seedHtml).digest('hex');
@@ -37,6 +38,15 @@ export default async function globalSetup(_config: FullConfig) {
     await tx`insert into project_files (project_id, path, hash) values (${projectId}, 'index.html', ${hash})`;
     await tx`insert into project_versions (id, project_id, created_by, summary, files_snapshot, status) values (${versionId}, ${projectId}, 'agent', 'Version E2E', ${JSON.stringify({ 'index.html': hash })}, 'built')`;
     await tx`insert into publications (project_id, version_id, url, status) values (${projectId}, ${versionId}, 'https://e2e.mihoji.app', 'published'), (${projectId}, ${versionId}, 'https://e2e.mihoji.app', 'published')`;
+    // Projet « pré-migration » : coordonnées figées en dur, comme avant la migration 0015.
+    legacyProjectId = randomUUID();
+    const legacyVersionId = randomUUID();
+    const legacyHtml = '<main><h1>{{company.name}}</h1><div class="rounded-xl bg-slate-100 p-5"><p class="text-sm font-semibold text-slate-500">Contact</p><p class="mt-2">{{company.email}}<br />{{company.phone}}</p></div></main>';
+    const legacyHash = createHash('sha256').update(legacyHtml).digest('hex');
+    await tx`insert into projects (id, workspace_id, name, current_version_id) values (${legacyProjectId}, ${workspaceId}, 'Projet E2E legacy', ${legacyVersionId})`;
+    await tx`insert into file_blobs (hash, content) values (${legacyHash}, ${legacyHtml}) on conflict (hash) do nothing`;
+    await tx`insert into project_files (project_id, path, hash) values (${legacyProjectId}, 'index.html', ${legacyHash})`;
+    await tx`insert into project_versions (id, project_id, created_by, summary, files_snapshot, status) values (${legacyVersionId}, ${legacyProjectId}, 'agent', 'Version legacy', ${JSON.stringify({ 'index.html': legacyHash })}, 'built')`;
   });
   await sql.end();
   const link = await supabase.auth.admin.generateLink({ type: 'magiclink', email });
@@ -47,5 +57,5 @@ export default async function globalSetup(_config: FullConfig) {
   });
   const verified = await verifier.auth.verifyOtp({ token_hash: tokenHash, type: 'email' });
   if (verified.error || !verified.data.session) throw verified.error ?? new Error('e2e_session_failed');
-  writeFileSync('e2e/.state.json', JSON.stringify({ email, userId, workspaceId, projectId, session: verified.data.session }));
+  writeFileSync('e2e/.state.json', JSON.stringify({ email, userId, workspaceId, projectId, legacyProjectId, session: verified.data.session }));
 }

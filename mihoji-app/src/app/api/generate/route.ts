@@ -59,6 +59,7 @@ async function handleChat(session: AppSession, workspaceId: string, parsed: Pars
   let isMock = !process.env.GROQ_API_KEY;
   let plan = null as ReturnType<typeof parseChatPlan>;
   let result: Awaited<ReturnType<typeof persistChatOperations>> = { changed: false };
+  let succeeded = false;
   for (let attempt = 1; attempt <= 2; attempt += 1) {
     const collected = await collectStream('chat', messages, signal, maxTokens, true);
     text = collected.text;
@@ -70,10 +71,12 @@ async function handleChat(session: AppSession, workspaceId: string, parsed: Pars
       continue;
     }
     result = await persistChatOperations(parsed.projectId, prompt, plan);
-    if (result.changed || plan.operations.length === 0) break;
+    if (result.changed || plan.operations.length === 0) {
+      succeeded = true;
+      break;
+    }
     console.error('Chat plan operations not applied.', { attempt, operations: plan.operations.length, rawResponse: text.slice(0, 2000) });
   }
-  const succeeded = Boolean(plan) && (result.changed || plan!.operations.length === 0);
   if (!succeeded) {
     console.error('Chat generation failed after retries.', { rawResponse: text.slice(0, 2000) });
   } else if (!isMock && totalTokens > 0) {

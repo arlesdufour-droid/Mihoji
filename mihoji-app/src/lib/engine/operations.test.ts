@@ -12,9 +12,16 @@ describe('project operations', () => {
     expect(result.has('styles.css')).toBe(false);
   });
 
-  it('rejects ambiguous edits', () => {
-    expect(() => applyOperations(new Map([['page.tsx', 'hello hello']]), { summary: '', operations: [
+  it('replaces the first occurrence of ambiguous edits', () => {
+    const result = applyOperations(new Map([['page.tsx', 'hello hello']]), { summary: '', operations: [
       { op: 'edit', path: 'page.tsx', search: 'hello', replace: 'welcome' },
-    ] })).toThrow('edit_ambiguous');
+    ] });
+    expect(result.get('page.tsx')).toBe('welcome hello');
+  });
+
+  it('rejects edits whose search text is absent', () => {
+    expect(() => applyOperations(new Map([['page.tsx', 'hello']]), { summary: '', operations: [
+      { op: 'edit', path: 'page.tsx', search: 'missing', replace: 'welcome' },
+    ] })).toThrow('edit_missing');
   });
 });

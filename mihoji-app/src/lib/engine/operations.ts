@@ -28,7 +28,8 @@ export function applyOperations(files: ProjectFiles, plan: OperationPlan): Proje
       const current = next.get(operation.path);
       if (current === undefined) throw new Error(`edit_missing:${operation.path}`);
       const occurrences = current.split(operation.search).length - 1;
-      if (occurrences !== 1) throw new Error(`edit_ambiguous:${operation.path}`);
+      if (occurrences === 0) throw new Error(`edit_missing:${operation.path}`);
+      // Un extrait présent plusieurs fois est remplacé à sa première occurrence plutôt que de tout faire échouer.
       next.set(operation.path, current.replace(operation.search, operation.replace));
     }
   }

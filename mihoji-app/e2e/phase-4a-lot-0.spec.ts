@@ -1,7 +1,7 @@
 import { expect, test, type BrowserContext, type Page } from '@playwright/test';
 import { readFileSync } from 'node:fs';
 
-const state = JSON.parse(readFileSync('e2e/.state.json', 'utf8')) as { projectId: string; session: unknown };
+const state = JSON.parse(readFileSync('e2e/.state.json', 'utf8')) as { projectId: string; legacyProjectId: string; session: unknown };
 
 if (!process.env.NEXT_PUBLIC_SUPABASE_URL) {
   for (const line of readFileSync('.env.local', 'utf8').split(/\r?\n/)) {
@@ -223,6 +223,21 @@ test('19. le téléphone modifié dans Mes informations se répercute sur le sit
   const srcdoc = await page.locator('iframe[title="Aperçu du site généré"]').getAttribute('srcdoc');
   expect(srcdoc).toContain('0500000099');
   expect(srcdoc).not.toContain('0500000000');
+});
+
+test('19b. un projet créé avant la migration affiche aussi le téléphone à jour', async ({ page, context }) => {
+  await context.addCookies(authCookies());
+  await page.goto(`/studio/${state.legacyProjectId}/settings`);
+  await page.getByLabel('Téléphone de contact').fill('0500000077');
+  const saved = page.waitForResponse((response) => response.url().includes('/api/onboarding/company') && response.request().method() === 'POST');
+  await page.getByRole('button', { name: 'Enregistrer les modifications' }).click();
+  expect((await saved).status()).toBe(200);
+  await page.goto(`/studio/${state.legacyProjectId}/preview`);
+  await expect(async () => {
+    const srcdoc = await page.locator('iframe[title="Aperçu du site généré"]').getAttribute('srcdoc');
+    expect(srcdoc).toContain('0500000077');
+    expect(srcdoc).not.toContain('0500000000');
+  }).toPass();
 });
 
 test('20. le bandeau d’aperçu de version affiche l’heure de Paris', async ({ page, context }) => {
