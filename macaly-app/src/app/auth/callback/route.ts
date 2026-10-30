@@ -1,29 +1,33 @@
 import { NextResponse, type NextRequest } from 'next/server';
 import { getSession } from '@/lib/auth';
 import { getSupabaseServerClient } from '@/lib/supabase/server';
+import { getPublicOrigin } from '@/lib/site-url';
 
 export async function GET(request: NextRequest) {
+  const origin = getPublicOrigin(request);
+  if (!origin) return NextResponse.json({ error: 'public_origin_not_configured' }, { status: 500 });
+  const redirect = (path: string) => NextResponse.redirect(new URL(path, origin));
   const code = request.nextUrl.searchParams.get('code');
   const errorCode = request.nextUrl.searchParams.get('error_code');
   if (errorCode) {
     console.error('Supabase authentication callback failed.', errorCode);
-    return NextResponse.redirect(new URL(`/login?error=${encodeURIComponent(errorCode)}`, request.url));
+    return redirect(`/login?error=${encodeURIComponent(errorCode)}`);
   }
-  if (!code) return NextResponse.redirect(new URL('/login?error=missing_code', request.url));
+  if (!code) return redirect('/login?error=missing_code');
 
   const supabase = await getSupabaseServerClient();
-  if (!supabase) return NextResponse.redirect(new URL('/login?error=supabase_not_configured', request.url));
+  if (!supabase) return redirect('/login?error=supabase_not_configured');
   const { error } = await supabase.auth.exchangeCodeForSession(code);
   if (error) {
     console.error('Supabase code exchange failed.', error);
-    return NextResponse.redirect(new URL(`/login?error=${encodeURIComponent(error.code ?? 'otp_expired')}`, request.url));
+    return redirect(`/login?error=${encodeURIComponent(error.code ?? 'otp_expired')}`);
   }
 
   try {
     await getSession();
   } catch (error) {
     console.error('Post-login account initialization failed.', error);
-    return NextResponse.redirect(new URL('/login?error=account_initialization_failed', request.url));
+    return redirect('/login?error=account_initialization_failed');
   }
-  return NextResponse.redirect(new URL('/onboarding', request.url));
+  return redirect('/onboarding');
 }

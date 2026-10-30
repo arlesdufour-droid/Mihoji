@@ -1,7 +1,14 @@
 import { NextResponse, type NextRequest } from 'next/server';
 import { createServerClient } from '@supabase/ssr';
+import { getPublicOrigin } from '@/lib/site-url';
 
 const publicApiRoutes = new Set(['/api/health', '/api/auth/magic-link']);
+
+function redirectToLogin(request: NextRequest) {
+  const origin = getPublicOrigin(request);
+  if (!origin) return NextResponse.json({ error: 'public_origin_not_configured' }, { status: 500 });
+  return NextResponse.redirect(new URL('/login', origin));
+}
 
 export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
@@ -14,7 +21,7 @@ export async function proxy(request: NextRequest) {
   const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
   if (!url || !key) {
     if (protectedApi) return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
-    return NextResponse.redirect(new URL('/login', request.url));
+    return redirectToLogin(request);
   }
 
   const supabase = createServerClient(url, key, {
@@ -32,7 +39,7 @@ export async function proxy(request: NextRequest) {
   console.info('Mihoji proxy authenticated request', pathname, Boolean(data.user));
   if (!data.user) {
     if (protectedApi) return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
-    return NextResponse.redirect(new URL('/login', request.url));
+    return redirectToLogin(request);
   }
   return response;
 }
