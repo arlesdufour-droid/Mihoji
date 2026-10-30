@@ -38,3 +38,40 @@
 - Créer le second projet Supabase en région UE.
 - Renseigner ses variables séparées avec `APP_ENV=production`, puis lancer `npm run db:migrate`.
 - Créer une clé Groq de production distincte et renseigner `GROQ_API_KEY`.
+
+## Lot 2 — terminé
+
+### Réel
+
+- Configuration Vercel ajoutée avec région Paris (`cdg1`).
+- Redirection HTTP → HTTPS active en production dans le proxy.
+- Procédure de création du compte, import GitHub, variables et domaine ajoutée au README.
+
+### Simulé ou restant
+
+- Le compte Vercel, le projet de production et le domaine restent à créer manuellement.
+
+### À faire côté utilisateur
+
+- Suivre la procédure « Déployer Mihoji sur Vercel » du README.
+- Renseigner les variables Vercel avec les secrets du projet de production, notamment `NEXT_PUBLIC_SITE_URL`.
+
+## Lot 3 — terminé
+
+### Réel
+
+- Publication isolée sur `PUBLISHED_SITES_DOMAIN`, avec simulation locale et fournisseur Vercel en production.
+- Publication persistée dans `publications`, avec export des fichiers de la dernière version.
+- Contrôle de conformité avant publication et bouton « Mettre en ligne » actif.
+- En-têtes CSP, HSTS et X-Content-Type-Options envoyés au déploiement.
+- Modèle `custom_domains` préparé sans branchement utilisateur.
+
+### Simulé ou restant
+
+- Sans `VERCEL_TOKEN`, la publication est simulée hors production.
+- Le domaine racine et le projet Vercel de publication restent à configurer.
+
+### À faire côté utilisateur
+
+- Créer/configurer le projet Vercel de publication et renseigner `VERCEL_TOKEN`.
+- Créer le domaine séparé, renseigner `PUBLISHED_SITES_DOMAIN`, puis appliquer les migrations.

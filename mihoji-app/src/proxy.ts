@@ -12,6 +12,11 @@ function redirectToLogin(request: NextRequest) {
 
 export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
+  if (request.headers.get('x-forwarded-proto') === 'http' && process.env.APP_ENV === 'production') {
+    const secureUrl = request.nextUrl.clone();
+    secureUrl.protocol = 'https:';
+    return NextResponse.redirect(secureUrl, 308);
+  }
   const protectedPage = ['/studio', '/settings', '/onboarding'].some((prefix) => pathname === prefix || pathname.startsWith(`${prefix}/`));
   const protectedApi = pathname.startsWith('/api/') && !publicApiRoutes.has(pathname);
   if (!protectedPage && !protectedApi) return NextResponse.next();
