@@ -112,6 +112,23 @@ export const chatMessages = pgTable('chat_messages', {
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
 });
 
+export const publications = pgTable('publications', {
+  id: uuid('id').defaultRandom().primaryKey(),
+  projectId: uuid('project_id').notNull().references(() => projects.id),
+  versionId: uuid('version_id').notNull().references(() => projectVersions.id),
+  url: text('url').notNull(),
+  status: text('status', { enum: ['pending', 'published', 'failed'] }).notNull(),
+  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+});
+
+export const customDomains = pgTable('custom_domains', {
+  id: uuid('id').defaultRandom().primaryKey(),
+  projectId: uuid('project_id').notNull().references(() => projects.id),
+  hostname: text('hostname').notNull().unique(),
+  status: text('status', { enum: ['pending', 'active', 'failed'] }).notNull().default('pending'),
+  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+});
+
 export const creditLedger = pgTable('credit_ledger', {
   id: uuid('id').defaultRandom().primaryKey(),
   workspaceId: uuid('workspace_id').notNull().references(() => workspaces.id),
