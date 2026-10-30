@@ -151,3 +151,35 @@
 ### À faire côté utilisateur
 
 - Vérifier les règles anti-abus avec des exemples métier avant l’ouverture publique.
+
+## Lot 8 — terminé
+
+### Réel
+
+- `/admin` et `/api/admin` réservés aux emails de `ADMIN_EMAILS`.
+- Liste des comptes, espaces, soldes, publications, signalements, support et `shadowCost`.
+- Ajout manuel de crédits journalisé dans `credit_ledger`, et suspension depuis le back-office.
+- Export JSON des données de l’espace et suppression effective avec dépublication et suppression Supabase.
+- Réglages avec boutons d’export et de suppression confirmée.
+
+### Simulé ou restant
+
+- L’envoi des demandes de support n’a pas encore d’interface publique ; les demandes existantes sont toutefois visibles dans le back-office.
+
+### À faire côté utilisateur
+
+- Renseigner `ADMIN_EMAILS` avec les adresses administratrices.
+- Tester un export et une suppression sur un espace de test avant production.
+
+## Fin de phase — configuration utilisateur ordonnée
+
+1. **Supabase développement** — créer/maintenir le projet et renseigner `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `DATABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`.
+2. **Supabase production** — créer le second projet EU, activer les sauvegardes payantes et renseigner les mêmes variables avec les valeurs production lorsque le déploiement sera fait.
+3. **Vercel** — créer le projet de déploiement, ajouter `VERCEL_TOKEN`, `NEXT_PUBLIC_SITE_URL`, `PUBLISHED_SITES_DOMAIN` et `APP_ENV=production`.
+4. **Groq** — créer les clés développement/production sur `console.groq.com`, puis renseigner `GROQ_API_KEY`, `AI_MODEL_FAST`, `AI_MODEL_STRONG`, `AI_MODEL_FALLBACK`.
+5. **E2B** — créer la clé sur `e2b.dev` et renseigner `E2B_API_KEY`.
+6. **Brevo** — créer la clé API et l’expéditeur vérifié sur `app.brevo.com`, puis renseigner `BREVO_API_KEY`, `MAILER_FROM_EMAIL`, `MAILER_FROM_NAME`.
+7. **Sentry** — créer le projet sur `sentry.io`, puis renseigner `SENTRY_DSN` et `NEXT_PUBLIC_SENTRY_DSN`.
+8. **Google OAuth** — configurer Google Cloud et Supabase Auth, puis renseigner `NEXT_PUBLIC_GOOGLE_AUTH_ENABLED=true`.
+9. **Stripe** — créer les prix et renseigner `STRIPE_PRICE_FREE`, `STRIPE_PRICE_STARTER`, `STRIPE_PRICE_PRO`, `STRIPE_PRICE_MAX`.
+10. **Domaines DNS** — configurer `sites.mihoji.app` et les domaines clients dans Vercel ; ne pas modifier `.env.local` avant la bascule décidée.
