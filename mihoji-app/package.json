@@ -9,6 +9,7 @@
     "lint": "eslint",
     "i18n:check": "tsx scripts/i18n-check.ts",
     "db:seed": "tsx scripts/seed.ts",
+    "db:migrate": "tsx scripts/migrate.ts",
     "test": "vitest run"
   },
   "dependencies": {

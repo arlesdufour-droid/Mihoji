@@ -20,3 +20,21 @@
 
 - Appliquer la migration `db/migrations/0008_phase_4a_lot_0.sql` sur chaque base Supabase.
 - Tester le parcours avec un vrai SIRET et compléter les champs de mentions légales.
+
+## Lot 1 — terminé
+
+### Réel
+
+- `APP_ENV` est documentée et un badge discret `development` est affiché hors production.
+- Le script `npm run db:migrate` applique les migrations à la base indiquée par `DATABASE_URL` et mémorise son état.
+- La procédure documente deux projets Supabase et une clé Groq distincte pour la production.
+
+### Simulé ou restant
+
+- Le second projet Supabase et la clé Groq de production ne sont pas créés automatiquement.
+
+### À faire côté utilisateur
+
+- Créer le second projet Supabase en région UE.
+- Renseigner ses variables séparées avec `APP_ENV=production`, puis lancer `npm run db:migrate`.
+- Créer une clé Groq de production distincte et renseigner `GROQ_API_KEY`.
