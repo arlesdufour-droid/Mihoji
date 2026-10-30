@@ -1,7 +1,7 @@
 import { NextResponse, type NextRequest } from 'next/server';
 import { createServerClient } from '@supabase/ssr';
 
-const publicApiRoutes = new Set(['/api/health']);
+const publicApiRoutes = new Set(['/api/health', '/api/auth/magic-link']);
 
 export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;

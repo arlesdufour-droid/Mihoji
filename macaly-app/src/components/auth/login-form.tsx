@@ -6,22 +6,31 @@ import { getSupabaseBrowserClient } from '@/lib/supabase/browser';
 
 export function LoginForm() {
   const [email, setEmail] = useState('');
-  const [message, setMessage] = useState('');
+  const [message, setMessage] = useState(() => {
+    if (typeof window === 'undefined') return '';
+    const error = new URLSearchParams(window.location.search).get('error');
+    if (error === 'otp_expired' || error === 'access_denied') return 'Ce lien magique a expiré ou a déjà été utilisé. Demandez un nouveau lien ci-dessous.';
+    if (error === 'missing_code') return 'Le lien de connexion est incomplet. Demandez un nouveau lien.';
+    if (error === 'site_url_not_configured') return 'La connexion est momentanément mal configurée. Contactez l’administrateur.';
+    if (error === 'account_initialization_failed') return 'La connexion a réussi, mais la création de votre espace a échoué. Contactez l’administrateur.';
+    return '';
+  });
   const [pending, setPending] = useState(false);
   const supabase = getSupabaseBrowserClient();
 
-  async function sendMagicLink(event: React.FormEvent) {
-    event.preventDefault();
-    if (!supabase || !email.trim()) return;
+  async function sendMagicLink(event?: React.FormEvent) {
+    event?.preventDefault();
+    if (!email.trim()) return;
     setPending(true);
-    const { error } = await supabase.auth.signInWithOtp({ email: email.trim(), options: { emailRedirectTo: `${window.location.origin}/studio/demo/preview` } });
-    setMessage(error ? 'Impossible d’envoyer le lien. Vérifiez votre adresse.' : 'Lien envoyé. Consultez votre boîte mail.');
+    const response = await fetch('/api/auth/magic-link', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email: email.trim() }) });
+    const data = await response.json().catch(() => ({})) as { error?: string };
+    setMessage(!response.ok ? (data.error === 'site_url_not_configured' ? 'L’URL publique est indisponible. Contactez l’administrateur.' : 'Impossible d’envoyer le lien. Vérifiez votre adresse.') : 'Lien envoyé. Consultez votre boîte mail.');
     setPending(false);
   }
 
   async function signInWithGoogle() {
     if (!supabase) return;
-    const { error } = await supabase.auth.signInWithOAuth({ provider: 'google', options: { redirectTo: `${window.location.origin}/studio/demo/preview` } });
+    const { error } = await supabase.auth.signInWithOAuth({ provider: 'google', options: { redirectTo: `${window.location.origin}/auth/callback` } });
     if (error) setMessage('La connexion Google est indisponible.');
   }
 
@@ -35,6 +44,6 @@ export function LoginForm() {
       <button disabled={pending} className="w-full rounded-xl bg-indigo-600 px-4 py-3 text-sm font-semibold transition hover:bg-indigo-500 disabled:opacity-60">{pending ? 'Envoi…' : 'Recevoir un lien magique'}</button>
       <button type="button" onClick={signInWithGoogle} className="w-full rounded-xl border border-slate-700 px-4 py-3 text-sm font-semibold hover:bg-slate-800">Continuer avec Google</button>
     </form> : <Link href="/studio/demo/preview" className="mt-8 block rounded-xl bg-indigo-600 px-4 py-3 text-center text-sm font-semibold hover:bg-indigo-500">Entrer en mode démo</Link>}
-    {message && <p className="mt-4 text-sm text-slate-400" role="status">{message}</p>}
+    {message && <div className="mt-4 space-y-2" role="status"><p className="text-sm text-slate-400">{message}</p>{message.includes('expiré') && <button type="button" onClick={() => void sendMagicLink()} className="text-sm font-semibold text-indigo-300 hover:text-indigo-200">Renvoyer un lien magique</button>}</div>}
   </section>;
 }
