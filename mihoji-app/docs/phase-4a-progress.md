@@ -134,3 +134,20 @@
 - Créer un projet Sentry et renseigner `SENTRY_DSN`.
 - Appliquer la migration 0011.
 - Activer les sauvegardes Supabase payantes ou l’export quotidien automatisé.
+
+## Lot 7 — terminé
+
+### Réel
+
+- Analyse anti-abus avant publication : identifiants, données bancaires et imitation de marques.
+- Les sites suspects sont bloqués et un signalement interne est créé.
+- API publique de signalement et API authentifiée de suspension d’une publication.
+- Limitation des demandes de lien magique par adresse IP.
+
+### Simulé ou restant
+
+- La page Vercel déjà déployée n’est pas remplacée dynamiquement par une page de suspension ; le statut est conservé en base et bloque les opérations Mihoji.
+
+### À faire côté utilisateur
+
+- Vérifier les règles anti-abus avec des exemples métier avant l’ouverture publique.

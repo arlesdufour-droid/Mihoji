@@ -117,7 +117,15 @@ export const publications = pgTable('publications', {
   projectId: uuid('project_id').notNull().references(() => projects.id),
   versionId: uuid('version_id').notNull().references(() => projectVersions.id),
   url: text('url').notNull(),
-  status: text('status', { enum: ['pending', 'published', 'failed'] }).notNull(),
+  status: text('status', { enum: ['pending', 'published', 'suspended', 'failed'] }).notNull(),
+  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+});
+
+export const abuseReports = pgTable('abuse_reports', {
+  id: uuid('id').defaultRandom().primaryKey(),
+  publicationId: uuid('publication_id').notNull().references(() => publications.id),
+  reason: text('reason').notNull(),
+  reporterEmail: text('reporter_email'),
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
 });
 

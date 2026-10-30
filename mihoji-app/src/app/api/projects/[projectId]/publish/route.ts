@@ -1,10 +1,11 @@
 import { NextResponse } from 'next/server';
 import { and, eq } from 'drizzle-orm';
 import { getDb } from '@/db/client';
-import { companies, fileBlobs, projectFiles, projectVersions, projects, publications } from '@/db/schema';
+import { abuseReports, companies, fileBlobs, projectFiles, projectVersions, projects, publications } from '@/db/schema';
 import { assertProjectAccess, getSession } from '@/lib/auth';
 import { getPublishProvider } from '@/lib/publish/provider';
 import { complianceStatus } from '@/lib/compliance';
+import { scanPublishedSite } from '@/lib/abuse/site-scan';
 
 export async function POST(_request: Request, { params }: { params: Promise<{ projectId: string }> }) {
   const { projectId } = await params;
@@ -19,9 +20,16 @@ export async function POST(_request: Request, { params }: { params: Promise<{ pr
   const [version] = await getDb().select({ id: projectVersions.id, filesSnapshot: projectVersions.filesSnapshot }).from(projectVersions).where(eq(projectVersions.id, project.currentVersionId)).limit(1);
   if (!version) return NextResponse.json({ error: 'version_not_found' }, { status: 404 });
   const files = await getDb().select({ path: projectFiles.path, content: fileBlobs.content }).from(projectFiles).innerJoin(fileBlobs, eq(projectFiles.hash, fileBlobs.hash)).where(eq(projectFiles.projectId, projectId));
+  const siteFiles = Object.fromEntries(files.map((file) => [file.path, file.content]));
+  const findings = scanPublishedSite(siteFiles);
+  if (findings.length > 0) {
+    const [publication] = await getDb().insert(publications).values({ projectId, versionId: version.id, url: 'blocked', status: 'failed' }).returning({ id: publications.id });
+    if (publication) await getDb().insert(abuseReports).values(findings.map((reason) => ({ publicationId: publication.id, reason })));
+    return NextResponse.json({ error: 'site_blocked', reasons: findings }, { status: 422 });
+  }
   const provider = getPublishProvider();
   try {
-    const result = await provider.publish({ projectId, versionId: version.id, siteName: project.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || 'mihoji', files: Object.fromEntries(files.map((file) => [file.path, file.content])) });
+    const result = await provider.publish({ projectId, versionId: version.id, siteName: project.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || 'mihoji', files: siteFiles });
     await getDb().insert(publications).values({ projectId, versionId: version.id, url: result.url, status: 'published' });
     return NextResponse.json(result);
   } catch (error) {

@@ -2,12 +2,15 @@ import { NextResponse, type NextRequest } from 'next/server';
 import { z } from 'zod';
 import { getSupabaseServerClient } from '@/lib/supabase/server';
 import { getSiteUrl } from '@/lib/site-url';
+import { consumeRateLimit } from '@/lib/rate-limit';
 
 const requestSchema = z.object({ email: z.string().email() });
 
 export async function POST(request: NextRequest) {
   const parsed = requestSchema.safeParse(await request.json().catch(() => null));
   if (!parsed.success) return NextResponse.json({ error: 'invalid_email' }, { status: 400 });
+  const ip = request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ?? request.headers.get('x-real-ip') ?? 'unknown';
+  if (!(await consumeRateLimit(`magic-link:${ip}`, 5, 60 * 60_000))) return NextResponse.json({ error: 'ip_rate_limited' }, { status: 429 });
 
   const siteUrl = getSiteUrl(request);
   if (!siteUrl) {
