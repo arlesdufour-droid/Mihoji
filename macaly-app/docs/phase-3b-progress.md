@@ -47,4 +47,21 @@
 
 ## Lots suivants
 
-Les lots D à F restent à exécuter.
+## Lot D — terminé
+
+- **Réel :** le module `lib/compliance` vérifie les informations obligatoires et génère les mentions légales, la politique de confidentialité et le document cookies depuis l’entreprise en base.
+- **Réel :** l’API de conformité enregistre ces documents dans les fichiers du projet et crée une version construite.
+- **Réel :** l’écran des réglages affiche un état vert ou rouge ; la mise en ligne doit rester bloquée tant que le directeur de publication, l’email ou le téléphone manquent.
+- **Simulé :** les textes générés restent des modèles et ne constituent pas un conseil juridique.
+
+### Comment vérifier
+
+1. Ouvrir **Réglages → Général**.
+2. Effacer le directeur de publication, l’email ou le téléphone, puis enregistrer.
+3. Vérifier le point rouge et le message bloquant dans **Conformité**.
+4. Renseigner les trois champs et enregistrer : l’état repasse au vert.
+5. Appeler `POST /api/compliance` avec `{ "projectId": "<id>" }` et vérifier que les trois fichiers apparaissent dans le projet et qu’une nouvelle version est créée.
+
+## Lots suivants
+
+Les lots E et F restent à exécuter.
