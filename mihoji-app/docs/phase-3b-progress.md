@@ -80,4 +80,22 @@
 
 ## Lots suivants
 
-Le lot F reste à exécuter.
+## Lot F — terminé
+
+- **Réel :** le dossier et le paquet ont été renommés `mihoji-app`, avec lockfile régénéré par `npm install`.
+- **Réel :** les références documentaires ont été mises à jour.
+- **Vérifié :** le serveur de développement répond en HTTP 200, le build, TypeScript, lint et les 20 tests passent après le renommage.
+
+### Comment vérifier
+
+1. Depuis `mihoji-app`, lancer `npm run dev`.
+2. Ouvrir `http://localhost:3000` et vérifier la réponse de l’application.
+3. Lancer `npm run build`, `npx tsc --noEmit` et `npm test -- --run`.
+
+## Tableau réel / simulé final
+
+| Domaine | Réel | Simulé ou bientôt disponible |
+|---|---|---|
+| Authentification, base, onboarding, projets, SIRET | Oui, avec les clés configurées | Mode démo uniquement sans `DATABASE_URL` |
+| Studio, versions, restauration, conformité | Oui pour la persistance et les documents modèles | Bac à sable de build et textes juridiques à relire |
+| Paiements, publication, invitations, domaines, E2B | Routes explicites et contrôles d’accès | Bientôt disponible tant que les fournisseurs ne sont pas branchés |
