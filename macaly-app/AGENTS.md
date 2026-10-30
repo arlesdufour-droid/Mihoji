@@ -21,3 +21,10 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 7. Écris des tests unitaires Vitest pour toute logique pure : routage, modifications, crédits, audits de sécurité et SEO.
 8. En cas de blocage externe, documente-le dans `docs/phase-2-progress.md`, explique en une phrase ce que l'utilisateur doit faire et passe au lot suivant s'il n'en dépend pas.
 9. À la fin de chaque lot, donne un résumé court en français simple : ce qui marche, comment le tester dans l'aperçu et ce que l'utilisateur doit faire.
+
+## Définition de « terminé » — phase 3b
+
+- Un lot n'est terminé que si chaque fonction livrée fonctionne réellement de bout en bout avec les clés présentes dans `.env.local`, ou si elle est explicitement listée comme simulée, avec sa raison, dans le fichier de progression.
+- Aucun bouton visible ne doit être sans action. Une fonction non disponible est soit masquée, soit affichée désactivée avec la mention « Bientôt disponible ».
+- Aucune donnée métier (entreprise, projet, onboarding, version) n'est stockée dans `localStorage`. `localStorage` est réservé aux préférences d'affichage.
+- Chaque résumé de fin de lot contient une section « Comment vérifier », avec les clics exacts à faire dans l'aperçu.

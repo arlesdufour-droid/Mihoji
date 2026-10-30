@@ -7,7 +7,7 @@ export function isDemoMode() {
 }
 
 export function canUseDemoData() {
-  return isDemoMode() || process.env.NEXT_PHASE === 'phase-production-build';
+  return isDemoMode();
 }
 
 export function requireServerConfig() {

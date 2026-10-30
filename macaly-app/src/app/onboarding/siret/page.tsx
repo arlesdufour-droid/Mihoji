@@ -9,11 +9,13 @@ export default function SiretPage() {
   const router = useRouter();
   const [siret, setSiret] = useState('');
   const [error, setError] = useState('');
-  const submit = (event: FormEvent) => {
+  const submit = async (event: FormEvent) => {
     event.preventDefault();
     try {
       const company = lookupDemoCompany(siret);
-      window.localStorage.setItem('mihoji-company', JSON.stringify(company));
+      const response = await fetch('/api/onboarding/company', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(company) });
+      if (!response.ok) throw new Error('company_save_failed');
+      await fetch('/api/onboarding/state', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ kind: 'business', step: 'confirmation' }) });
       router.push('/onboarding/confirmation');
     } catch {
       setError('Saisissez un numéro SIRET valide de 14 chiffres.');

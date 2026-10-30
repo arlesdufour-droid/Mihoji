@@ -14,22 +14,10 @@ import type { DemoProject } from '@/lib/templates/site';
 
 const initialHtml = '<div class="min-h-full bg-white p-8 text-slate-900"><p class="text-xs font-semibold uppercase tracking-[0.2em] text-indigo-600">Site Mihoji</p><h1 class="mt-4 text-4xl font-bold tracking-tight">Votre prochain site commence ici.</h1><p class="mt-3 max-w-xl text-slate-500">Un espace simple pour transformer vos idées en un site professionnel.</p><div class="mt-10 grid gap-4 md:grid-cols-3"><div class="rounded-2xl bg-slate-100 p-5"><p class="text-2xl font-bold">24,8 k</p><p class="mt-1 text-sm text-slate-500">Visiteurs ce mois-ci</p></div><div class="rounded-2xl bg-indigo-600 p-5 text-white"><p class="text-2xl font-bold">84 %</p><p class="mt-1 text-sm text-indigo-100">Taux de conversion</p></div><div class="rounded-2xl bg-slate-100 p-5"><p class="text-2xl font-bold">12 min</p><p class="mt-1 text-sm text-slate-500">Temps gagné</p></div></div></div>';
 
-function readProject(projectId: string): DemoProject | null {
-  if (typeof window === 'undefined') return null;
-  const stored = window.localStorage.getItem(`mihoji-project-${projectId}`);
-  if (!stored) return null;
-  try {
-    return JSON.parse(stored) as DemoProject;
-  } catch {
-    window.localStorage.removeItem(`mihoji-project-${projectId}`);
-    return null;
-  }
-}
-
 export function StudioShell({ projectId, remaining, isDemo }: { projectId: string; remaining: number; isDemo: boolean }) {
   const pathname = usePathname();
   const activeTab = pathname.split('/').pop() || 'preview';
-  const [project] = useState<DemoProject | null>(() => readProject(projectId));
+  const [project, setProject] = useState<DemoProject | null>(null);
   const [messages, setMessages] = useState<ChatMessage[]>(() => project ? [{ role: 'assistant', content: `J’ai créé le site de ${project.name} à partir du modèle ${project.family}. Dites-moi ce que vous voulez modifier.` }] : [{ role: 'assistant', content: 'Décrivez votre site et je vous aiderai à le faire évoluer.' }]);
   const [html, setHtml] = useState(project?.html ?? initialHtml);
   const [streaming, setStreaming] = useState(false);
@@ -39,6 +27,15 @@ export function StudioShell({ projectId, remaining, isDemo }: { projectId: strin
     const stored = window.localStorage.getItem('mihoji-ui-mode');
     return stored === 'expert' ? 'expert' : 'simple';
   });
+  useEffect(() => {
+    void fetch(`/api/projects/${projectId}`).then((response) => response.ok ? response.json() : null).then((value) => {
+      if (value) {
+        setProject(value as DemoProject);
+        setHtml(value.html || initialHtml);
+        setMessages([{ role: 'assistant', content: `J’ai créé le site de ${value.name}. Dites-moi ce que vous voulez modifier.` }]);
+      }
+    });
+  }, [projectId]);
   useEffect(() => {
     const update = (event: Event) => setMode((event as CustomEvent<'simple' | 'expert'>).detail);
     window.addEventListener('mihoji-ui-mode-change', update);

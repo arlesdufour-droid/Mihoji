@@ -39,6 +39,28 @@ export const subscriptions = pgTable('subscriptions', {
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
 });
 
+export const onboardingStates = pgTable('onboarding_states', {
+  workspaceId: uuid('workspace_id').primaryKey().references(() => workspaces.id),
+  kind: text('kind', { enum: ['business', 'agency'] }),
+  step: text('step').notNull().default('kind'),
+  updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
+});
+
+export const companies = pgTable('companies', {
+  id: uuid('id').defaultRandom().primaryKey(),
+  workspaceId: uuid('workspace_id').notNull().unique().references(() => workspaces.id),
+  siret: text('siret').notNull().unique(),
+  siren: text('siren').notNull(),
+  name: text('name').notNull(),
+  legalForm: text('legal_form').notNull(),
+  address: text('address').notNull(),
+  activity: text('activity').notNull(),
+  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+  vatNumber: text('vat_number').notNull(),
+  status: text('status', { enum: ['active', 'closed'] }).notNull(),
+  missingFields: jsonb('missing_fields').notNull().default({}),
+});
+
 export const stripeEvents = pgTable('stripe_events', {
   id: text('id').primaryKey(),
   type: text('type').notNull(),
