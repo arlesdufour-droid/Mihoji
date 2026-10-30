@@ -11,7 +11,7 @@
 
 ## Vérification
 
-Dans `macaly-app` :
+Dans `mihoji-app` :
 
 ```bash
 npm run build

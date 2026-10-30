@@ -54,7 +54,7 @@ Mets à jour `docs/audit.md` avec la décision prise (a, b ou c) pour chaque él
 **Comment vérifier :** je clique sur tous les boutons de l'application, et chacun fait quelque chose de réel ou dit clairement qu'il n'est pas encore disponible.
 
 ## Lot F : renommage
-- Renomme le dossier `macaly-app` en `mihoji-app`. Mets à jour `package.json`, `package-lock.json` (via `npm install`), la documentation et la configuration du Codespace si nécessaire.
+- Le dossier de l’application est `mihoji-app`. Mets à jour `package.json`, `package-lock.json` (via `npm install`), la documentation et la configuration du Codespace si nécessaire.
 - Vérifie que `npm run dev`, `npm run build` et les tests fonctionnent après le renommage.
 
 ## Fin de phase

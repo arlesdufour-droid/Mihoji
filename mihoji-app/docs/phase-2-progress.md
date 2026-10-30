@@ -37,7 +37,7 @@
 2. Dans **Project Settings → API**, copier `Project URL` dans `NEXT_PUBLIC_SUPABASE_URL` et la clé publishable/anon dans `NEXT_PUBLIC_SUPABASE_ANON_KEY`.
 3. Dans **Project Settings → Database → Connect**, copier la chaîne PostgreSQL dans `DATABASE_URL`.
 4. Copier la clé `service_role` dans `SUPABASE_SERVICE_ROLE_KEY` uniquement côté serveur.
-5. Ajouter ces valeurs comme secrets Codespaces ou dans `macaly-app/.env.local`, puis exécuter `npm run db:seed` depuis `macaly-app`.
+5. Ajouter ces valeurs comme secrets Codespaces ou dans `mihoji-app/.env.local`, puis exécuter `npm run db:seed` depuis `mihoji-app`.
 6. Dans Supabase Auth, activer Email et, si souhaité, Google avec ses identifiants OAuth.
 
 ## Lot 1 — routeur multi-modèles
@@ -110,7 +110,7 @@
 ### Blocage externe
 
 - L'implémentation E2B réelle est bloquée par l'absence de compte, de quota et de validation du SDK/licence dans cet environnement; elle renvoie une erreur explicite plutôt qu'une fausse exécution.
-- Pour débloquer : créer un compte E2B, obtenir `E2B_API_KEY` et l'ajouter aux secrets Codespaces ou à `macaly-app/.env.local` sans la committer.
+- Pour débloquer : créer un compte E2B, obtenir `E2B_API_KEY` et l'ajouter aux secrets Codespaces ou à `mihoji-app/.env.local` sans la committer.
 
 ### Réel et simulé
 

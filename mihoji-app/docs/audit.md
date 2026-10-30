@@ -1,7 +1,7 @@
 # Audit du dépôt
 
 Date : 29 octobre 2026
-Périmètre : dépôt Git complet et application `macaly-app/`.
+Périmètre : dépôt Git complet et application `mihoji-app/`.
 Méthode : inspection de l’arbre de travail, de l’historique Git (`--all`), des routes, composants, fournisseurs et tests. Aucun fichier applicatif n’a été modifié pendant l’audit.
 
 ## 1. Secrets et historique Git
@@ -10,8 +10,8 @@ Méthode : inspection de l’arbre de travail, de l’historique Git (`--all`), 
 
 - `.env.local` existe dans l’environnement de travail mais est ignoré ; il n’est pas suivi par Git.
 - Aucun fichier `.env.local`, `.env.production`, secret, identifiant, token ou clé privée n’apparaît dans les chemins de l’historique Git inspecté.
-- Le seul fichier d’environnement versionné est [`macaly-app/.env.example`](../.env.example), qui ne contient que des noms de variables vides.
-- [`macaly-app/.gitignore`](../.gitignore) contient `.env*` et exclut donc `.env.local` et les autres variantes `.env.*`.
+- Le seul fichier d’environnement versionné est [`mihoji-app/.env.example`](../.env.example), qui ne contient que des noms de variables vides.
+- [`mihoji-app/.gitignore`](../.gitignore) contient `.env*` et exclut donc `.env.local` et les autres variantes `.env.*`.
 - La règle est confirmée par `git check-ignore -v`.
 - Les recherches historiques des affectations `GROQ_API_KEY=`, `DATABASE_URL=`, `SUPABASE_SERVICE_ROLE_KEY=`, `E2B_API_KEY=` et `NEXT_PUBLIC_SUPABASE_ANON_KEY=` ne retournent aucun commit de valeur secrète.
 
@@ -63,20 +63,20 @@ Les éléments ci-dessous affichent une action mais ne déclenchent pas de persi
 | Entreprises/SIRET | Validation de format/Luhn et données de test locales | Recherche SIRET simulée, aucune API Recherche d’entreprises ni cache 24 h ; données dans `localStorage` | Aucun secret API requis pour l’API publique, mais client HTTP/cache à implémenter |
 | Conformité | Affichage local d’informations et avertissement juridique | Pas de module `lib/compliance` complet, pas de documents persistés ni blocage de publication | Persistance `companies`, génération légale complète et hébergeur configurable |
 
-Variables documentées dans [`macaly-app/.env.example`](../.env.example) : Supabase, PostgreSQL, Groq, modèles IA et E2B. Les variables Stripe ne sont pas encore documentées car les routes Stripe sont des stubs.
+Variables documentées dans [`mihoji-app/.env.example`](../.env.example) : Supabase, PostgreSQL, Groq, modèles IA et E2B. Les variables Stripe ne sont pas encore documentées car les routes Stripe sont des stubs.
 
-## 4. Occurrences de « Macaly » / « macaly »
+## 4. Références historiques de nommage
 
 Les occurrences trouvées hors dépendances et sorties générées sont :
 
 | Emplacement | Occurrence |
 |---|---|
-| `macaly-app/` | Nom du dossier racine de l’application |
-| [`package.json`](../package.json) | champ `name: "macaly-app"` |
+| `mihoji-app/` | Nom du dossier racine de l’application |
+| [`package.json`](../package.json) | champ `name: "mihoji-app"` |
 | [`package-lock.json`](../package-lock.json) | nom du paquet racine à deux endroits |
-| [`docs/phase-2-progress.md`](phase-2-progress.md) | deux chemins documentés `macaly-app/.env.local` |
+| [`docs/phase-2-progress.md`](phase-2-progress.md) | deux chemins documentés `mihoji-app/.env.local` |
 
-Aucune occurrence de `Macaly` ou `macaly` n’a été trouvée dans le code source fonctionnel, les libellés de l’interface ou les textes de l’application. Le produit affiché reste `Mihoji`.
+Aucune ancienne référence de nommage n’a été trouvée dans le code source fonctionnel, les libellés de l’interface ou les textes de l’application. Le produit affiché reste `Mihoji`.
 
 ## 5. Cas particulier SIRET de La Poste
 
