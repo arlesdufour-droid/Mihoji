@@ -75,3 +75,21 @@
 
 - Créer/configurer le projet Vercel de publication et renseigner `VERCEL_TOKEN`.
 - Créer le domaine séparé, renseigner `PUBLISHED_SITES_DOMAIN`, puis appliquer les migrations.
+
+## Lot 4 — terminé
+
+### Réel
+
+- `E2BSandboxProvider` utilise le SDK officiel `@e2b/code-interpreter`.
+- Les fichiers sont écrits dans un bac à sable isolé, les commandes sont limitées à 120 secondes et le bac est détruit après exécution.
+- Le délai d’inactivité maximal est fixé à 15 minutes.
+
+### Simulé ou restant
+
+- Sans `E2B_API_KEY`, le fournisseur simulé reste actif en développement.
+- Aucun appel E2B réel n’a été possible ici car la clé n’est pas présente.
+
+### À faire côté utilisateur
+
+- Créer un compte sur [e2b.dev](https://e2b.dev), créer une clé API et renseigner `E2B_API_KEY` dans l’environnement de développement.
+- Redémarrer le serveur puis relancer une génération pour vérifier une vraie URL d’aperçu.
