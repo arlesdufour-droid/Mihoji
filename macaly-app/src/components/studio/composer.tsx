@@ -9,6 +9,7 @@ import { estimateCredits } from '@/lib/ai/estimate';
 export type ChatMessage = { role: 'user' | 'assistant'; content: string };
 
 type Props = {
+  projectId: string;
   remaining: number;
   messages: ChatMessage[];
   onMessages: (messages: ChatMessage[]) => void;
@@ -17,7 +18,7 @@ type Props = {
   onStop: () => void;
 };
 
-export function Composer({ remaining, messages, onMessages, streaming, onStreamingChange, onStop }: Props) {
+export function Composer({ projectId, remaining, messages, onMessages, streaming, onStreamingChange, onStop }: Props) {
   const [value, setValue] = useState('');
   const [mode, setMode] = useState<'plan' | 'build'>('build');
   const controller = useRef<AbortController | null>(null);
@@ -40,7 +41,7 @@ export function Composer({ remaining, messages, onMessages, streaming, onStreami
     onStreamingChange(true);
     controller.current = new AbortController();
     try {
-      const response = await fetch('/api/generate', { method: 'POST', signal: controller.current.signal, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ projectId: 'demo', task: mode === 'plan' ? 'plan' : 'chat', messages: [...messages, { role: 'user', content }] }) });
+      const response = await fetch('/api/generate', { method: 'POST', signal: controller.current.signal, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ projectId, task: mode === 'plan' ? 'plan' : 'chat', messages: [...messages, { role: 'user', content }] }) });
       if (!response.ok || !response.body) {
         const data = await response.json().catch(() => ({})) as { error?: string };
         onMessages([...next.slice(0, -1), { role: 'assistant', content: data.error === 'insufficient_credits' ? 'Crédits insuffisants. Achetez des crédits ou changez de formule.' : 'Le service IA est momentanément indisponible.' }]);

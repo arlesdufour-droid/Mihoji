@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import { z } from 'zod';
 import { getCreditBalance } from '@/lib/billing/queries';
 import { debitCredits } from '@/lib/billing/mutations';
-import { getSession } from '@/lib/auth';
+import { assertProjectAccess, getSession } from '@/lib/auth';
 import { aiRouter } from '@/lib/ai/router';
 import { tokensToCredits } from '@/lib/ai/pricing';
 
@@ -23,8 +23,14 @@ export async function POST(request: Request) {
   const session = await getSession();
   if (!session) return jsonError('unauthorized', 401);
   const workspaceId = session.workspaceId;
+  try {
+    await assertProjectAccess(session, parsed.data.projectId);
+  } catch (error) {
+    if (error instanceof Error && error.message === 'project_not_found') return jsonError('project_not_found', 404);
+    throw error;
+  }
   const balance = await getCreditBalance(workspaceId);
-  if (balance.remaining <= 0) return jsonError('insufficient_credits', 402);
+  if (balance.remaining <= 0 && process.env.NODE_ENV !== 'development') return jsonError('insufficient_credits', 402);
 
   const abortController = new AbortController();
   const timeout = setTimeout(() => abortController.abort(), 30_000);
@@ -32,16 +38,31 @@ export async function POST(request: Request) {
   try {
     const encoder = new TextEncoder();
     let totalTokens = 0;
+    let isMock = !process.env.GROQ_API_KEY;
+    const iterator = aiRouter.stream(parsed.data.task, parsed.data.messages, abortController.signal)[Symbol.asyncIterator]();
+    const firstChunk = await iterator.next();
+    isMock ||= firstChunk.value?.mock === true;
     const stream = new ReadableStream<Uint8Array>({
       async start(controller) {
         try {
-          for await (const chunk of aiRouter.stream(parsed.data.task, parsed.data.messages, abortController.signal)) {
-            totalTokens = chunk.totalTokens ?? totalTokens;
-            if (chunk.content) controller.enqueue(encoder.encode(chunk.content));
+          if (firstChunk.done) {
+            if (!isMock) await debitCredits(workspaceId, tokensToCredits(totalTokens), 'chat');
+            controller.close();
+            return;
           }
-          await debitCredits(workspaceId, tokensToCredits(totalTokens), 'chat');
+          let chunk = firstChunk.value;
+          while (chunk) {
+            totalTokens = chunk.totalTokens ?? totalTokens;
+            isMock ||= chunk.mock === true;
+            if (chunk.content) controller.enqueue(encoder.encode(chunk.content));
+            const nextChunk = await iterator.next();
+            if (nextChunk.done) break;
+            chunk = nextChunk.value;
+          }
+          if (!isMock) await debitCredits(workspaceId, tokensToCredits(totalTokens), 'chat');
           controller.close();
         } catch (error) {
+          console.warn('AI generation stream failed.', error);
           controller.error(error);
         }
       },
@@ -49,7 +70,7 @@ export async function POST(request: Request) {
         abortController.abort();
       },
     });
-    return new Response(stream, { headers: { 'Content-Type': 'text/plain; charset=utf-8', 'Cache-Control': 'no-cache', ...(session.isDemo ? { 'x-mihoji-mock': '1' } : {}) } });
+    return new Response(stream, { headers: { 'Content-Type': 'text/plain; charset=utf-8', 'Cache-Control': 'no-cache', ...(session.isDemo || isMock ? { 'x-mihoji-mock': '1' } : {}) } });
   } catch (error) {
     if (error instanceof DOMException && error.name === 'AbortError') return jsonError('ai_timeout', 504);
     if (error instanceof Error && error.message === 'ai_not_configured') return jsonError('ai_not_configured', 503);
