@@ -19,3 +19,7 @@ export class LlmProviderError extends Error {
 export function isContentRefusal(error: unknown) {
   return error instanceof LlmProviderError && ['content_filter', 'content_policy', 'safety_violation', 'refusal'].some((code) => error.code.toLowerCase().includes(code));
 }
+
+export function isRateLimitError(error: unknown) {
+  return error instanceof LlmProviderError && (error.status === 429 || error.code === 'rate_limit_exceeded');
+}

@@ -46,7 +46,7 @@ export function Composer({ projectId, remaining, messages, onMessages, streaming
       const response = await fetch('/api/generate', { method: 'POST', signal: controller.current.signal, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ projectId, task: mode === 'plan' ? 'plan' : 'chat', messages: [...messages, { role: 'user', content }] }) });
       if (!response.ok || !response.body) {
         const data = await response.json().catch(() => ({})) as { error?: string };
-        onMessages([...next.slice(0, -1), { role: 'assistant', content: data.error === 'insufficient_credits' ? 'Crédits insuffisants. Achetez des crédits ou changez de formule.' : 'Le service IA est momentanément indisponible.' }]);
+        onMessages([...next.slice(0, -1), { role: 'assistant', content: data.error === 'insufficient_credits' ? 'Crédits insuffisants. Achetez des crédits ou changez de formule.' : data.error === 'ai_rate_limited' ? 'L’assistant est très sollicité, réessayez dans une minute.' : 'Le service IA est momentanément indisponible.' }]);
         return;
       }
       const reader = response.body.getReader();

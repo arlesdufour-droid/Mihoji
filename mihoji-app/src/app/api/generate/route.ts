@@ -10,7 +10,7 @@ import { aiRouter } from '@/lib/ai/router';
 import { tokensToCredits } from '@/lib/ai/pricing';
 import { persistChatOperations } from '@/lib/projects/persistence';
 import { consumeRateLimit } from '@/lib/rate-limit';
-import { isContentRefusal, type CompletionMessage } from '@/lib/ai/providers/types';
+import { isContentRefusal, isRateLimitError, type CompletionMessage } from '@/lib/ai/providers/types';
 import { chatProtocolPrompt, parseChatPlan } from '@/lib/ai/chat-plan';
 
 const requestSchema = z.object({
@@ -180,6 +180,7 @@ export async function POST(request: Request) {
     clearTimeout(timeout);
     if (error instanceof DOMException && error.name === 'AbortError') return jsonError('ai_timeout', 504);
     if (isContentRefusal(error)) return jsonError('content_refused', 422);
+    if (isRateLimitError(error)) return jsonError('ai_rate_limited', 429);
     if (error instanceof Error && error.message === 'ai_not_configured') return jsonError('ai_not_configured', 503);
     console.error('AI generation failed.', error);
     return jsonError('ai_upstream_error', 502);

@@ -6,4 +6,5 @@ export default defineConfig({
   use: { baseURL: 'http://127.0.0.1:3100', headless: true },
   webServer: { command: 'npm run dev -- --hostname 127.0.0.1 --port 3100', url: 'http://127.0.0.1:3100', reuseExistingServer: false, timeout: 120_000, env: { GROQ_API_KEY: '' } },
   globalSetup: './e2e/global-setup.ts',
+  globalTeardown: './e2e/global-teardown.ts',
 });

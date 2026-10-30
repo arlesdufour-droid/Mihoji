@@ -1,6 +1,6 @@
 # Progression phase 4a
 
-## Où on en est (30 octobre 2026, commit `e34c371`)
+## Où on en est (30 octobre 2026, après `e34c371`)
 
 ### Ce qui fonctionne
 
@@ -8,6 +8,8 @@
 - **Parcours lot 0 corrigé et prouvé par 22 tests e2e Playwright** (`npm run test:e2e`, deux passes vertes consécutives) : redirection `/studio/demo`, chat en français simple sans code visible, historique du chat sur tous les onglets, panneau « Mon site », aperçu d’une ancienne version avec bandeau (heure de Paris), champs légaux complets, libellés NAF/juridiques, conformité qui ne réclame pas les champs remplis, publication bloquée avec les raisons exactes, compteur de sites distincts en ligne, nom d’espace lisible, factures en français, zéro erreur d’hydratation.
 - **IA réelle (Groq) fonctionnelle** : protocole JSON `{ summary, operations }` avec `response_format: json_object`, 2 essais max seulement si nécessaire, réponse brute loggée en cas d’échec, aucun crédit débité si la génération échoue. Prouvé avec la vraie clé contre le serveur : « Nos spécialités avec 3 pains » et « titres en bleu foncé » sont réellement appliqués au site.
 - **Données entreprise injectées depuis la base** (jetons `{{company.*}}`) : une modification dans « Mes informations » se répercute sur le site sans IA, y compris sur les projets existants (BOULANGERIE BRION migré, plus aucun code NAF ni coordonnée figée en base).
+- **Tests e2e protégés** : `npm run test:e2e` refuse de démarrer si `APP_ENV=production` ou si `DATABASE_URL` n’est pas celle de la base de développement (`scripts/e2e-guard.ts`, règle 10 de `AGENTS.md`). Les utilisateurs de test (`e2e+…@mihoji.test`) et toutes leurs données sont supprimés par le teardown Playwright ; les 49 utilisateurs de test hérités des anciens formats ont été nettoyés.
+- **Limite Groq (429) claire pour l’utilisateur** : l’API renvoie `ai_rate_limited` et le chat affiche « L’assistant est très sollicité, réessayez dans une minute. ».
 
 ### Ce qui reste cassé ou à surveiller
 

@@ -1,20 +1,15 @@
 import { createHash, randomUUID } from 'node:crypto';
-import { readFileSync, writeFileSync } from 'node:fs';
+import { writeFileSync } from 'node:fs';
 import { createClient } from '@supabase/supabase-js';
 import postgres from 'postgres';
 import type { FullConfig } from '@playwright/test';
-
-function loadEnv() {
-  for (const line of readFileSync('.env.local', 'utf8').split(/\r?\n/)) {
-    const match = line.match(/^\s*([A-Z][A-Z0-9_]*)\s*=\s*(.*)\s*$/);
-    if (match && !process.env[match[1]]) process.env[match[1]] = match[2].replace(/^(['"])(.*)\1$/, '$2');
-  }
-}
+import { assertE2eEnvironment, E2E_EMAIL_DOMAIN, E2E_EMAIL_PREFIX, loadEnv } from '../scripts/e2e-guard';
 
 export default async function globalSetup(_config: FullConfig) {
   void _config;
   loadEnv();
-  const email = `e2e-${Date.now()}@mihoji.local`;
+  assertE2eEnvironment();
+  const email = `${E2E_EMAIL_PREFIX}${Date.now()}@${E2E_EMAIL_DOMAIN}`;
   const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!);
   const created = await supabase.auth.admin.createUser({ email, email_confirm: true });
   if (created.error || !created.data.user) throw created.error ?? new Error('e2e_user_creation_failed');

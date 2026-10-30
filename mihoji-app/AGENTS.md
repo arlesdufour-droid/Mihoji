@@ -21,6 +21,7 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 7. Écris des tests unitaires Vitest pour toute logique pure : routage, modifications, crédits, audits de sécurité et SEO.
 8. En cas de blocage externe, documente-le dans `docs/phase-2-progress.md`, explique en une phrase ce que l'utilisateur doit faire et passe au lot suivant s'il n'en dépend pas.
 9. À la fin de chaque lot, donne un résumé court en français simple : ce qui marche, comment le tester dans l'aperçu et ce que l'utilisateur doit faire.
+10. Les tests e2e (`npm run test:e2e`) ne tournent que contre l'environnement de développement : le garde-fou `scripts/e2e-guard.ts` refuse de démarrer si `APP_ENV=production` ou si `DATABASE_URL` n'est pas celle de la base de développement. Ne jamais contourner cette protection. Les utilisateurs de test ont un email reconnaissable `e2e+…@mihoji.test` ; ils sont créés par le setup Playwright et supprimés, avec toutes leurs données, par le teardown.
 
 ## Définition de « terminé » — phase 3b
 
