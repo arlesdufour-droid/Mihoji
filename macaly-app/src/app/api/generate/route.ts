@@ -5,6 +5,7 @@ import { debitCredits } from '@/lib/billing/mutations';
 import { assertProjectAccess, getSession } from '@/lib/auth';
 import { aiRouter } from '@/lib/ai/router';
 import { tokensToCredits } from '@/lib/ai/pricing';
+import { persistChatVersion } from '@/lib/projects/persistence';
 
 const requestSchema = z.object({
   projectId: z.string().min(1),
@@ -42,6 +43,7 @@ export async function POST(request: Request) {
     let totalTokens = 0;
     let promptTokens = 0;
     let completionTokens = 0;
+    let responseText = '';
     let isMock = !process.env.GROQ_API_KEY;
     const iterator = aiRouter.stream(parsed.data.task, parsed.data.messages, abortController.signal, maxTokens)[Symbol.asyncIterator]();
     const firstChunk = await iterator.next();
@@ -61,11 +63,13 @@ export async function POST(request: Request) {
             totalTokens = chunk.totalTokens ?? ((promptTokens + completionTokens) || totalTokens);
             isMock ||= chunk.mock === true;
             if (chunk.content) controller.enqueue(encoder.encode(chunk.content));
+            responseText += chunk.content ?? '';
             const nextChunk = await iterator.next();
             if (nextChunk.done) break;
             chunk = nextChunk.value;
           }
           if (!isMock) await debitCredits(workspaceId, tokensToCredits(totalTokens), 'chat');
+          if (!session.isDemo) await persistChatVersion(parsed.data.projectId, parsed.data.messages.at(-1)?.content ?? '', responseText);
           controller.close();
         } catch (error) {
           const estimatedTokens = totalTokens || Math.ceil(parsed.data.messages.reduce((total, message) => total + message.content.length, 0) / 4);

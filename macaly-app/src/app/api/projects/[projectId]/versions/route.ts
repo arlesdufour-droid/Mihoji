@@ -1,0 +1,34 @@
+import { NextResponse } from 'next/server';
+import { and, desc, eq } from 'drizzle-orm';
+import { getDb } from '@/db/client';
+import { projectFiles, projectVersions, projects } from '@/db/schema';
+import { assertProjectAccess, getSession } from '@/lib/auth';
+
+export async function GET(_request: Request, { params }: { params: Promise<{ projectId: string }> }) {
+  const { projectId } = await params;
+  const session = await getSession();
+  if (!session) return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
+  try { await assertProjectAccess(session, projectId); } catch { return NextResponse.json({ error: 'project_not_found' }, { status: 404 }); }
+  const versions = await getDb().select({ id: projectVersions.id, summary: projectVersions.summary, status: projectVersions.status, createdAt: projectVersions.createdAt }).from(projectVersions).where(eq(projectVersions.projectId, projectId)).orderBy(desc(projectVersions.createdAt));
+  return NextResponse.json(versions);
+}
+
+export async function POST(request: Request, { params }: { params: Promise<{ projectId: string }> }) {
+  const { projectId } = await params;
+  const session = await getSession();
+  if (!session) return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
+  try { await assertProjectAccess(session, projectId); } catch { return NextResponse.json({ error: 'project_not_found' }, { status: 404 }); }
+  const body = await request.json().catch(() => null) as { versionId?: string } | null;
+  if (!body?.versionId) return NextResponse.json({ error: 'version_required' }, { status: 400 });
+  const db = getDb();
+  const [version] = await db.select({ snapshot: projectVersions.filesSnapshot }).from(projectVersions).where(and(eq(projectVersions.id, body.versionId), eq(projectVersions.projectId, projectId))).limit(1);
+  if (!version) return NextResponse.json({ error: 'version_not_found' }, { status: 404 });
+  const snapshot = version.snapshot as Record<string, string>;
+  await db.transaction(async (tx) => {
+    for (const [path, hash] of Object.entries(snapshot)) {
+      await tx.insert(projectFiles).values({ projectId, path, hash }).onConflictDoUpdate({ target: [projectFiles.projectId, projectFiles.path], set: { hash, updatedAt: new Date() } });
+    }
+    await tx.update(projects).set({ currentVersionId: body.versionId }).where(eq(projects.id, projectId));
+  });
+  return NextResponse.json({ ok: true });
+}
