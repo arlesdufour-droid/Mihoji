@@ -23,7 +23,10 @@ export async function POST(request: NextRequest) {
   });
   if (error) {
     console.error('Magic link request failed.', error);
-    return NextResponse.json({ error: error.message }, { status: 502 });
+    if (error.code === 'over_email_send_rate_limit' || error.status === 429) {
+      return NextResponse.json({ error: 'email_rate_limit' }, { status: 429 });
+    }
+    return NextResponse.json({ error: 'magic_link_failed' }, { status: 502 });
   }
   return NextResponse.json({ ok: true });
 }

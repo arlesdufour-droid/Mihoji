@@ -24,7 +24,13 @@ export function LoginForm() {
     setPending(true);
     const response = await fetch('/api/auth/magic-link', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email: email.trim() }) });
     const data = await response.json().catch(() => ({})) as { error?: string };
-    setMessage(!response.ok ? (data.error === 'site_url_not_configured' ? 'L’URL publique est indisponible. Contactez l’administrateur.' : 'Impossible d’envoyer le lien. Vérifiez votre adresse.') : 'Lien envoyé. Consultez votre boîte mail.');
+    setMessage(!response.ok
+      ? data.error === 'email_rate_limit'
+        ? 'Trop de demandes, réessayez dans quelques minutes.'
+        : data.error === 'site_url_not_configured'
+          ? 'L’URL publique est indisponible. Contactez l’administrateur.'
+          : 'Impossible d’envoyer le lien. Vérifiez votre adresse.'
+      : 'Lien envoyé. Consultez votre boîte mail.');
     setPending(false);
   }
 
