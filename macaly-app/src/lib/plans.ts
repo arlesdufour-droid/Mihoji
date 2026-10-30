@@ -14,13 +14,14 @@ export type Plan = {
   agentUsage: 'Limited' | 'Unlimited';
   cloudActions: number;
   tone: string;
+  stripePriceId: string;
 };
 
 export const plans: Plan[] = [
-  { id: 'free', name: 'Free', price: 0, publishedApps: 1, credits: 1_000_000, traffic: null, files: null, database: null, apiCalls: null, customDomain: false, agentUsage: 'Limited', cloudActions: 0, tone: 'slate' },
-  { id: 'starter', name: 'Starter', price: 9, publishedApps: 1, credits: 1_000_000, traffic: 5, files: 5, database: 5, apiCalls: 100_000, customDomain: true, agentUsage: 'Unlimited', cloudActions: Infinity, tone: 'amber' },
-  { id: 'pro', name: 'Pro', price: 27, publishedApps: 5, credits: 10_000_000, traffic: 10, files: 10, database: 10, apiCalls: 250_000, customDomain: true, agentUsage: 'Unlimited', cloudActions: Infinity, tone: 'lime' },
-  { id: 'max', name: 'Max', price: 81, publishedApps: 15, credits: 30_000_000, traffic: 10, files: 30, database: 30, apiCalls: 750_000, customDomain: true, agentUsage: 'Unlimited', cloudActions: Infinity, tone: 'violet' },
+  { id: 'free', name: 'Free', price: 0, stripePriceId: process.env.STRIPE_PRICE_FREE ?? '', publishedApps: 1, credits: 1_000_000, traffic: null, files: null, database: null, apiCalls: null, customDomain: false, agentUsage: 'Limited', cloudActions: 0, tone: 'slate' },
+  { id: 'starter', name: 'Starter', price: 9, stripePriceId: process.env.STRIPE_PRICE_STARTER ?? '', publishedApps: 1, credits: 1_000_000, traffic: 5, files: 5, database: 5, apiCalls: 100_000, customDomain: true, agentUsage: 'Unlimited', cloudActions: Infinity, tone: 'amber' },
+  { id: 'pro', name: 'Pro', price: 27, stripePriceId: process.env.STRIPE_PRICE_PRO ?? '', publishedApps: 5, credits: 10_000_000, traffic: 10, files: 10, database: 10, apiCalls: 250_000, customDomain: true, agentUsage: 'Unlimited', cloudActions: Infinity, tone: 'lime' },
+  { id: 'max', name: 'Max', price: 81, stripePriceId: process.env.STRIPE_PRICE_MAX ?? '', publishedApps: 15, credits: 30_000_000, traffic: 10, files: 30, database: 30, apiCalls: 750_000, customDomain: true, agentUsage: 'Unlimited', cloudActions: Infinity, tone: 'violet' },
 ];
 
 export const currentPlan = plans[1];

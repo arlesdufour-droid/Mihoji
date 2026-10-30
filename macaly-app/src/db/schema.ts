@@ -31,7 +31,18 @@ export const subscriptions = pgTable('subscriptions', {
   creditsUsed: integer('credits_used').notNull().default(0),
   monthlyAllowance: integer('monthly_allowance').notNull().default(1000000),
   periodEnd: timestamp('period_end', { withTimezone: true }).notNull(),
+  stripeCustomerId: text('stripe_customer_id'),
+  stripeSubscriptionId: text('stripe_subscription_id'),
+  status: text('status', { enum: ['active', 'past_due', 'canceled', 'trialing'] }).notNull().default('active'),
+  currentPeriodStart: timestamp('current_period_start', { withTimezone: true }),
+  currentPeriodEnd: timestamp('current_period_end', { withTimezone: true }),
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+});
+
+export const stripeEvents = pgTable('stripe_events', {
+  id: text('id').primaryKey(),
+  type: text('type').notNull(),
+  processedAt: timestamp('processed_at', { withTimezone: true }).defaultNow().notNull(),
 });
 
 export const projects = pgTable('projects', {
