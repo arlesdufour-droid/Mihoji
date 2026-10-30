@@ -3,10 +3,12 @@ import { StudioShell } from '@/components/studio/studio-shell';
 import { getSession } from '@/lib/auth';
 import { assertProjectAccess } from '@/lib/auth';
 import { notFound } from 'next/navigation';
+import { connection } from 'next/server';
 
 export const instant = false;
 
 export default async function StudioProjectLayout({ children, params }: LayoutProps<'/studio/[projectId]'>) {
+  await connection();
   const { projectId } = await params;
   const session = await getSession();
   if (!session) notFound();
@@ -18,5 +20,5 @@ export default async function StudioProjectLayout({ children, params }: LayoutPr
   }
   const balance = await getCreditBalance(session.workspaceId);
   void children;
-  return <StudioShell projectId={projectId} remaining={balance.remaining} isDemo={session?.isDemo ?? false} />;
+  return <StudioShell projectId={projectId} remaining={balance.remaining} isDemo={session.isDemo} email={session.user.email} />;
 }

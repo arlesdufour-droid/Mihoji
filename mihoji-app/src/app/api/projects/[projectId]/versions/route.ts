@@ -24,11 +24,14 @@ export async function POST(request: Request, { params }: { params: Promise<{ pro
   const [version] = await db.select({ snapshot: projectVersions.filesSnapshot }).from(projectVersions).where(and(eq(projectVersions.id, body.versionId), eq(projectVersions.projectId, projectId))).limit(1);
   if (!version) return NextResponse.json({ error: 'version_not_found' }, { status: 404 });
   const snapshot = version.snapshot as Record<string, string>;
-  await db.transaction(async (tx) => {
+  const restored = await db.transaction(async (tx) => {
     for (const [path, hash] of Object.entries(snapshot)) {
       await tx.insert(projectFiles).values({ projectId, path, hash }).onConflictDoUpdate({ target: [projectFiles.projectId, projectFiles.path], set: { hash, updatedAt: new Date() } });
     }
-    await tx.update(projects).set({ currentVersionId: body.versionId }).where(eq(projects.id, projectId));
+    const [nextVersion] = await tx.insert(projectVersions).values({ projectId, parentVersionId: body.versionId, createdBy: 'user', summary: 'Restauration d’une version précédente', filesSnapshot: snapshot, status: 'built' }).returning({ id: projectVersions.id });
+    if (!nextVersion) throw new Error('version_restore_failed');
+    await tx.update(projects).set({ currentVersionId: nextVersion.id }).where(eq(projects.id, projectId));
+    return nextVersion;
   });
-  return NextResponse.json({ ok: true });
+  return NextResponse.json({ ok: true, versionId: restored.id });
 }

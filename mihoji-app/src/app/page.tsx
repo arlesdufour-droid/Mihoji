@@ -10,7 +10,7 @@ export default function Home() {
   const handleGenerate = (e: React.FormEvent) => {
     e.preventDefault();
     if (!prompt.trim()) return;
-    router.push('/studio/demo/preview');
+    router.push('/studio/demo');
   };
 
   return (
@@ -73,7 +73,7 @@ export default function Home() {
               key={index}
               onClick={() => {
                 setPrompt(suggestion);
-                router.push('/studio/demo/preview');
+                router.push('/studio/demo');
               }}
               className="text-xs bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-300 px-3 py-1.5 rounded-lg transition-all"
             >

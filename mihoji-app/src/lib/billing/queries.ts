@@ -4,7 +4,7 @@ import { cache } from 'react';
 import { eq } from 'drizzle-orm';
 import { getDb } from '@/db/client';
 import { subscriptions } from '@/db/schema';
-import { demoCreditBalance, demoInvoices, demoSubscription, demoUsage } from '@/lib/billing/demo-data';
+import { demoCreditBalance, demoSubscription, demoUsage } from '@/lib/billing/demo-data';
 import type { CreditBalance, Invoice, UsageSnapshot, Subscription } from '@/lib/billing/types';
 import { canUseDemoData } from '@/lib/supabase/config';
 
@@ -49,5 +49,5 @@ export const getSubscription = cache(async (workspaceId: string): Promise<Subscr
 
 export const getInvoices = cache(async (workspaceId: string): Promise<Invoice[]> => {
   void workspaceId;
-  return demoInvoices.map((invoice) => ({ ...invoice }));
+  return [];
 });

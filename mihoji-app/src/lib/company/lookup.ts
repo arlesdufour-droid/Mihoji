@@ -10,6 +10,30 @@ export type CompanyLookup = {
   status: 'active' | 'closed';
 };
 
+const legalForms: Record<string, string> = {
+  '5710': 'SAS, société par actions simplifiée',
+  '5499': 'SARL, société à responsabilité limitée',
+  '1000': 'Entrepreneur individuel',
+  '5306': 'SA à conseil d’administration',
+};
+
+const nafLabels: Record<string, string> = {
+  '10.71C': 'Boulangerie et boulangerie-pâtisserie',
+  '56.10C': 'Restauration de type rapide',
+  '62.01Z': 'Programmation informatique',
+  '43.21A': 'Travaux d’installation électrique dans tous locaux',
+};
+
+export function legalFormLabel(code: string | null | undefined) {
+  if (!code) return 'Forme juridique non renseignée';
+  return legalForms[code] ?? code;
+}
+
+export function nafLabel(code: string | null | undefined) {
+  if (!code) return 'Activité non renseignée';
+  return nafLabels[code.toUpperCase()] ?? code;
+}
+
 export function isValidSiret(value: string) {
   const normalized = value.replace(/\s/g, '');
   if (!/^\d{14}$/.test(normalized)) return false;

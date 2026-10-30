@@ -3,12 +3,13 @@ import { and, eq, gt } from 'drizzle-orm';
 import { getDb } from '@/db/client';
 import { companyLookupCache } from '@/db/schema';
 import { getSession } from '@/lib/auth';
-import { isValidSiret, vatNumberFromSiren, type CompanyLookup } from '@/lib/company/lookup';
+import { isValidSiret, legalFormLabel, nafLabel, vatNumberFromSiren, type CompanyLookup } from '@/lib/company/lookup';
 
 type GovernmentResult = {
   siren: string;
   nom_complet?: string;
   nom_raison_sociale?: string;
+  nature_juridique?: string;
   siege?: {
     siret?: string;
     adresse?: string;
@@ -26,9 +27,9 @@ function toCompany(result: GovernmentResult, siret: string): CompanyLookup {
     siret: headquarters.siret ?? siret,
     siren: result.siren,
     name: result.nom_complet ?? result.nom_raison_sociale ?? 'Entreprise',
-    legalForm: 'Entreprise enregistrée',
+    legalForm: legalFormLabel(result.nature_juridique),
     address: headquarters.adresse ?? 'Adresse non renseignée',
-    activity: headquarters.activite_principale ?? 'Activité non renseignée',
+    activity: nafLabel(headquarters.activite_principale),
     createdAt: headquarters.date_creation ?? new Date().toISOString().slice(0, 10),
     vatNumber: vatNumberFromSiren(result.siren),
     status: 'active',
