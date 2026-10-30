@@ -64,4 +64,20 @@
 
 ## Lots suivants
 
-Les lots E et F restent à exécuter.
+## Lot E — terminé
+
+- **Réel :** le partage/copie et le rechargement de l’aperçu restent disponibles.
+- **Masqué :** Connexions, Serveurs MCP, sélecteur de devise et ligne ChatGPT/Claude sans intégration réelle.
+- **Bientôt disponible :** publication, achats, gestion d’abonnement, invitations et suppression d’espace sont désactivés avec un libellé explicite.
+- **Réel ou explicite :** les actions restantes ne prétendent plus fonctionner silencieusement.
+
+### Comment vérifier
+
+1. Ouvrir les réglages et vérifier que les pages Connexions et MCP ne sont plus proposées.
+2. Ouvrir Facturation : les actions non branchées affichent **Bientôt disponible**.
+3. Ouvrir un Studio : **Mettre en ligne** est désactivé avec une explication.
+4. Tester le partage et le rechargement de l’aperçu : ces deux actions restent actives.
+
+## Lots suivants
+
+Le lot F reste à exécuter.

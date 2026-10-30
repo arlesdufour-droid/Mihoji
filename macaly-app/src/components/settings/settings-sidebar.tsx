@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { Activity, Cable, ChevronRight, CircleUserRound, Globe2, KeyRound, LayoutGrid, Network, Settings, SlidersHorizontal, Users } from 'lucide-react';
+import { Activity, ChevronRight, CircleUserRound, Globe2, KeyRound, LayoutGrid, Settings, SlidersHorizontal, Users } from 'lucide-react';
 
 const links = [
   { href: '/settings/general', label: 'General', icon: Settings },
@@ -7,9 +7,7 @@ const links = [
   { href: '/settings/members', label: 'Members', icon: Users },
   { href: '/settings/usage', label: 'Usage & Limits', icon: Activity },
   { href: '/settings/domains', label: 'Domains', icon: Globe2 },
-  { href: '/settings/connections', label: 'Connections', icon: Cable },
   { href: '/settings/integrations', label: 'Integrations', icon: LayoutGrid },
-  { href: '/settings/mcp', label: 'MCP Servers', icon: Network },
   { href: '/settings/billing', label: 'Billing', icon: KeyRound },
 ];
 

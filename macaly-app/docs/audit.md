@@ -90,6 +90,14 @@ Vérifications effectuées :
 
 Limite importante : le code ne documente ni ne traite explicitement l’exception historique du SIREN `356000000` ; il accepte cet établissement parce que le SIRET officiel testé passe le calcul appliqué. Il faut ajouter une règle métier dédiée et des tests de plusieurs établissements La Poste avant de considérer la couverture de l’exception comme complète.
 
+## Décisions du lot E
+
+- **(a) Réel :** partage/copie du lien et rechargement de l’aperçu.
+- **(b) Masqué :** Connexions, Serveurs MCP, sélecteur de devise et comparaison « Usage via ChatGPT & Claude ».
+- **(c) Bientôt disponible :** publication, achat de crédits, gestion de l’abonnement, invitations et suppression de l’espace.
+- **(c) Bientôt disponible :** domaines, intégrations, aide contextuelle et actions de barre d’aperçu sans fournisseur métier.
+- **(a) Préférences :** le choix Dark reste la préférence active ; Light est explicitement désactivé tant que son enregistrement n’est pas branché.
+
 ## Conclusion
 
 Le dépôt est propre concernant les secrets versionnés, mais l’application reste majoritairement une démonstration : les parcours visibles de réglages, publication, domaines, invitations, paiements et bac à sable réel ne sont pas opérationnels. Les priorités avant lancement sont la persistance métier, l’intégration Recherche d’entreprises, la conformité complète, le déploiement réel, Stripe, E2B et le remplacement des actions décoratives par des erreurs ou états explicites.
