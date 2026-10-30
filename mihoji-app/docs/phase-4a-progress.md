@@ -1,5 +1,24 @@
 # Progression phase 4a
 
+## Où on en est (30 octobre 2026, commit `e34c371`)
+
+### Ce qui fonctionne
+
+- **Lots 0 à 8 terminés et poussés sur `main`**, avec migrations appliquées sur la base de développement (jusqu’à `0015`).
+- **Parcours lot 0 corrigé et prouvé par 22 tests e2e Playwright** (`npm run test:e2e`, deux passes vertes consécutives) : redirection `/studio/demo`, chat en français simple sans code visible, historique du chat sur tous les onglets, panneau « Mon site », aperçu d’une ancienne version avec bandeau (heure de Paris), champs légaux complets, libellés NAF/juridiques, conformité qui ne réclame pas les champs remplis, publication bloquée avec les raisons exactes, compteur de sites distincts en ligne, nom d’espace lisible, factures en français, zéro erreur d’hydratation.
+- **IA réelle (Groq) fonctionnelle** : protocole JSON `{ summary, operations }` avec `response_format: json_object`, 2 essais max seulement si nécessaire, réponse brute loggée en cas d’échec, aucun crédit débité si la génération échoue. Prouvé avec la vraie clé contre le serveur : « Nos spécialités avec 3 pains » et « titres en bleu foncé » sont réellement appliqués au site.
+- **Données entreprise injectées depuis la base** (jetons `{{company.*}}`) : une modification dans « Mes informations » se répercute sur le site sans IA, y compris sur les projets existants (BOULANGERIE BRION migré, plus aucun code NAF ni coordonnée figée en base).
+
+### Ce qui reste cassé ou à surveiller
+
+- **Limite Groq (429 `rate_limit_exceeded`)** : la cause des échecs « service IA indisponible » était la limite du compte Groq. Le code est corrigé, mais si le message réapparaît, c’est la limite du compte — vérifier la console Groq et les logs serveur (la cause y est écrite explicitement).
+- **IA simulée dans les tests e2e** : les tests utilisent le mock (déterministe, sans crédits) ; la vraie clé est validée manuellement, pas en e2e.
+- **Configuration de production non faite** (volontairement reportée en fin de phase) : Vercel, second projet Supabase, domaines, Stripe, Brevo, Sentry, Google OAuth, E2B — voir la liste ordonnée en bas de ce fichier.
+
+### Prochaine étape
+
+Reprendre la mission `docs/phase-4a-mission.md` au **lot suivant non couvert par les correctifs** (les lots 0 à 8 sont livrés ; vérifier avec un test utilisateur réel que l’IA réelle tient dans la durée, puis lancer la configuration de production quand vous serez prêt).
+
 ## Lot 0 — terminé
 
 ### Réel
