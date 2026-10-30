@@ -30,7 +30,7 @@ export class GroqProvider implements LlmProvider {
       method: 'POST',
       signal: req.signal,
       headers: { Authorization: `Bearer ${requireApiKey()}`, 'Content-Type': 'application/json' },
-      body: JSON.stringify({ model: req.model, messages: [{ role: 'system', content: systemPrompt }, ...req.messages], stream: true, stream_options: { include_usage: true }, ...(req.maxTokens ? { max_tokens: req.maxTokens } : {}) }),
+      body: JSON.stringify({ model: req.model, messages: [{ role: 'system', content: systemPrompt }, ...req.messages], stream: true, stream_options: { include_usage: true }, ...(req.maxTokens ? { max_tokens: req.maxTokens } : {}), ...(req.jsonMode ? { response_format: { type: 'json_object' } } : {}) }),
     });
     if (!response.ok || !response.body) await responseError(response);
     const body = response.body;
@@ -64,7 +64,7 @@ export class GroqProvider implements LlmProvider {
       method: 'POST',
       signal: req.signal,
       headers: { Authorization: `Bearer ${requireApiKey()}`, 'Content-Type': 'application/json' },
-      body: JSON.stringify({ model: req.model, messages: [{ role: 'system', content: systemPrompt }, ...req.messages], ...(req.maxTokens ? { max_tokens: req.maxTokens } : {}) }),
+      body: JSON.stringify({ model: req.model, messages: [{ role: 'system', content: systemPrompt }, ...req.messages], ...(req.maxTokens ? { max_tokens: req.maxTokens } : {}), ...(req.jsonMode ? { response_format: { type: 'json_object' } } : {}) }),
     });
     if (!response.ok) await responseError(response);
     const data = await response.json() as { choices?: { message?: { content?: string } }[]; usage?: { prompt_tokens?: number; completion_tokens?: number; total_tokens?: number }; x_groq?: { usage?: { prompt_tokens?: number; completion_tokens?: number; total_tokens?: number } } };

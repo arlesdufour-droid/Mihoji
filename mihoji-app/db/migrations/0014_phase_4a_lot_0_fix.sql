@@ -25,13 +25,16 @@ SELECT
       CASE WHEN length(c.activity) > 0 THEN c.activity ELSE chr(1) END, '{{company.activity}}'),
       CASE WHEN length(c.name) > 0 THEN c.name ELSE chr(1) END, '{{company.name}}'),
       CASE WHEN length(c.address) > 0 THEN c.address ELSE chr(1) END, '{{company.address}}'),
-    '\m\d{2}\.\d{2}[A-Z]\M', '{{company.activity}}', 'g') AS new_content
+    '\m\d{2}\.\d{2}[A-Z]\M', '{{company.activity}}', 'g') AS new_content,
+  c.missing_fields AS mf
 FROM project_files pf
 JOIN file_blobs fb ON fb.hash = pf.hash
 JOIN projects p ON p.id = pf.project_id
 JOIN companies c ON c.workspace_id = p.workspace_id;
 
 ALTER TABLE mihoji_company_tokens ADD COLUMN new_hash text;
+UPDATE mihoji_company_tokens SET new_content = replace(new_content, mf->>'email', '{{company.email}}') WHERE mf ? 'email' AND length(mf->>'email') > 0;
+UPDATE mihoji_company_tokens SET new_content = replace(new_content, mf->>'phone', '{{company.phone}}') WHERE mf ? 'phone' AND length(mf->>'phone') > 0;
 UPDATE mihoji_company_tokens SET new_hash = encode(digest(new_content, 'sha256'), 'hex') WHERE new_content <> old_content;
 
 INSERT INTO file_blobs (hash, content)

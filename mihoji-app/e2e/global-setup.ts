@@ -23,7 +23,7 @@ export default async function globalSetup(_config: FullConfig) {
   const workspaceId = randomUUID();
   const projectId = randomUUID();
   const versionId = randomUUID();
-  const seedHtml = '<main><h1>{{company.name}}</h1><p>Activité : {{company.activity}}</p><p>Forme : {{company.legalForm}}</p><p>Code historique : 10.71C</p><p>Adresse : {{company.address}}</p></main>';
+  const seedHtml = '<main><h1>{{company.name}}</h1><p>Activité : {{company.activity}}</p><p>Forme : {{company.legalForm}}</p><p>Code historique : 10.71C</p><p>Adresse : {{company.address}}</p><p>Contact : {{company.email}} — {{company.phone}}</p></main>';
   const hash = createHash('sha256').update(seedHtml).digest('hex');
   const sql = postgres(process.env.DATABASE_URL!, { prepare: false });
   await sql.begin(async (tx) => {

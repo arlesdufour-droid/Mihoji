@@ -42,7 +42,7 @@ export class AiRouter {
     }
   }
 
-  async *stream(task: AiTask, messages: CompletionMessage[], signal: AbortSignal, maxTokens?: number) {
+  async *stream(task: AiTask, messages: CompletionMessage[], signal: AbortSignal, maxTokens?: number, jsonMode = false) {
     const config = modelConfig();
     let model = selectModel(task, config);
     if (!process.env.GROQ_API_KEY && process.env.NODE_ENV !== 'production') {
@@ -54,7 +54,7 @@ export class AiRouter {
         console.error(`Configured AI model "${model}" is unavailable; using fallback "${config.fallback}".`);
         model = config.fallback;
       }
-      yield* this.provider.stream({ model, messages, signal, maxTokens });
+      yield* this.provider.stream({ model, messages, signal, maxTokens, jsonMode });
     } catch (error) {
       if (!process.env.GROQ_API_KEY && process.env.NODE_ENV !== 'production') {
         console.warn(`Groq model "${model}" failed; using simulated response in development.`, error);
@@ -63,8 +63,12 @@ export class AiRouter {
       }
       if (!shouldFallback(error) || model === config.fallback) throw error;
       console.warn(`AI model "${model}" failed; retrying with fallback "${config.fallback}".`);
-      yield* this.provider.stream({ model: config.fallback, messages, signal, maxTokens });
+      yield* this.provider.stream({ model: config.fallback, messages, signal, maxTokens, jsonMode });
     }
+  }
+
+  async *streamJson(task: AiTask, messages: CompletionMessage[], signal: AbortSignal, maxTokens?: number) {
+    yield* this.stream(task, messages, signal, maxTokens, true);
   }
 }
 

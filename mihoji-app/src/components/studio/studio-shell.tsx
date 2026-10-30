@@ -45,7 +45,8 @@ export function StudioShell({ projectId, remaining, isDemo, email, workspaceName
   }, [projectId]);
   useEffect(() => {
     void fetch(`/api/projects/${projectId}/chat`).then((response) => response.ok ? response.json() : []).then((value: ChatMessage[]) => {
-      if (value.length) setMessages(value);
+      // Ne pas écraser un message qui vient d'arriver pendant le chargement de l'historique.
+      if (value.length) setMessages((current) => current.length > value.length ? current : value);
     });
   }, [projectId]);
   useEffect(() => {

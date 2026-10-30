@@ -1,5 +1,5 @@
 export type CompletionMessage = { role: 'user' | 'assistant' | 'system'; content: string };
-export type CompletionRequest = { model: string; messages: CompletionMessage[]; maxTokens?: number; signal?: AbortSignal };
+export type CompletionRequest = { model: string; messages: CompletionMessage[]; maxTokens?: number; signal?: AbortSignal; jsonMode?: boolean };
 export type CompletionChunk = { content?: string; totalTokens?: number; promptTokens?: number; completionTokens?: number; mock?: boolean };
 export type CompletionResult = { content: string; totalTokens?: number; promptTokens?: number; completionTokens?: number };
 

@@ -34,6 +34,15 @@ function buildChatResponse(request: string, filesMessage: string): string {
       operations,
     });
   }
+  if (/spécialit|pains?/i.test(request)) {
+    const operations = html.includes('</main>')
+      ? [{ op: 'edit', path: 'index.html', search: '</main>', replace: '<section data-mihoji="specialites" class="mt-8"><h2 class="text-2xl font-bold">Nos spécialités</h2><ul class="mt-3 grid gap-3 md:grid-cols-3"><li class="rounded-xl bg-slate-100 p-4">Pain au levain</li><li class="rounded-xl bg-slate-100 p-4">Pain complet</li><li class="rounded-xl bg-slate-100 p-4">Pain de campagne</li></ul></section></main>' }]
+      : [];
+    return JSON.stringify({
+      summary: 'J’ai ajouté une section Nos spécialités avec 3 pains.\n\n```tsx\n<section className="specialites">…</section>\n```\nVoir app/page.tsx. Bon codage !',
+      operations,
+    });
+  }
   return 'Voici le code à insérer :\n\n```tsx\n<section className="hero">…</section>\n```\nBon codage !';
 }
 
@@ -42,6 +51,10 @@ export class MockProvider implements LlmProvider {
     const last = req.messages.at(-1)?.content ?? '';
     const content = last.startsWith('Fichiers actuels') ? buildChatResponse(req.messages.at(-2)?.content ?? '', last) : mockText;
     yield { content, totalTokens: 24, promptTokens: 12, completionTokens: 12, mock: true };
+  }
+
+  async *streamJson(req: CompletionRequest) {
+    yield* this.stream(req);
   }
 
   async complete(req: CompletionRequest): Promise<CompletionResult> {

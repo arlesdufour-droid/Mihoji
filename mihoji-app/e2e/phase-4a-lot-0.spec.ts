@@ -187,6 +187,68 @@ test('15. la liste des factures est en français', async ({ page, context }) => 
   await expect(page.getByText(/No invoices yet/)).toHaveCount(0);
 });
 
+test('17. une demande de section Nos spécialités applique la modification', async ({ page, context }) => {
+  await login(page, context);
+  await sendChat(page, 'Ajoute une section Nos spécialités avec 3 pains');
+  await expect(page.getByText('J’ai ajouté une section Nos spécialités avec 3 pains.')).toBeVisible({ timeout: 30_000 });
+  await expect(page.getByText('Je n’ai pas pu appliquer cette modification.')).toHaveCount(0);
+  await waitForPreview(page, 'Nos spécialités');
+  await expect(previewFrame(page).getByText('Nos spécialités')).toBeVisible();
+  await expect(previewFrame(page).getByText('Pain au levain')).toBeVisible();
+});
+
+test('18. une génération échouée ne débite aucun crédit', async ({ page, context }) => {
+  await login(page, context);
+  const counter = page.getByTitle(/crédits restants/);
+  const before = await counter.getAttribute('title');
+  const generated = page.waitForResponse((response) => response.url().includes('/api/generate'));
+  await sendChat(page, 'Raconte-moi une blague');
+  expect((await generated).status()).toBe(200);
+  await expect(page.getByText(/Je n’ai pas pu appliquer cette modification|C’est fait/)).toBeVisible({ timeout: 30_000 });
+  await page.waitForTimeout(1000);
+  await page.reload();
+  await expect(counter).toHaveAttribute('title', before ?? '');
+});
+
+test('19. le téléphone modifié dans Mes informations se répercute sur le site', async ({ page, context }) => {
+  await login(page, context);
+  await page.getByRole('link', { name: 'Réglages' }).click();
+  await page.getByLabel('Téléphone de contact').fill('0500000099');
+  const saved = page.waitForResponse((response) => response.url().includes('/api/onboarding/company') && response.request().method() === 'POST');
+  await page.getByRole('button', { name: 'Enregistrer les modifications' }).click();
+  expect((await saved).status()).toBe(200);
+  await page.reload();
+  await page.getByRole('link', { name: 'Aperçu' }).click();
+  await waitForPreview(page, '0500000099');
+  const srcdoc = await page.locator('iframe[title="Aperçu du site généré"]').getAttribute('srcdoc');
+  expect(srcdoc).toContain('0500000099');
+  expect(srcdoc).not.toContain('0500000000');
+});
+
+test('20. le bandeau d’aperçu de version affiche l’heure de Paris', async ({ page, context }) => {
+  await login(page, context);
+  await page.getByTitle('Historique des versions').click();
+  await page.getByRole('button', { name: 'Aperçu', exact: true }).first().click();
+  const banner = page.getByText(/Vous regardez la version du/);
+  await expect(banner).toBeVisible();
+  const text = await banner.textContent();
+  const match = text?.match(/(\d{1,2})[:h](\d{2})/);
+  expect(match).toBeTruthy();
+  const parisHour = new Intl.DateTimeFormat('fr-FR', { hour: 'numeric', hour12: false, timeZone: 'Europe/Paris' }).formatToParts(new Date()).find((part) => part.type === 'hour')?.value;
+  expect(Number(match![1])).toBe(Number(parisHour));
+});
+
+test('21. Réglages confirme l’enregistrement et la jauge à la limite est orange', async ({ page, context }) => {
+  await login(page, context);
+  await page.getByRole('link', { name: 'Réglages' }).click();
+  await page.getByRole('button', { name: 'Enregistrer les modifications' }).click();
+  await expect(page.getByRole('status')).toContainText('Modifications enregistrées');
+  await page.goto('/settings/billing');
+  await expect(page.getByText('1 sur 1')).toBeVisible();
+  await expect(page.getByText('Limite atteinte')).toBeVisible();
+  await expect(page.locator('[role="meter"] > div').first()).toHaveClass(/bg-amber-400/);
+});
+
 test('16. aucune erreur d’hydratation ni erreur console sur Studio, Réglages et Facturation', async ({ page, context }) => {
   const consoleErrors: string[] = [];
   const pageErrors: string[] = [];

@@ -31,11 +31,12 @@ async function currentFilesMessage(projectId: string): Promise<string> {
   return `Fichiers actuels :\n${files.slice(0, 20_000)}`;
 }
 
-async function collectStream(task: ParsedRequest['task'], messages: CompletionMessage[], signal: AbortSignal, maxTokens: number) {
+async function collectStream(task: ParsedRequest['task'], messages: CompletionMessage[], signal: AbortSignal, maxTokens: number, jsonMode = false) {
   let totalTokens = 0;
   let text = '';
   let isMock = !process.env.GROQ_API_KEY;
-  for await (const chunk of aiRouter.stream(task, messages, signal, maxTokens)) {
+  const source = jsonMode ? aiRouter.streamJson(task, messages, signal, maxTokens) : aiRouter.stream(task, messages, signal, maxTokens);
+  for await (const chunk of source) {
     isMock ||= chunk.mock === true;
     text += chunk.content ?? '';
     totalTokens = chunk.totalTokens ?? (((chunk.promptTokens ?? 0) + (chunk.completionTokens ?? 0)) || totalTokens);
@@ -47,19 +48,45 @@ async function handleChat(session: AppSession, workspaceId: string, parsed: Pars
   const messages: CompletionMessage[] = session.isDemo
     ? parsed.messages
     : [{ role: 'system', content: chatProtocolPrompt }, ...parsed.messages, { role: 'user', content: await currentFilesMessage(parsed.projectId) }];
-  const { text, totalTokens, isMock } = await collectStream('chat', messages, signal, maxTokens);
-  if (!isMock && totalTokens > 0) await debitCredits(workspaceId, tokensToCredits(totalTokens), 'chat');
-  const plan = session.isDemo ? null : parseChatPlan(text);
   const prompt = parsed.messages.at(-1)?.content ?? '';
-  const result = plan && !session.isDemo ? await persistChatOperations(parsed.projectId, prompt, plan) : { changed: false as const };
-  const summary = session.isDemo ? text : plan?.summary.trim() || 'Je n’ai pas pu appliquer cette modification. Pouvez-vous reformuler ?';
+  if (session.isDemo) {
+    const { text } = await collectStream('chat', messages, signal, maxTokens);
+    return new Response(text, { headers: { 'Content-Type': 'text/plain; charset=utf-8', 'Cache-Control': 'no-cache', 'x-mihoji-changed': '0', 'x-mihoji-mock': '1' } });
+  }
+
+  let text = '';
+  let totalTokens = 0;
+  let isMock = !process.env.GROQ_API_KEY;
+  let plan = null as ReturnType<typeof parseChatPlan>;
+  let result: Awaited<ReturnType<typeof persistChatOperations>> = { changed: false };
+  for (let attempt = 1; attempt <= 2; attempt += 1) {
+    const collected = await collectStream('chat', messages, signal, maxTokens, true);
+    text = collected.text;
+    totalTokens += collected.totalTokens;
+    isMock ||= collected.isMock;
+    plan = parseChatPlan(text);
+    if (!plan) {
+      console.error('Chat plan parsing failed.', { attempt, rawResponse: text.slice(0, 2000) });
+      continue;
+    }
+    result = await persistChatOperations(parsed.projectId, prompt, plan);
+    if (result.changed || plan.operations.length === 0) break;
+    console.error('Chat plan operations not applied.', { attempt, operations: plan.operations.length, rawResponse: text.slice(0, 2000) });
+  }
+  const succeeded = Boolean(plan) && (result.changed || plan!.operations.length === 0);
+  if (!succeeded) {
+    console.error('Chat generation failed after retries.', { rawResponse: text.slice(0, 2000) });
+  } else if (!isMock && totalTokens > 0) {
+    await debitCredits(workspaceId, tokensToCredits(totalTokens), 'chat');
+  }
+  const summary = succeeded ? plan!.summary.trim() || 'C’est fait.' : 'Je n’ai pas pu appliquer cette modification. Pouvez-vous reformuler ?';
   return new Response(summary, {
     headers: {
       'Content-Type': 'text/plain; charset=utf-8',
       'Cache-Control': 'no-cache',
       'x-mihoji-changed': result.changed ? '1' : '0',
       ...(result.changed ? { 'x-mihoji-files': result.files.join(',') } : {}),
-      ...(session.isDemo || isMock ? { 'x-mihoji-mock': '1' } : {}),
+      ...(isMock ? { 'x-mihoji-mock': '1' } : {}),
     },
   });
 }
