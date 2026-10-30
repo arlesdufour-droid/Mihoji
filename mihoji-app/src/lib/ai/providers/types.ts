@@ -15,3 +15,7 @@ export class LlmProviderError extends Error {
     this.name = 'LlmProviderError';
   }
 }
+
+export function isContentRefusal(error: unknown) {
+  return error instanceof LlmProviderError && ['content_filter', 'content_policy', 'safety_violation', 'refusal'].some((code) => error.code.toLowerCase().includes(code));
+}

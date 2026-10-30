@@ -129,6 +129,12 @@ export const customDomains = pgTable('custom_domains', {
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
 });
 
+export const rateLimitEvents = pgTable('rate_limit_events', {
+  id: uuid('id').defaultRandom().primaryKey(),
+  key: text('key').notNull(),
+  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+});
+
 export const creditLedger = pgTable('credit_ledger', {
   id: uuid('id').defaultRandom().primaryKey(),
   workspaceId: uuid('workspace_id').notNull().references(() => workspaces.id),

@@ -60,3 +60,9 @@ retour autorisée :
 `https://<projet>.supabase.co/auth/v1/callback`.
 Enfin, définissez `NEXT_PUBLIC_GOOGLE_AUTH_ENABLED=true`. Le bouton reste
 masqué tant que cette variable vaut `false`.
+
+## Sauvegardes de production
+
+Utilisez le plan Supabase payant avec sauvegardes automatiques, ou programmez
+un export quotidien chiffré de la base via `pg_dump` vers un stockage privé,
+avec rétention d’au moins 30 jours et un test mensuel de restauration.

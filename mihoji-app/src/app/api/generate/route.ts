@@ -6,6 +6,8 @@ import { assertProjectAccess, getSession } from '@/lib/auth';
 import { aiRouter } from '@/lib/ai/router';
 import { tokensToCredits } from '@/lib/ai/pricing';
 import { persistChatVersion } from '@/lib/projects/persistence';
+import { consumeRateLimit } from '@/lib/rate-limit';
+import { isContentRefusal } from '@/lib/ai/providers/types';
 
 const requestSchema = z.object({
   projectId: z.string().min(1),
@@ -24,6 +26,10 @@ export async function POST(request: Request) {
   const session = await getSession();
   if (!session) return jsonError('unauthorized', 401);
   const workspaceId = session.workspaceId;
+  if (!session.isDemo) {
+    const ip = request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ?? request.headers.get('x-real-ip') ?? 'unknown';
+    if (!(await consumeRateLimit(`generate:${ip}`, 30, 60_000))) return jsonError('rate_limited', 429);
+  }
   try {
     await assertProjectAccess(session, parsed.data.projectId);
   } catch (error) {
@@ -72,10 +78,17 @@ export async function POST(request: Request) {
           if (!session.isDemo) await persistChatVersion(parsed.data.projectId, parsed.data.messages.at(-1)?.content ?? '', responseText);
           controller.close();
         } catch (error) {
-          const estimatedTokens = totalTokens || Math.ceil(parsed.data.messages.reduce((total, message) => total + message.content.length, 0) / 4);
-          if (!isMock) await debitCredits(workspaceId, tokensToCredits(estimatedTokens), 'chat');
+          if (!isMock && totalTokens > 0) await debitCredits(workspaceId, tokensToCredits(totalTokens), 'chat');
           console.error('AI generation stream failed.', error);
-          controller.error(error);
+          if (isContentRefusal(error)) {
+            controller.enqueue(encoder.encode('Je ne peux pas réaliser cette demande, car elle ne respecte pas les règles de sécurité. Aucun crédit n’a été débité.'));
+            controller.close();
+          } else if (error instanceof DOMException && error.name === 'AbortError') {
+            controller.enqueue(encoder.encode('La génération a dépassé le délai autorisé. Les crédits consommés ont été débités.'));
+            controller.close();
+          } else {
+            controller.error(error);
+          }
         } finally {
           clearTimeout(timeout);
         }
@@ -87,6 +100,7 @@ export async function POST(request: Request) {
     return new Response(stream, { headers: { 'Content-Type': 'text/plain; charset=utf-8', 'Cache-Control': 'no-cache', ...(session.isDemo || isMock ? { 'x-mihoji-mock': '1' } : {}) } });
   } catch (error) {
     if (error instanceof DOMException && error.name === 'AbortError') return jsonError('ai_timeout', 504);
+    if (isContentRefusal(error)) return jsonError('content_refused', 422);
     if (error instanceof Error && error.message === 'ai_not_configured') return jsonError('ai_not_configured', 503);
     return jsonError('ai_upstream_error', 502);
   }

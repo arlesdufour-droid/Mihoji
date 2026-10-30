@@ -113,3 +113,24 @@
 - Créer/configurer Brevo et renseigner `BREVO_API_KEY`, `MAILER_FROM_EMAIL`, `MAILER_FROM_NAME`.
 - Configurer SMTP Supabase.
 - Configurer Google Cloud et Supabase, puis passer `NEXT_PUBLIC_GOOGLE_AUTH_ENABLED=true`.
+
+## Lot 6 — terminé
+
+### Réel
+
+- Sentry serveur et navigateur ajouté sans données personnelles (`sendDefaultPii=false`).
+- Limite de fréquence persistante en base pour `/api/generate`.
+- Refus de contenu explicite en français sans débit de crédits.
+- Délais explicites ; seuls les tokens réellement reçus sont débités.
+- Stratégie de sauvegarde production documentée.
+
+### Simulé ou restant
+
+- Sentry reste inactif tant que `SENTRY_DSN` n’est pas renseignée.
+- La migration `0011_phase_4a_lot_6.sql` doit être appliquée à la base.
+
+### À faire côté utilisateur
+
+- Créer un projet Sentry et renseigner `SENTRY_DSN`.
+- Appliquer la migration 0011.
+- Activer les sauvegardes Supabase payantes ou l’export quotidien automatisé.
