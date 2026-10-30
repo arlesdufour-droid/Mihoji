@@ -5,7 +5,7 @@ import { FormEvent, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { CreditCounter } from '@/components/studio/credit-counter';
 import { estimateCredits } from '@/lib/ai/estimate';
-import { simpleSummary } from '@/lib/ai/simple-summary';
+import { filesSummaryForUser, sanitizeSimpleText } from '@/lib/ai/sanitize';
 
 export type ChatMessage = { role: 'user' | 'assistant'; content: string };
 
@@ -59,7 +59,10 @@ export function Composer({ projectId, remaining, messages, onMessages, streaming
         onMessages([...next.slice(0, -1), { role: 'assistant', content: assistant }]);
       }
       if (uiMode === 'simple') {
-        onMessages([...next.slice(0, -1), { role: 'assistant', content: simpleSummary(content) }]);
+        const changed = response.headers.get('x-mihoji-changed') === '1';
+        const files = (response.headers.get('x-mihoji-files') ?? '').split(',').filter(Boolean);
+        const cleaned = sanitizeSimpleText(assistant) ?? (changed ? filesSummaryForUser(files) : 'Je n’ai pas pu appliquer cette modification. Pouvez-vous reformuler ?');
+        onMessages([...next.slice(0, -1), { role: 'assistant', content: cleaned }]);
       }
       router.refresh();
     } catch (error) {

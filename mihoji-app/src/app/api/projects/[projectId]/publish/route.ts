@@ -5,6 +5,7 @@ import { abuseReports, companies, fileBlobs, projectFiles, projectVersions, proj
 import { assertProjectAccess, getSession } from '@/lib/auth';
 import { getPublishProvider } from '@/lib/publish/provider';
 import { complianceMissingLabels, complianceStatus } from '@/lib/compliance';
+import { injectCompanyData } from '@/lib/company/render';
 import { scanPublishedSite } from '@/lib/abuse/site-scan';
 
 export async function POST(_request: Request, { params }: { params: Promise<{ projectId: string }> }) {
@@ -20,7 +21,7 @@ export async function POST(_request: Request, { params }: { params: Promise<{ pr
   const [version] = await getDb().select({ id: projectVersions.id, filesSnapshot: projectVersions.filesSnapshot }).from(projectVersions).where(eq(projectVersions.id, project.currentVersionId)).limit(1);
   if (!version) return NextResponse.json({ error: 'version_not_found' }, { status: 404 });
   const files = await getDb().select({ path: projectFiles.path, content: fileBlobs.content }).from(projectFiles).innerJoin(fileBlobs, eq(projectFiles.hash, fileBlobs.hash)).where(eq(projectFiles.projectId, projectId));
-  const siteFiles = Object.fromEntries(files.map((file) => [file.path, file.content]));
+  const siteFiles = Object.fromEntries(files.map((file) => [file.path, injectCompanyData(file.content, company)]));
   const findings = scanPublishedSite(siteFiles);
   if (findings.length > 0) {
     const [publication] = await getDb().insert(publications).values({ projectId, versionId: version.id, url: 'blocked', status: 'failed' }).returning({ id: publications.id });

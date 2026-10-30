@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import type { DemoProject } from '@/lib/templates/site';
 
 const warning = 'Ces documents sont des modèles générés automatiquement à partir de vos informations. Ils ne remplacent pas un conseil juridique ; vérifiez-les ou faites-les relire par un professionnel.';
@@ -8,7 +8,13 @@ const warning = 'Ces documents sont des modèles générés automatiquement à p
 export function SiteSettings({ project }: { project: DemoProject | null }) {
   const [company, setCompany] = useState<DemoProject['company'] | null>(project?.company ?? null);
   const [missingFields, setMissingFields] = useState<Record<string, string>>(project?.missingFields ?? {});
-  useEffect(() => { if (!project) void fetch('/api/onboarding/company').then((response) => response.ok ? response.json() : null).then((value) => { if (value) { setCompany(value); setMissingFields(value.missingFields ?? {}); } }); }, [project]);
+  const loaded = useRef(Boolean(project));
+  useEffect(() => {
+    // En développement, les effets sont exécutés deux fois : sans ce garde-fou, le second chargement écrase la saisie en cours.
+    if (loaded.current) return;
+    loaded.current = true;
+    void fetch('/api/onboarding/company').then((response) => response.ok ? response.json() : null).then((value) => { if (value) { setCompany(value); setMissingFields(value.missingFields ?? {}); } });
+  }, []);
   const save = () => {
     if (!company) return;
     void fetch('/api/onboarding/company', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ ...company, missingFields }) });

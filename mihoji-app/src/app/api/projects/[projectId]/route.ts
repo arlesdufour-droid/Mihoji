@@ -1,8 +1,9 @@
 import { NextResponse } from 'next/server';
 import { and, eq } from 'drizzle-orm';
 import { getDb } from '@/db/client';
-import { fileBlobs, projectFiles, projects } from '@/db/schema';
+import { companies, fileBlobs, projectFiles, projects } from '@/db/schema';
 import { assertProjectAccess, getSession } from '@/lib/auth';
+import { injectCompanyData } from '@/lib/company/render';
 
 export async function GET(_request: Request, { params }: { params: Promise<{ projectId: string }> }) {
   const { projectId } = await params;
@@ -17,5 +18,7 @@ export async function GET(_request: Request, { params }: { params: Promise<{ pro
   const [project] = await getDb().select({ id: projects.id, name: projects.name }).from(projects).where(and(eq(projects.id, projectId), eq(projects.workspaceId, session.workspaceId))).limit(1);
   if (!project) return NextResponse.json({ error: 'project_not_found' }, { status: 404 });
   const files = await getDb().select({ path: projectFiles.path, content: fileBlobs.content }).from(projectFiles).innerJoin(fileBlobs, eq(projectFiles.hash, fileBlobs.hash)).where(eq(projectFiles.projectId, projectId));
-  return NextResponse.json({ ...project, html: files.find((file) => file.path === 'index.html')?.content ?? '' });
+  const [company] = await getDb().select().from(companies).where(eq(companies.workspaceId, session.workspaceId)).limit(1);
+  const html = files.find((file) => file.path === 'index.html')?.content ?? '';
+  return NextResponse.json({ ...project, html: injectCompanyData(html, company) });
 }

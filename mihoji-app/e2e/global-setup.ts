@@ -23,7 +23,8 @@ export default async function globalSetup(_config: FullConfig) {
   const workspaceId = randomUUID();
   const projectId = randomUUID();
   const versionId = randomUUID();
-  const hash = createHash('sha256').update('<main><h1>Boulangerie de test</h1><p>Activité : Boulangerie et boulangerie-pâtisserie</p><p>Forme : SAS, société par actions simplifiée</p></main>').digest('hex');
+  const seedHtml = '<main><h1>{{company.name}}</h1><p>Activité : {{company.activity}}</p><p>Forme : {{company.legalForm}}</p><p>Code historique : 10.71C</p><p>Adresse : {{company.address}}</p></main>';
+  const hash = createHash('sha256').update(seedHtml).digest('hex');
   const sql = postgres(process.env.DATABASE_URL!, { prepare: false });
   await sql.begin(async (tx) => {
     await tx`insert into users (id, email) values (${userId}, ${email}) on conflict (id) do update set email = excluded.email`;
@@ -32,9 +33,10 @@ export default async function globalSetup(_config: FullConfig) {
     await tx`insert into subscriptions (workspace_id, plan_id, credits_remaining, credits_used, monthly_allowance, period_end) values (${workspaceId}, 'free', 100000, 0, 100000, now() + interval '30 days')`;
     await tx`insert into companies (workspace_id, siret, siren, name, legal_form, address, activity, vat_number, status, missing_fields) values (${workspaceId}, ${siret}, ${siret.slice(0, 9)}, 'Boulangerie E2E', 'SAS, société par actions simplifiée', '1 rue du Test, 17000 La Rochelle', 'Boulangerie et boulangerie-pâtisserie', 'FR12356000000', 'active', ${JSON.stringify({ email: 'contact@e2e.test', phone: '0500000000' })})`;
     await tx`insert into projects (id, workspace_id, name, current_version_id) values (${projectId}, ${workspaceId}, 'Projet E2E', ${versionId})`;
-    await tx`insert into file_blobs (hash, content) values (${hash}, '<main><h1>Boulangerie de test</h1><p>Activité : Boulangerie et boulangerie-pâtisserie</p><p>Forme : SAS, société par actions simplifiée</p></main>') on conflict (hash) do nothing`;
+    await tx`insert into file_blobs (hash, content) values (${hash}, ${seedHtml}) on conflict (hash) do nothing`;
     await tx`insert into project_files (project_id, path, hash) values (${projectId}, 'index.html', ${hash})`;
     await tx`insert into project_versions (id, project_id, created_by, summary, files_snapshot, status) values (${versionId}, ${projectId}, 'agent', 'Version E2E', ${JSON.stringify({ 'index.html': hash })}, 'built')`;
+    await tx`insert into publications (project_id, version_id, url, status) values (${projectId}, ${versionId}, 'https://e2e.mihoji.app', 'published'), (${projectId}, ${versionId}, 'https://e2e.mihoji.app', 'published')`;
   });
   await sql.end();
   const link = await supabase.auth.admin.generateLink({ type: 'magiclink', email });

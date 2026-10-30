@@ -21,5 +21,5 @@ export default async function StudioProjectLayout({ children, params }: { childr
   }
   const balance = await getCreditBalance(session.workspaceId);
   void children;
-  return <StudioShell projectId={projectId} remaining={balance.remaining} isDemo={session.isDemo} email={session.user.email} />;
+  return <StudioShell projectId={projectId} remaining={balance.remaining} isDemo={session.isDemo} email={session.user.email} workspaceName={session.workspaceName} />;
 }

@@ -4,7 +4,7 @@ import { getSupabaseServerClient } from '@/lib/supabase/server';
 import { isDemoMode } from '@/lib/supabase/config';
 import { demoWorkspaceId } from '@/lib/billing/demo-data';
 import { getDb } from '@/db/client';
-import { projects, subscriptions, users, workspaceMembers, workspaces } from '@/db/schema';
+import { companies, projects, subscriptions, users, workspaceMembers, workspaces } from '@/db/schema';
 import { and, desc, eq } from 'drizzle-orm';
 import { plans } from '@/lib/plans';
 
@@ -47,7 +47,11 @@ export async function getSession(): Promise<AppSession | null> {
     membership = { workspaceId: workspace.id, role: 'owner' };
   }
   const [workspace] = await db.select({ name: workspaces.name }).from(workspaces).where(eq(workspaces.id, membership.workspaceId)).limit(1);
-  return { user: { id: data.user.id, email: data.user.email }, workspaceId: membership.workspaceId, role: membership.role, isDemo: false, workspaceName: workspace?.name ?? 'Mon espace' };
+  const [company] = await db.select({ name: companies.name }).from(companies).where(eq(companies.workspaceId, membership.workspaceId)).limit(1);
+  const emailPrefix = data.user.email?.split('@')[0];
+  const storedName = workspace?.name ?? '';
+  const workspaceName = company?.name || (storedName && !storedName.endsWith(' workspace') ? storedName : `Espace de ${emailPrefix ?? 'votre compte'}`);
+  return { user: { id: data.user.id, email: data.user.email }, workspaceId: membership.workspaceId, role: membership.role, isDemo: false, workspaceName };
 }
 
 export async function assertProjectAccess(session: AppSession, projectId: string): Promise<void> {

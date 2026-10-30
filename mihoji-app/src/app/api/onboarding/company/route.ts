@@ -35,6 +35,6 @@ export async function POST(request: Request) {
   if (session.isDemo) return NextResponse.json(parsed.data);
   const { createdAt, ...companyData } = parsed.data;
   const values = { ...companyData, legalForm: legalFormLabel(companyData.legalForm), activity: nafLabel(companyData.activity), createdAt: new Date(createdAt), workspaceId: session.workspaceId };
-  const [company] = await getDb().insert(companies).values(values).onConflictDoUpdate({ target: companies.workspaceId, set: companyData }).returning();
+  const [company] = await getDb().insert(companies).values(values).onConflictDoUpdate({ target: companies.workspaceId, set: { ...companyData, legalForm: values.legalForm, activity: values.activity } }).returning();
   return NextResponse.json(company);
 }

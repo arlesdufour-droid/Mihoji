@@ -1,31 +1,38 @@
-import { and, eq } from 'drizzle-orm';
+import { eq } from 'drizzle-orm';
 import { getDb } from '@/db/client';
 import { fileBlobs, projectFiles, projectVersions, projects } from '@/db/schema';
-import { hashContent } from '@/lib/engine/operations';
+import { applyOperations, filesManifest, hashContent, type OperationPlan } from '@/lib/engine/operations';
 
-export async function persistChatVersion(projectId: string, prompt: string, generatedText: string) {
+export type ChatPersistResult =
+  | { changed: true; html: string; files: string[]; versionId: string }
+  | { changed: false };
+
+export async function persistChatOperations(projectId: string, prompt: string, plan: OperationPlan): Promise<ChatPersistResult> {
   const db = getDb();
   return db.transaction(async (tx) => {
     const [project] = await tx.select({ id: projects.id, currentVersionId: projects.currentVersionId }).from(projects).where(eq(projects.id, projectId)).limit(1);
     if (!project) throw new Error('project_not_found');
-    const [current] = await tx.select({ content: fileBlobs.content }).from(projectFiles).innerJoin(fileBlobs, eq(projectFiles.hash, fileBlobs.hash)).where(and(eq(projectFiles.projectId, projectId), eq(projectFiles.path, 'index.html'))).limit(1);
-    const currentHtml = current?.content ?? '';
-    const nextHtml = /accueil|chaleureuse|bienvenue/i.test(prompt)
-      ? currentHtml.includes('data-mihoji="accueil"')
-        ? currentHtml
-        : currentHtml.replace(/(<main[^>]*>)/i, '$1<section data-mihoji="accueil" class="mb-6 rounded-xl bg-indigo-50 p-5"><p class="text-xl font-semibold text-indigo-900">Bienvenue, nous sommes heureux de vous accueillir.</p></section>')
-      : /horaires|heures|lundi|8h/i.test(prompt)
-      ? currentHtml.includes('data-mihoji="horaires"')
-        ? currentHtml
-        : currentHtml.replace('</main>', '<section data-mihoji="horaires" class="mt-8 rounded-xl bg-slate-100 p-5"><h2 class="text-2xl font-bold">Horaires</h2><p class="mt-2">Du lundi au vendredi, de 8h à 18h.</p></section></main>')
-      : currentHtml;
-    const content = nextHtml || generatedText;
-    const hash = hashContent(content);
-    await tx.insert(fileBlobs).values({ hash, content }).onConflictDoNothing();
-    await tx.insert(projectFiles).values({ projectId, path: 'index.html', hash }).onConflictDoUpdate({ target: [projectFiles.projectId, projectFiles.path], set: { hash, updatedAt: new Date() } });
-    const [version] = await tx.insert(projectVersions).values({ projectId, parentVersionId: project.currentVersionId, createdBy: 'agent', summary: prompt.slice(0, 200), filesSnapshot: { 'index.html': hash }, status: 'built' }).returning({ id: projectVersions.id });
+    const rows = await tx.select({ path: projectFiles.path, content: fileBlobs.content }).from(projectFiles).innerJoin(fileBlobs, eq(projectFiles.hash, fileBlobs.hash)).where(eq(projectFiles.projectId, projectId));
+    let files = new Map(rows.map((row) => [row.path, row.content]));
+    let applied = 0;
+    for (const operation of plan.operations) {
+      try {
+        files = applyOperations(files, { summary: plan.summary, operations: [operation] });
+        applied += 1;
+      } catch (error) {
+        console.warn('Chat operation skipped.', error);
+      }
+    }
+    if (applied === 0) return { changed: false };
+    for (const [path, content] of files) {
+      if (rows.find((row) => row.path === path)?.content === content) continue;
+      const hash = hashContent(content);
+      await tx.insert(fileBlobs).values({ hash, content }).onConflictDoNothing();
+      await tx.insert(projectFiles).values({ projectId, path, hash }).onConflictDoUpdate({ target: [projectFiles.projectId, projectFiles.path], set: { hash, updatedAt: new Date() } });
+    }
+    const [version] = await tx.insert(projectVersions).values({ projectId, parentVersionId: project.currentVersionId, createdBy: 'agent', summary: prompt.slice(0, 200), filesSnapshot: filesManifest(files), status: 'built' }).returning({ id: projectVersions.id });
     if (!version) throw new Error('version_creation_failed');
     await tx.update(projects).set({ currentVersionId: version.id }).where(eq(projects.id, projectId));
-    return { html: content, versionId: version.id };
+    return { changed: true, html: files.get('index.html') ?? '', files: [...files.keys()], versionId: version.id };
   });
 }

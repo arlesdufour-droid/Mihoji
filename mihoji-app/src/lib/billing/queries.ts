@@ -1,7 +1,7 @@
 import 'server-only';
 
 import { cache } from 'react';
-import { count, eq } from 'drizzle-orm';
+import { and, countDistinct, eq } from 'drizzle-orm';
 import { getDb } from '@/db/client';
 import { projects, publications, subscriptions } from '@/db/schema';
 import { demoCreditBalance, demoSubscription, demoUsage } from '@/lib/billing/demo-data';
@@ -33,7 +33,7 @@ export const getCreditBalance = cache(async (workspaceId: string): Promise<Credi
 
 export const getUsageSnapshot = cache(async (workspaceId: string): Promise<UsageSnapshot> => {
   if (canUseDemoData()) return { ...demoUsage };
-  const [published] = await getDb().select({ value: count() }).from(publications).innerJoin(projects, eq(publications.projectId, projects.id)).where(eq(projects.workspaceId, workspaceId));
+  const [published] = await getDb().select({ value: countDistinct(publications.projectId) }).from(publications).innerJoin(projects, eq(publications.projectId, projects.id)).where(and(eq(projects.workspaceId, workspaceId), eq(publications.status, 'published')));
   return { ...demoUsage, publishedApps: { used: Number(published?.value ?? 0), limit: plans.find((plan) => plan.id === 'free')?.publishedApps ?? 1 } };
 });
 
