@@ -17,7 +17,7 @@ export async function proxy(request: NextRequest) {
     secureUrl.protocol = 'https:';
     return NextResponse.redirect(secureUrl, 308);
   }
-  const protectedPage = ['/studio', '/settings', '/onboarding'].some((prefix) => pathname === prefix || pathname.startsWith(`${prefix}/`));
+  const protectedPage = ['/studio', '/settings', '/onboarding', '/agency'].some((prefix) => pathname === prefix || pathname.startsWith(`${prefix}/`));
   const protectedApi = pathname.startsWith('/api/') && !publicApiRoutes.has(pathname);
   if (!protectedPage && !protectedApi) return NextResponse.next();
 
@@ -50,5 +50,5 @@ export async function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/studio/:path*', '/settings/:path*', '/onboarding/:path*', '/api/:path*'],
+  matcher: ['/studio/:path*', '/settings/:path*', '/onboarding/:path*', '/agency/:path*', '/api/:path*'],
 };

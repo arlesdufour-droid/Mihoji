@@ -1,10 +1,11 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { getSupabaseBrowserClient } from '@/lib/supabase/browser';
+import { INTENT_COOKIE, serializeIntent, type Intent } from '@/lib/intent';
 
-export function LoginForm() {
+export function LoginForm({ intent = null }: { intent?: Intent | null }) {
   const [email, setEmail] = useState('');
   const [message, setMessage] = useState(() => {
     if (typeof window === 'undefined') return '';
@@ -17,6 +18,10 @@ export function LoginForm() {
   });
   const [pending, setPending] = useState(false);
   const supabase = getSupabaseBrowserClient();
+  useEffect(() => {
+    // Conservée une heure pour survivre à l'aller-retour par le lien magique ou par Google.
+    if (intent) document.cookie = `${INTENT_COOKIE}=${serializeIntent(intent)}; path=/; max-age=3600; samesite=lax`;
+  }, [intent]);
 
   async function sendMagicLink(event?: React.FormEvent) {
     event?.preventDefault();
@@ -43,7 +48,7 @@ export function LoginForm() {
   return <section className="w-full max-w-md rounded-3xl border border-slate-800 bg-slate-900/70 p-8 shadow-2xl">
     <Link href="/" className="text-sm font-bold text-indigo-300">Mihoji</Link>
     <h1 className="mt-8 text-3xl font-semibold">Bienvenue</h1>
-    <p className="mt-2 text-sm text-slate-400">Connectez-vous pour retrouver vos espaces.</p>
+    <p className="mt-2 text-sm text-slate-400">{intent?.audience === 'agency' ? 'Connectez-vous pour créer votre espace agence.' : intent ? 'Connectez-vous pour créer le site de votre entreprise.' : 'Connectez-vous pour retrouver vos espaces.'}</p>
     {supabase ? <form onSubmit={sendMagicLink} className="mt-8 space-y-3">
       <label className="block text-sm text-slate-300" htmlFor="email">Adresse email</label>
       <input id="email" type="email" required value={email} onChange={(event) => setEmail(event.target.value)} className="w-full rounded-xl border border-slate-700 bg-slate-950 px-4 py-3 text-sm outline-none focus:border-indigo-400" placeholder="vous@exemple.fr" />

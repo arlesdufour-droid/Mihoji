@@ -11,7 +11,7 @@ export default function MissingFieldsPage() {
   const submit = (event: FormEvent) => {
     event.preventDefault();
     void fetch('/api/onboarding/company', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ ...company, missingFields: fields }) });
-    void fetch('/api/onboarding/state', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ kind: 'business', step: 'complete' }) });
+    void fetch('/api/onboarding/state', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ step: 'complete' }) });
     if (!company) {
       router.push('/onboarding/siret');
       return;

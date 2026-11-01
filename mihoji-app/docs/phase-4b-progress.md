@@ -22,3 +22,22 @@
 
 - L’analyse HTML est volontairement légère (pas de moteur CSS complet) : le contraste ignore les feuilles de style `<style>` et les variantes Tailwind (`md:`, `hover:`).
 - Le plausible métier repose sur le prompt ; aucune vérification automatique du contenu.
+
+## Lot 1 — pages d’accueil — terminé
+
+### Réel
+
+- **Barre du haut** avec sélecteur de public : « TPE & indépendants » (`/`) | « Agences & freelances » (`/pro`) (`src/components/marketing/top-bar.tsx`).
+- **`/`** : titre, sous-titre, champ SIRET central (14 chiffres vérifiés) avec « Créer mon site », lien « Pas encore de SIRET ? Décrivez votre activité », 3 garanties, 4 vignettes métiers cliquables (plombier, boulangerie, kiné, consultant → `/exemples/<métier>`, site d’exemple généré avec une entreprise fictive), « Comment ça marche » en 3 étapes. Aucun jargon (ni « IA », ni « prompt », ni « crédits »), vérifié par test.
+- **`/pro`** : titre, « Créer mon espace agence », « Voir une démo » (ancre vers la capture), capture du tableau de bord clients (illustration à données fictives), 4 atouts.
+- **Intention conservée** (`src/lib/intent.ts`, cookie `mihoji_intent` d’une heure, SIRET public uniquement) : après connexion (lien magique, Google ou déjà connecté), un visiteur de `/pro` arrive directement sur `/agency`, sans repasser par « Vous créez un site pour… » ; un visiteur avec SIRET arrive sur `/onboarding/siret?siret=…` (champ prérempli), ou sur son projet s’il en a déjà un.
+- **Espace agence minimal `/agency`** (protégé) : liste des sites clients du compte, « Créer le site d’un client » (parcours SIRET existant). Le choix « Mes clients » de l’ancien écran d’onboarding y mène aussi (il bouclait sur `/onboarding`). Les étapes d’onboarding ne réécrasent plus le type d’espace.
+
+### Simulé ou restant
+
+- L’espace agence est un premier tableau de bord (liste des sites) : marque blanche, transfert au client et facturation par client ne sont pas encore réalisés — les atouts de `/pro` sont des engagements produit, pas des fonctions livrées (le ZIP exportable arrive au lot 5).
+- Le retour du lien magique (cookie → destination) est couvert par tests unitaires et par le parcours « déjà connecté » ; il n’est pas rejoué de bout en bout (pas de boîte mail en e2e).
+
+### Preuves
+
+- `src/lib/intent.test.ts` ; `e2e/phase-4b-lot-1.spec.ts` (8 parcours : accueil, `/pro`, SIRET invalide/valide, agence directe, SIRET connecté, exemple métier, hydratation, `/agency` protégé).

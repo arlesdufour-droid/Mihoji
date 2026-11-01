@@ -1,13 +1,19 @@
 'use client';
 
 import Link from 'next/link';
-import { FormEvent, useState } from 'react';
+import { FormEvent, useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 
 export default function SiretPage() {
   const router = useRouter();
   const [siret, setSiret] = useState('');
   const [error, setError] = useState('');
+  useEffect(() => {
+    // Le SIRET saisi sur la page d'accueil arrive en paramètre ; le lire au rendu initial provoquerait une erreur d'hydratation.
+    const initial = new URLSearchParams(window.location.search).get('siret');
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    if (initial && /^\d{14}$/.test(initial)) setSiret(initial);
+  }, []);
   const submit = async (event: FormEvent) => {
     event.preventDefault();
     try {
@@ -16,7 +22,7 @@ export default function SiretPage() {
       if (!lookup.ok) throw new Error(company.error ?? 'lookup_failed');
       const response = await fetch('/api/onboarding/company', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(company) });
       if (!response.ok) throw new Error('company_save_failed');
-      await fetch('/api/onboarding/state', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ kind: 'business', step: 'confirmation' }) });
+      await fetch('/api/onboarding/state', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ step: 'confirmation' }) });
       router.push('/onboarding/confirmation');
     } catch (error) {
       setError(error instanceof Error && error.message === 'company_closed' ? 'Cette entreprise est cessée et ne peut pas être utilisée.' : error instanceof Error && error.message === 'lookup_rate_limit' ? 'Trop de recherches, réessayez dans quelques minutes.' : 'Entreprise introuvable ou numéro SIRET invalide.');

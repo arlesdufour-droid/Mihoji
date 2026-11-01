@@ -1,92 +1,75 @@
-'use client';
+import Link from 'next/link';
+import { MarketingTopBar } from '@/components/marketing/top-bar';
+import { SiretStartForm } from '@/components/marketing/siret-start-form';
+import { examples } from '@/lib/marketing-examples';
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+export const metadata = { title: 'Mihoji — le site de votre entreprise, en ligne en 10 minutes' };
+
+const guarantees = [
+  { title: 'Mentions légales et RGPD inclus', text: 'Vos pages obligatoires sont générées à partir de vos informations officielles.' },
+  { title: 'Hébergé en France', text: 'Votre site et vos données restent en Europe.' },
+  { title: 'Sans engagement', text: 'Commencez gratuitement, arrêtez quand vous voulez.' },
+];
+
+const steps = [
+  { title: 'Entrez votre SIRET', text: 'Nous retrouvons automatiquement le nom, l’adresse et l’activité de votre entreprise.' },
+  { title: 'Vérifiez vos informations', text: 'Complétez en quelques clics ce qui manque : horaires, téléphone, services.' },
+  { title: 'Votre site est prêt', text: 'Modifiez-le en écrivant simplement ce que vous voulez, puis mettez-le en ligne.' },
+];
 
 export default function Home() {
-  const [prompt, setPrompt] = useState('');
-  const router = useRouter();
-
-  const handleGenerate = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!prompt.trim()) return;
-    router.push('/studio/demo');
-  };
-
   return (
-    <main className="min-h-screen bg-slate-950 text-white flex flex-col items-center justify-between p-6 md:p-24 selection:bg-indigo-500 selection:text-white">
-      {/* En-tête minimaliste */}
-      <nav className="w-full max-w-5xl flex justify-between items-center py-4">
-        <div className="flex items-center space-x-2">
-          <div className="w-8 h-8 rounded-lg bg-gradient-to-tr from-indigo-500 to-purple-500 flex items-center justify-center font-bold text-lg">
-            M
-          </div>
-          <span className="font-bold text-xl tracking-tight">Mihoji</span>
-        </div>
-      </nav>
+    <div className="min-h-screen bg-slate-950 text-slate-50 selection:bg-indigo-500 selection:text-white">
+      <MarketingTopBar audience="business" />
+      <main>
+        <section className="mx-auto max-w-4xl px-5 pb-16 pt-12 text-center">
+          <h1 className="text-4xl font-extrabold tracking-tight md:text-5xl">Artisans, commerçants, indépendants : le site de votre entreprise, en ligne en 10 minutes.</h1>
+          <p className="mx-auto mt-5 max-w-2xl text-lg text-slate-300">Conforme à la loi française. Sans connaissances techniques.</p>
+          <SiretStartForm />
+        </section>
 
-      {/* Section Centrale */}
-      <div className="w-full max-w-3xl flex flex-col items-center text-center my-auto space-y-8 py-12">
-        <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 text-xs md:text-sm font-medium">
-          <span>✨ Créez des sites web par simple discussion</span>
-        </div>
+        <section aria-labelledby="garanties" className="mx-auto max-w-6xl px-5 pb-16">
+          <h2 id="garanties" className="sr-only">Nos garanties</h2>
+          <ul className="grid gap-4 md:grid-cols-3">
+            {guarantees.map((guarantee) => (
+              <li key={guarantee.title} className="rounded-2xl border border-slate-800 bg-slate-900 p-5">
+                <p className="font-semibold">✓ {guarantee.title}</p>
+                <p className="mt-2 text-sm text-slate-400">{guarantee.text}</p>
+              </li>
+            ))}
+          </ul>
+        </section>
 
-        <h1 className="text-4xl md:text-6xl font-extrabold tracking-tight">
-          Que souhaitez-vous <br />
-          <span className="bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
-            créer aujourd&apos;hui ?
-          </span>
-        </h1>
+        <section aria-labelledby="exemples" className="mx-auto max-w-6xl px-5 pb-16">
+          <h2 id="exemples" className="text-2xl font-bold">Des sites pour tous les métiers</h2>
+          <p className="mt-2 text-slate-400">Cliquez sur un exemple pour voir le site que vous pourriez avoir.</p>
+          <ul className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            {examples.map((example) => (
+              <li key={example.slug}>
+                <Link href={`/exemples/${example.slug}`} className="block h-full rounded-2xl border border-slate-800 bg-slate-900 p-5 transition hover:border-indigo-400 hover:bg-slate-800">
+                  <span className="text-3xl" aria-hidden="true">{example.emoji}</span>
+                  <span className="mt-3 block text-lg font-semibold">{example.label}</span>
+                  <span className="mt-1 block text-sm text-slate-400">{example.description}</span>
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </section>
 
-        <p className="text-slate-400 text-base md:text-lg max-w-xl">
-          Décrivez votre idée de site ou d&apos;application, et laissez l&apos;IA générer l&apos;interface pour vous en quelques secondes.
-        </p>
-
-        {/* Barre de Prompt Principale */}
-        <form onSubmit={handleGenerate} className="w-full relative">
-          <div className="relative flex items-center bg-slate-900 border border-slate-800 rounded-2xl p-2 shadow-2xl focus-within:border-indigo-500 transition-all">
-            <input
-              type="text"
-              value={prompt}
-              onChange={(e) => setPrompt(e.target.value)}
-              placeholder="Ex: Un site e-commerce pour une boutique de vêtement..."
-              className="w-full bg-transparent px-4 py-3 text-white placeholder-slate-500 focus:outline-none text-sm md:text-base"
-            />
-            <button
-              type="submit"
-              className="bg-indigo-600 hover:bg-indigo-500 text-white px-6 py-3 rounded-xl font-medium text-sm transition-all shadow-lg shadow-indigo-600/30 flex-shrink-0"
-            >
-              Générer
-            </button>
-          </div>
-        </form>
-
-        {/* Exemples rapides */}
-        <div className="flex flex-wrap justify-center gap-2 pt-2">
-          <span className="text-xs text-slate-500 self-center mr-2">Suggestions :</span>
-          {[
-            "Dashboard SaaS",
-            "Site de Photographe",
-            "Landing Page Startup",
-          ].map((suggestion, index) => (
-            <button
-              key={index}
-              onClick={() => {
-                setPrompt(suggestion);
-                router.push('/studio/demo');
-              }}
-              className="text-xs bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-300 px-3 py-1.5 rounded-lg transition-all"
-            >
-              {suggestion}
-            </button>
-          ))}
-        </div>
-      </div>
-
-      {/* Pied de page */}
-      <footer className="w-full max-w-5xl text-center text-xs text-slate-600 py-4 border-t border-slate-900/50">
-        Mihoji © 2026
-      </footer>
-    </main>
+        <section aria-labelledby="comment" className="mx-auto max-w-6xl px-5 pb-20">
+          <h2 id="comment" className="text-2xl font-bold">Comment ça marche</h2>
+          <ol className="mt-6 grid gap-4 md:grid-cols-3">
+            {steps.map((step, index) => (
+              <li key={step.title} className="rounded-2xl border border-slate-800 bg-slate-900 p-5">
+                <span className="flex h-8 w-8 items-center justify-center rounded-full bg-indigo-600 text-sm font-bold">{index + 1}</span>
+                <p className="mt-4 font-semibold">{step.title}</p>
+                <p className="mt-2 text-sm text-slate-400">{step.text}</p>
+              </li>
+            ))}
+          </ol>
+        </section>
+      </main>
+      <footer className="border-t border-slate-900 py-6 text-center text-xs text-slate-500">Mihoji © 2026</footer>
+    </div>
   );
 }
