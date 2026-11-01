@@ -5,8 +5,7 @@ import postgres from 'postgres';
 import type { FullConfig } from '@playwright/test';
 import { assertE2eEnvironment, E2E_EMAIL_DOMAIN, E2E_EMAIL_PREFIX, loadEnv } from '../scripts/e2e-guard';
 
-export default async function globalSetup(_config: FullConfig) {
-  void _config;
+export default async function globalSetup(config: FullConfig) {
   loadEnv();
   assertE2eEnvironment();
   const email = `${E2E_EMAIL_PREFIX}${Date.now()}@${E2E_EMAIL_DOMAIN}`;
@@ -69,4 +68,7 @@ export default async function globalSetup(_config: FullConfig) {
   writeFileSync('e2e/.state.json', JSON.stringify({ email, userId, workspaceId, projectId, legacyProjectId, qualityProjectId, session: verified.data.session }));
   // Relais pour playwright.config.ts : l'utilisateur de test est administrateur pendant la suite.
   writeFileSync('e2e/.admin-email', email);
+  // Préchauffe la route de génération (compilée à la demande par le serveur de développement) pour que le premier test ne dépasse pas ses délais.
+  const baseURL = config.projects[0]?.use.baseURL;
+  if (baseURL) await fetch(`${baseURL}/api/generate`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: '{}' }).catch(() => undefined);
 }

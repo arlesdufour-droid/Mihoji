@@ -2,7 +2,7 @@ import { defineConfig } from '@playwright/test';
 
 export default defineConfig({
   testDir: './e2e',
-  testIgnore: 'real-ai.spec.ts',
+  testIgnore: ['real-ai.spec.ts', 'design-screenshots.spec.ts'],
   timeout: 60_000,
   workers: 1,
   expect: { timeout: 20_000 },

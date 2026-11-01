@@ -14,7 +14,8 @@
     "pretest:e2e": "tsx scripts/check-e2e-env.ts",
     "test:e2e": "playwright test",
     "pretest:e2e:real": "tsx scripts/check-e2e-env.ts",
-    "test:e2e:real": "playwright test --config playwright.real.config.ts"
+    "test:e2e:real": "playwright test --config playwright.real.config.ts",
+    "design:screenshots": "playwright test --config playwright.design.config.ts design-screenshots"
   },
   "dependencies": {
     "@e2b/code-interpreter": "^2.9.0",
@@ -32,6 +33,12 @@
     "zod": "^4.6.7"
   },
   "devDependencies": {
+    "@fontsource-variable/cormorant": "^5.3.0",
+    "@fontsource-variable/fraunces": "^5.3.0",
+    "@fontsource-variable/inter": "^5.3.0",
+    "@fontsource-variable/nunito": "^5.3.0",
+    "@fontsource-variable/outfit": "^5.3.0",
+    "@fontsource-variable/plus-jakarta-sans": "^5.3.0",
     "@playwright/test": "^1.64.1",
     "@tailwindcss/turbopack": "^4",
     "@types/node": "^20",

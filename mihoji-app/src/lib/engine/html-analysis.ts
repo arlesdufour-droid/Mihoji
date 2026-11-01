@@ -19,7 +19,7 @@ const OPTIONAL_END = new Set(['p', 'li', 'dt', 'dd', 'td', 'th', 'tr', 'thead', 
 const SECTION_TAGS = new Set(['header', 'section', 'footer', 'nav', 'aside', 'article']);
 const WRAPPER_TAGS = new Set(['div', 'main', 'body', 'html', 'form']);
 
-const TAG_RE = /<!--[\s\S]*?-->|<(\/?)([a-zA-Z][a-zA-Z0-9-]*)((?:"[^"]*"|'[^']*'|[^<>"'])*)>/g;
+const TAG_RE = /<!--[\s\S]*?-->|<![a-zA-Z][^>]*>|<(\/?)([a-zA-Z][a-zA-Z0-9-]*)((?:"[^"]*"|'[^']*'|[^<>"'])*)>/g;
 
 export function parseAttrs(source: string): Record<string, string> {
   const attrs: Record<string, string> = {};
@@ -50,7 +50,7 @@ export function parseHtml(html: string): ParseResult {
   while ((match = TAG_RE.exec(html))) {
     pushText(last, match.index);
     last = match.index + match[0].length;
-    if (match[0].startsWith('<!--')) continue;
+    if (match[0].startsWith('<!')) continue;
     const closing = match[1] === '/';
     const name = match[2].toLowerCase();
     const rest = match[3];
