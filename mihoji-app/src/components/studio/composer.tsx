@@ -5,6 +5,7 @@ import { FormEvent, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { CreditCounter } from '@/components/studio/credit-counter';
 import { estimateCredits } from '@/lib/ai/estimate';
+import { dropFailedExchanges, GENERATION_FAILED_MESSAGE, INSUFFICIENT_CREDITS_MESSAGE, MESSAGE_TOO_LONG_MESSAGE, RATE_LIMITED_MESSAGE, SERVICE_UNAVAILABLE_MESSAGE } from '@/lib/ai/failure';
 import { filesSummaryForUser, sanitizeSimpleText } from '@/lib/ai/sanitize';
 
 export type ChatMessage = { role: 'user' | 'assistant'; content: string };
@@ -26,7 +27,7 @@ const CONTEXT_MESSAGES = 10;
 const CONTEXT_MESSAGE_LENGTH = 1_000;
 
 function contextFor(messages: ChatMessage[]): ChatMessage[] {
-  return messages.slice(-CONTEXT_MESSAGES).map((message) => ({ ...message, content: message.content.slice(0, CONTEXT_MESSAGE_LENGTH) }));
+  return dropFailedExchanges(messages).slice(-CONTEXT_MESSAGES).map((message) => ({ ...message, content: message.content.slice(0, CONTEXT_MESSAGE_LENGTH) }));
 }
 
 export function Composer({ projectId, remaining, messages, onMessages, streaming, onStreamingChange, onStop, uiMode }: Props) {
@@ -55,7 +56,7 @@ export function Composer({ projectId, remaining, messages, onMessages, streaming
       const response = await fetch('/api/generate', { method: 'POST', signal: controller.current.signal, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ projectId, task: mode === 'plan' ? 'plan' : 'chat', messages: [...contextFor(messages), { role: 'user', content }] }) });
       if (!response.ok || !response.body) {
         const data = await response.json().catch(() => ({})) as { error?: string };
-        onMessages([...next.slice(0, -1), { role: 'assistant', content: data.error === 'insufficient_credits' ? 'Crédits insuffisants. Achetez des crédits ou changez de formule.' : data.error === 'ai_rate_limited' ? 'L’assistant est très sollicité, réessayez dans une minute.' : data.error === 'invalid_request' ? 'Votre message est trop long. Raccourcissez-le et réessayez.' : 'Le service IA est momentanément indisponible.' }]);
+        onMessages([...next.slice(0, -1), { role: 'assistant', content: data.error === 'insufficient_credits' ? INSUFFICIENT_CREDITS_MESSAGE : data.error === 'ai_rate_limited' ? RATE_LIMITED_MESSAGE : data.error === 'invalid_request' ? MESSAGE_TOO_LONG_MESSAGE : SERVICE_UNAVAILABLE_MESSAGE }]);
         return;
       }
       const reader = response.body.getReader();
@@ -71,13 +72,13 @@ export function Composer({ projectId, remaining, messages, onMessages, streaming
       const changed = response.headers.get('x-mihoji-changed') === '1';
       const files = (response.headers.get('x-mihoji-files') ?? '').split(',').filter(Boolean);
       const final = uiMode === 'simple'
-        ? sanitizeSimpleText(assistant) ?? (changed ? filesSummaryForUser(files) : 'Je n’ai pas pu appliquer cette modification. Pouvez-vous reformuler ?')
+        ? sanitizeSimpleText(assistant) ?? (changed ? filesSummaryForUser(files) : GENERATION_FAILED_MESSAGE)
         : assistant;
       onMessages([...next.slice(0, -1), { role: 'assistant', content: final }]);
       router.refresh();
     } catch (error) {
       if (error instanceof DOMException && error.name === 'AbortError') return;
-      onMessages([...next.slice(0, -1), { role: 'assistant', content: 'Le service IA est momentanément indisponible.' }]);
+      onMessages([...next.slice(0, -1), { role: 'assistant', content: SERVICE_UNAVAILABLE_MESSAGE }]);
     } finally {
       controller.current = null;
       onStreamingChange(false);

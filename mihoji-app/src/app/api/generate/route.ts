@@ -2,7 +2,8 @@ import { NextResponse } from 'next/server';
 import { z } from 'zod';
 import { eq } from 'drizzle-orm';
 import { getDb } from '@/db/client';
-import { fileBlobs, projectFiles } from '@/db/schema';
+import { companies, fileBlobs, projectFiles } from '@/db/schema';
+import { injectCompanyData } from '@/lib/company/render';
 import { getCreditBalance } from '@/lib/billing/queries';
 import { debitCredits } from '@/lib/billing/mutations';
 import { assertProjectAccess, getSession, type AppSession } from '@/lib/auth';
@@ -11,7 +12,9 @@ import { tokensToCredits } from '@/lib/ai/pricing';
 import { persistChatOperations } from '@/lib/projects/persistence';
 import { consumeRateLimit } from '@/lib/rate-limit';
 import { isContentRefusal, isRateLimitError, type CompletionMessage } from '@/lib/ai/providers/types';
-import { chatProtocolPrompt, parseChatPlan } from '@/lib/ai/chat-plan';
+import { chatProtocolPrompt, parseChatPlan, retryFeedbackMessage } from '@/lib/ai/chat-plan';
+import { dropFailedExchanges, GENERATION_FAILED_MESSAGE, GENERATION_SCOPE_FAILED_MESSAGE } from '@/lib/ai/failure';
+import { keywordsOf } from '@/lib/ai/keywords';
 
 const requestSchema = z.object({
   projectId: z.string().min(1),
@@ -25,11 +28,6 @@ function jsonError(error: string, status: number) {
   return NextResponse.json({ error }, { status });
 }
 
-const STOP_WORDS = new Set(['avec', 'dans', 'pour', 'vous', 'votre', 'vos', 'une', 'des', 'les', 'aux', 'sur', 'par', 'qui', 'que', 'est', 'sont', 'cette', 'ces', 'mes', 'tes', 'ses', 'nos', 'leur', 'leurs', 'plus', 'moins', 'très', 'aussi', 'comme', 'entre', 'vers', 'chez', 'sans', 'sous', 'tout', 'tous', 'toute', 'toutes', 'être', 'avoir', 'faire', 'peut', 'veux', 'voudrais', 'souhaite', 'ajoute', 'ajouter', 'modifie', 'modifier', 'change', 'changer', 'supprime', 'supprimer', 'mets', 'mettre', 'crée', 'créer', 'section', 'page', 'site', 'texte', 'couleur', 'titre', 'titres', 'image', 'images', 'bouton', 'lien', 'menu', 'haut', 'bas', 'gauche', 'droite', 'centre']);
-
-function keywordsOf(text: string): string[] {
-  return [...new Set(text.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').match(/[a-z0-9]{4,}/g) ?? [])].filter((word) => !STOP_WORDS.has(word));
-}
 
 function fileScore(path: string, content: string, keywords: string[]): number {
   const haystack = `${path}\n${content}`.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
@@ -37,7 +35,9 @@ function fileScore(path: string, content: string, keywords: string[]): number {
 }
 
 // N'envoie au modèle que les fichiers utiles à la demande, pour limiter les tokens (limite Groq : 8 000 tokens/min).
-async function currentFilesMessage(projectId: string, prompt: string): Promise<string> {
+async function currentFilesMessage(projectId: string, workspaceId: string, prompt: string): Promise<string> {
+  const [company] = await getDb().select().from(companies).where(eq(companies.workspaceId, workspaceId)).limit(1);
+  const context = company ? `Contexte entreprise : ${injectCompanyData('{{company.name}}, activité : {{company.activity}}', company)}.\nTout contenu ajouté doit être cohérent avec cette activité et avec la demande (une liste de « pains » ne contient que des pains, jamais de viennoiserie).\n` : '';
   const rows = await getDb().select({ path: projectFiles.path, content: fileBlobs.content }).from(projectFiles).innerJoin(fileBlobs, eq(projectFiles.hash, fileBlobs.hash)).where(eq(projectFiles.projectId, projectId));
   if (rows.length === 0) return 'Fichiers actuels : (aucun)';
   const keywords = keywordsOf(prompt);
@@ -48,7 +48,7 @@ async function currentFilesMessage(projectId: string, prompt: string): Promise<s
   const omitted = rows.length - selected.length;
   const files = selected.map((row) => `--- ${row.path} ---\n${row.content}`).join('\n');
   const note = omitted > 0 ? `\n(${omitted} autre(s) fichier(s) non montré(s), sans rapport avec la demande : ${ranked.filter((row) => !selected.includes(row)).map((row) => row.path).join(', ')}. Si nécessaire, crée ou modifie-les par leur chemin.)` : '';
-  return `Fichiers actuels :\n${files.slice(0, 12_000)}${note}`;
+  return `Fichiers actuels :\n${context}${files.slice(0, 12_000)}${note}`;
 }
 
 async function collectStream(task: ParsedRequest['task'], messages: CompletionMessage[], signal: AbortSignal, maxTokens: number, jsonMode = false) {
@@ -65,12 +65,13 @@ async function collectStream(task: ParsedRequest['task'], messages: CompletionMe
 }
 
 async function handleChat(session: AppSession, workspaceId: string, parsed: ParsedRequest, signal: AbortSignal, maxTokens: number) {
-  const prompt = parsed.messages.at(-1)?.content ?? '';
-  const messages: CompletionMessage[] = session.isDemo
-    ? parsed.messages
-    : [{ role: 'system', content: chatProtocolPrompt }, ...parsed.messages, { role: 'user', content: await currentFilesMessage(parsed.projectId, prompt) }];
+  const history = dropFailedExchanges(parsed.messages);
+  const prompt = history.at(-1)?.content ?? '';
+  const baseMessages: CompletionMessage[] = session.isDemo
+    ? history
+    : [{ role: 'system', content: chatProtocolPrompt }, ...history, { role: 'user', content: await currentFilesMessage(parsed.projectId, workspaceId, prompt) }];
   if (session.isDemo) {
-    const { text } = await collectStream('chat', messages, signal, maxTokens);
+    const { text } = await collectStream('chat', baseMessages, signal, maxTokens);
     return new Response(text, { headers: { 'Content-Type': 'text/plain; charset=utf-8', 'Cache-Control': 'no-cache', 'x-mihoji-changed': '0', 'x-mihoji-mock': '1' } });
   }
 
@@ -80,7 +81,14 @@ async function handleChat(session: AppSession, workspaceId: string, parsed: Pars
   let plan = null as ReturnType<typeof parseChatPlan>;
   let result: Awaited<ReturnType<typeof persistChatOperations>> = { changed: false };
   let succeeded = false;
-  for (let attempt = 1; attempt <= 2; attempt += 1) {
+  let rejectedForScope = false;
+  let feedback: string | null = null;
+  const maxAttempts = 2;
+  for (let attempt = 1; attempt <= maxAttempts; attempt += 1) {
+    // Le retour des contrôles qualité précède les fichiers : le dernier message reste toujours « Fichiers actuels ».
+    const messages: CompletionMessage[] = feedback
+      ? [...baseMessages.slice(0, -1), { role: 'user', content: feedback }, baseMessages[baseMessages.length - 1]]
+      : baseMessages;
     let collected: Awaited<ReturnType<typeof collectStream>>;
     try {
       collected = await collectStream('chat', messages, signal, maxTokens, true);
@@ -100,21 +108,36 @@ async function handleChat(session: AppSession, workspaceId: string, parsed: Pars
     plan = parseChatPlan(text);
     if (!plan) {
       console.error('Chat plan parsing failed.', { attempt, rawResponse: text.slice(0, 2000) });
+      feedback = retryFeedbackMessage('la réponse n’était pas un objet JSON valide au format demandé.');
       continue;
     }
-    result = await persistChatOperations(parsed.projectId, prompt, plan);
+    // Au dernier essai, on accepte une application partielle (décrite honnêtement) plutôt que de tout perdre.
+    result = await persistChatOperations(parsed.projectId, prompt, plan, { strict: attempt < maxAttempts });
+    if (!result.changed && result.rejected) {
+      console.warn('Chat modification rejected by quality checks.', { attempt, reason: result.rejected });
+      rejectedForScope = true;
+      feedback = retryFeedbackMessage(result.rejected);
+      continue;
+    }
+    rejectedForScope = false;
     if (result.changed || plan.operations.length === 0) {
       succeeded = true;
       break;
     }
     console.error('Chat plan operations not applied.', { attempt, operations: plan.operations.length, rawResponse: text.slice(0, 2000) });
+    feedback = retryFeedbackMessage('aucune opération n’a pu être appliquée : l’extrait « search » doit apparaître exactement dans le fichier.');
   }
   if (!succeeded) {
     console.error('Chat generation failed after retries.', { rawResponse: text.slice(0, 2000) });
   } else if (!isMock && totalTokens > 0) {
     await debitCredits(workspaceId, tokensToCredits(totalTokens), 'chat');
   }
-  const summary = succeeded ? plan!.summary.trim() || 'C’est fait.' : 'Je n’ai pas pu appliquer cette modification. Pouvez-vous reformuler ?';
+  let summary = succeeded ? plan!.summary.trim() || 'C’est fait.' : rejectedForScope ? GENERATION_SCOPE_FAILED_MESSAGE : GENERATION_FAILED_MESSAGE;
+  if (succeeded && result.changed) {
+    // Le résumé ne doit décrire que ce qui a réellement été fait.
+    if (result.skipped > 0) summary = `Je n’ai pu appliquer qu’une partie de votre demande (${result.applied} modification${result.applied > 1 ? 's' : ''} sur ${result.applied + result.skipped}). Vérifiez l’aperçu et précisez ce qui manque.`;
+    if (result.notes.length > 0) summary = `${summary} ${result.notes.join(' ')}`;
+  }
   return new Response(summary, {
     headers: {
       'Content-Type': 'text/plain; charset=utf-8',

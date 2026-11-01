@@ -1,4 +1,5 @@
 import { aiModels } from '../models';
+import { RETRY_FEEDBACK_PREFIX } from '../failure';
 import type { CompletionRequest, CompletionResult, LlmProvider } from './types';
 
 const mockText = 'Mihoji a préparé une réponse de démonstration. Décrivez une modification pour continuer.';
@@ -11,9 +12,31 @@ function extractIndexHtml(filesMessage: string): string | null {
   return match ? match[1] : null;
 }
 
-function buildChatResponse(request: string, filesMessage: string): string {
+const brokenHoursMarker = '</h2><p class="mt-2">Du lundi';
+
+// Passe les titres en bleu foncé en ne modifiant que leurs classes, comme le ferait un bon modèle.
+function blueHeadingsOperations(html: string) {
+  const operations: { op: 'edit'; path: string; search: string; replace: string }[] = [];
+  for (const match of html.matchAll(/<h[1-3]\b[^>]*>/g)) {
+    const tag = match[0];
+    const classMatch = tag.match(/class="([^"]*)"/);
+    const kept = (classMatch?.[1] ?? '').split(/\s+/).filter((token) => token && !/^text-(?:[a-z]+-\d{2,3}|white|black)$/.test(token));
+    const classes = [...kept, 'text-blue-900'].join(' ');
+    const replace = classMatch ? tag.replace(classMatch[0], `class="${classes}"`) : tag.replace(/^<(h[1-3])/, `<$1 class="${classes}"`);
+    if (replace !== tag) operations.push({ op: 'edit', path: 'index.html', search: tag, replace });
+  }
+  return operations;
+}
+
+function buildChatResponse(request: string, filesMessage: string, retried: boolean): string {
   const html = extractIndexHtml(filesMessage);
   if (!html) return mockText;
+  if (/titres?/i.test(request) && /bleu/i.test(request)) {
+    const operations = blueHeadingsOperations(html);
+    // Premier essai défectueux : un modèle maladroit tronque la balise fermante du titre Horaires. Les contrôles qualité doivent l'annuler.
+    if ((!retried || /maladroit/i.test(request)) && html.includes(brokenHoursMarker)) operations.push({ op: 'edit', path: 'index.html', search: brokenHoursMarker, replace: '</h2<p class="mt-2">Du lundi' });
+    return JSON.stringify({ summary: 'J’ai mis les titres en bleu foncé.', operations });
+  }
   if (/accueil|chaleureuse|bienvenue/i.test(request)) {
     if (html.includes('data-mihoji="accueil"')) return JSON.stringify({ summary: 'La phrase d’accueil est déjà en place.', operations: [] });
     const mainTag = html.match(/<main[^>]*>/);
@@ -50,7 +73,10 @@ function buildChatResponse(request: string, filesMessage: string): string {
 export class MockProvider implements LlmProvider {
   async *stream(req: CompletionRequest) {
     const last = req.messages.at(-1)?.content ?? '';
-    const content = last.startsWith('Fichiers actuels') ? buildChatResponse(req.messages.at(-2)?.content ?? '', last) : mockText;
+    const earlier = req.messages.slice(0, -1);
+    const request = [...earlier].reverse().find((message) => message.role === 'user' && !message.content.startsWith(RETRY_FEEDBACK_PREFIX))?.content ?? '';
+    const retried = earlier.some((message) => message.content.startsWith(RETRY_FEEDBACK_PREFIX));
+    const content = last.startsWith('Fichiers actuels') ? buildChatResponse(request, last, retried) : mockText;
     yield { content, totalTokens: 24, promptTokens: 12, completionTokens: 12, mock: true };
   }
 
