@@ -1,5 +1,6 @@
 import photos from './sample-photos.json';
 import { sectionVariants, type Section, type SectionType, type SiteDescription, type SiteInput, type StyleId } from './schema';
+import { displayModules, type DisplayModule, type SiteModules } from './modules';
 
 export type SampleCompany = { name: string; activity: string; address: string; legalForm: string; email: string; phone: string };
 
@@ -189,14 +190,39 @@ export function catalogueSection(type: SectionType, variant: string): Section {
     contact: { type: 'contact', ...base, mode: 'quote', eyebrow: 'Contact', title: 'Demandez votre devis', intro: 'Réponse sous 24 heures ouvrées.', services: ['Dépannage', 'Salle de bain', 'Chauffage', 'Autre'] },
     map: { type: 'map', ...base, eyebrow: 'Accès', title: 'Venez nous voir', intro: 'Notre showroom est ouvert sur rendez-vous.', access: ['Parking gratuit devant le showroom', 'Tramway ligne 1, arrêt Commerce'] },
     footer: { type: 'footer', ...base, tagline: 'Artisan plombier-chauffagiste à Nantes et alentours.', links: [{ label: 'Nos réalisations', href: '#gallery' }] },
+    module: { type: 'module', ...base, module: 'booking', eyebrow: 'Rendez-vous', title: 'Réservez votre intervention', intro: 'Choisissez la prestation, nous confirmons le créneau sous 2 heures.' },
   };
   return sections[type] as unknown as Section;
 }
 
+// Modules fonctionnels d'exemple (catalogue, tests) : un de chaque, plausibles pour un artisan qui vend aussi des produits.
+export const catalogueModules: SiteModules = {
+  quote: { services: ['Dépannage', 'Salle de bain', 'Chauffage'], fields: ['address', 'date', 'photos'], responseDelay: 'Devis gratuit sous 48 heures', emergency: true },
+  booking: { services: [{ name: 'Diagnostic chaudière', durationMinutes: 60, price: 89, location: 'home' }, { name: 'Entretien annuel', durationMinutes: 90, price: 129, location: 'home' }, { name: 'Conseil salle de bain au showroom', durationMinutes: 45, price: 0, location: 'onsite' }], schedule: { days: ['lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi'], start: '08:00', end: '18:00' }, slotMinutes: 30, leadTimeHours: 24, cancellationPolicy: 'Annulation gratuite jusqu’à 24 heures avant.', payment: 'deposit', depositPercent: 30, reminders: true },
+  shop: { mode: 'click-collect', products: [{ name: 'Mitigeur thermostatique', description: 'Pour douche, garantie 5 ans.', price: 139, category: 'Robinetterie' }, { name: 'Pommeau de douche économe', price: 34.9, category: 'Robinetterie' }, { name: 'Kit détartrage chauffe-eau', price: 19.5, unit: 'kit', category: 'Entretien' }], pickup: { schedule: { days: ['lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi', 'samedi'], start: '09:00', end: '12:00' }, leadTimeHours: 24 }, payment: 'both' },
+  payment: { offers: [{ name: 'Contrat d’entretien', description: 'Visite annuelle et dépannage prioritaire.', price: 12, kind: 'subscription', period: 'month' }, { name: 'Acompte travaux', description: 'Réservez votre date de chantier.', price: 300, kind: 'deposit' }, { name: 'Forfait 3 visites', price: 330, kind: 'pack', sessions: 3 }] },
+  newsletter: { incentive: 'Nos conseils de saison pour économiser l’énergie.', frequency: 'Une lettre par trimestre' },
+  clientArea: { features: ['documents', 'invoices', 'appointments'] },
+  widgets: [{ type: 'whatsapp', message: 'Bonjour, j’ai une question.' }, { type: 'google-reviews' }],
+  webhooks: { events: ['quote.created', 'booking.created'] },
+};
+
+const MODULE_TITLES: Record<DisplayModule, { eyebrow: string; title: string; intro: string }> = {
+  quote: { eyebrow: 'Devis gratuit', title: 'Décrivez vos travaux', intro: 'Quelques informations suffisent pour un devis précis.' },
+  booking: { eyebrow: 'Rendez-vous', title: 'Réservez votre intervention', intro: 'Choisissez la prestation, nous confirmons le créneau sous 2 heures.' },
+  shop: { eyebrow: 'Boutique', title: 'Commandez, retirez à l’atelier', intro: 'Pièces et accessoires sélectionnés par nos plombiers.' },
+  payment: { eyebrow: 'Tarifs', title: 'Nos formules', intro: 'Des prix clairs, sans surprise.' },
+  newsletter: { eyebrow: 'Restons en contact', title: 'Recevez nos conseils', intro: 'Pas de publicité, uniquement des conseils utiles.' },
+  clientArea: { eyebrow: 'Espace client', title: 'Retrouvez votre dossier', intro: 'Devis, factures et rendez-vous au même endroit.' },
+};
+
 // Le catalogue empile toutes les variantes d'un type : il contourne volontairement les règles de page du schéma (un seul hero, un seul formulaire…).
 export function catalogueSite(style: StyleId, palette: string | undefined, type: SectionType): SiteDescription {
-  const sections = sectionVariants[type].map((variant) => catalogueSection(type, variant));
+  const sections = type === 'module'
+    ? displayModules.flatMap((module) => sectionVariants.module.map((variant) => ({ type: 'module', variant, module, ...MODULE_TITLES[module] }) as Section))
+    : sectionVariants[type].map((variant) => catalogueSection(type, variant));
   return {
+    modules: catalogueModules,
     version: 1,
     theme: { style, palette },
     seo: { title: `Catalogue — ${type}`, description: 'Variantes de la section dans le style choisi.' },

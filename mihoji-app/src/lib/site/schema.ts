@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import { iconNames } from './icons';
+import { activeModules, displayModules, modulesSchema } from './modules';
 
 export const styleIds = ['artisan', 'moderne', 'premium', 'dynamique'] as const;
 export type StyleId = (typeof styleIds)[number];
@@ -48,6 +49,8 @@ export const sectionVariants = {
   contact: ['split', 'centered', 'details'],
   map: ['card', 'split'],
   footer: ['simple', 'columns'],
+  // Section d'un module fonctionnel (devis, rendez-vous, boutique…) : son contenu vient de site.modules.
+  module: ['panel', 'split'],
 } as const;
 
 const eyebrow = text(60).optional();
@@ -208,14 +211,24 @@ export const footerSchema = z.object({
   links: z.array(z.object({ label: text(40), href: hrefSchema })).max(6).optional(),
 });
 
+export const moduleSectionSchema = z.object({
+  ...common,
+  type: z.literal('module'),
+  variant: z.enum(sectionVariants.module).default('panel'),
+  module: z.enum(displayModules),
+  eyebrow,
+  title: text(100),
+  intro,
+});
+
 export const sectionSchema = z.discriminatedUnion('type', [
   heroSchema, aboutSchema, servicesSchema, productsSchema, gallerySchema, testimonialsSchema, statsSchema, hoursSchema,
-  areaSchema, faqSchema, teamSchema, ctaSectionSchema, contactSchema, mapSchema, footerSchema,
+  areaSchema, faqSchema, teamSchema, ctaSectionSchema, contactSchema, mapSchema, footerSchema, moduleSectionSchema,
 ]);
 
 export type Section = z.infer<typeof sectionSchema>;
 export type SectionType = Section['type'];
-export const sectionTypes = ['hero', 'about', 'services', 'products', 'gallery', 'testimonials', 'stats', 'hours', 'area', 'faq', 'team', 'cta', 'contact', 'map', 'footer'] as const satisfies readonly SectionType[];
+export const sectionTypes = ['hero', 'about', 'services', 'products', 'gallery', 'testimonials', 'stats', 'hours', 'area', 'faq', 'team', 'cta', 'contact', 'map', 'footer', 'module'] as const satisfies readonly SectionType[];
 
 // Aucun texte de remplissage : un site qui en contient est refusé, pas publié.
 const FILLER = /lorem ipsum|dolor sit amet|consectetur adipiscing|texte (?:à venir|de remplissage|d['’]exemple)|à (?:compléter|définir|personnaliser|remplacer)|(?:^|\s)x{3,}(?:\s|$)|\bvotre texte\b|\binsérez? (?:ici|votre)\b|\bnom du (?:service|produit|client)\b|\bdescription (?:du|de la) (?:service|produit|prestation)\b|\btitre (?:du|de la) (?:service|section|produit)\b|\bprénom nom\b|\b(?:service|produit|prestation|témoignage|question) (?:n°\s?)?[0-9]\b/i;
@@ -245,6 +258,8 @@ export const siteSchema = z.object({
   // Seul appel à l'action principal du site : bouton de l'en-tête et de l'écran d'accueil.
   primaryCta: ctaSchema,
   pages: z.array(pageSchema).min(1).max(6),
+  // Modules fonctionnels proposés pour ce site (voir modules.ts).
+  modules: modulesSchema.optional(),
 }).superRefine((site, context) => {
   if (site.pages[0].slug !== 'index') context.addIssue({ code: 'custom', path: ['pages', 0, 'slug'], message: 'la première page doit avoir le slug « index »' });
   if (new Set(site.pages.map((page) => page.slug)).size !== site.pages.length) context.addIssue({ code: 'custom', path: ['pages'], message: 'slugs de pages en double' });
@@ -257,6 +272,18 @@ export const siteSchema = z.object({
       if (page.sections.filter((section) => section.type === type).length > 1) context.addIssue({ code: 'custom', path: ['pages', pageIndex, 'sections'], message: `une seule section « ${type} » par page` });
     }
   });
+  // Chaque section de module renvoie à un module configuré, et chaque module affichable a sa section.
+  const configured = new Set(activeModules(site.modules));
+  const shown = new Set<string>();
+  site.pages.forEach((page, pageIndex) => page.sections.forEach((section, index) => {
+    if (section.type !== 'module') return;
+    if (!configured.has(section.module)) context.addIssue({ code: 'custom', path: ['pages', pageIndex, 'sections', index, 'module'], message: `la section affiche le module « ${section.module} », absent de site.modules` });
+    if (shown.has(section.module)) context.addIssue({ code: 'custom', path: ['pages', pageIndex, 'sections', index, 'module'], message: `module « ${section.module} » affiché deux fois` });
+    shown.add(section.module);
+  }));
+  for (const key of displayModules) {
+    if (configured.has(key) && !shown.has(key)) context.addIssue({ code: 'custom', path: ['modules', key], message: `le module « ${key} » doit avoir sa section (type « module »)` });
+  }
   for (const entry of findFiller(site)) context.addIssue({ code: 'custom', path: [entry.path], message: `texte de remplissage interdit : « ${entry.text.slice(0, 60)} »` });
 });
 

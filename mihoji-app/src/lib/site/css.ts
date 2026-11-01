@@ -208,6 +208,27 @@ const SECTION_CSS: Record<SectionType, string> = {
 @media(min-width:900px){.map-split{grid-template-columns:1fr 1.1fr;gap:5rem}.map-art{min-height:24rem}}
 `,
   footer: '',
+  module: `
+.mod-panel,.mod-split{display:grid;gap:2rem;align-items:start}
+.mod-main,.mod-side{min-width:0}
+.mod-side{display:grid;gap:1.4rem;background:var(--surface);color:var(--text);border:1px solid var(--line);border-radius:var(--r-lg);padding:clamp(1.4rem,3.5vw,2rem);box-shadow:var(--shadow)}
+.mod-split .mod-side{background:transparent;border:0;box-shadow:none;padding:0}.mod-split .s-head{margin-bottom:0}
+.mod-list{display:grid;gap:0;background:var(--surface);color:var(--text);border:1px solid var(--line);border-radius:var(--r-lg);padding:.4rem clamp(1rem,3vw,1.75rem)}
+.mod-row{display:flex;justify-content:space-between;align-items:flex-start;gap:1rem;padding-block:1.05rem;border-bottom:1px solid var(--line)}.mod-row:last-child{border-bottom:0}
+.mod-row h3{font-size:1.1rem}.mod-row p{color:var(--muted);font-size:.95rem;margin-top:.2rem}.mod-row .price small,.mod-price small{font-family:var(--font-body);font-weight:400;font-size:.85rem;color:var(--muted)}
+.mod-cat{font-size:.85rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);font-family:var(--font-body);margin:1.6rem 0 .7rem}.mod-cat:first-child{margin-top:0}
+.mod-note{font-size:.9rem;color:var(--muted)}
+.mod-facts{display:grid;gap:.9rem}.mod-facts li,.mod-promise{display:flex;gap:.7rem;align-items:flex-start}.mod-facts .ic,.mod-promise .ic{flex:none;width:1.3rem;height:1.3rem;margin-top:.2rem;color:var(--primary)}.mod-promise{font-weight:700}
+.mod-side .ticks{margin-top:0}
+.mod-soon{display:grid;gap:.5rem;justify-items:start}
+.btn-soon,.btn-soon:hover{background:var(--surface);color:var(--muted);border:2px dashed color-mix(in srgb,var(--muted) 60%,transparent);box-shadow:none;cursor:not-allowed;transform:none;filter:none}
+.soon-badge{font-size:.8rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.mod-fallback{display:grid;gap:.55rem;padding-top:1.1rem;border-top:1px solid var(--line)}.mod-fallback .k{font-size:.9rem;color:var(--muted)}.mod-fallback li:not(.k){display:flex;gap:.6rem;align-items:center}.mod-fallback .ic{width:1.1rem;height:1.1rem;color:var(--primary)}.mod-fallback a{font-weight:700;text-decoration:none}.mod-fallback a:hover{text-decoration:underline}
+.mod-offers{display:grid;gap:1.1rem}.mod-offer{display:grid;align-content:start;gap:.35rem;background:var(--surface);color:var(--text);border:1px solid var(--line);border-radius:var(--r-lg);padding:1.5rem;box-shadow:var(--shadow)}.mod-offer .tag{justify-self:start}.mod-offer p{color:var(--muted)}.mod-offer .mod-price{font-family:var(--font-heading);font-weight:var(--hw);font-size:1.9rem;color:var(--primary);line-height:1.1}
+.mod-news .lead{margin-bottom:.6rem}
+@media(min-width:760px){.mod-offers{grid-template-columns:repeat(2,1fr)}.mod-offers.cols-3{grid-template-columns:repeat(3,1fr)}}
+@media(min-width:900px){.mod-panel{grid-template-columns:1.45fr 1fr;gap:3rem}.mod-split{grid-template-columns:.85fr 1.15fr;gap:4.5rem}.mod-split .mod-side{position:sticky;top:6rem}}
+`,
 };
 
 const STYLE_EXTRAS: Record<StyleId, string> = {
@@ -218,13 +239,13 @@ const STYLE_EXTRAS: Record<StyleId, string> = {
 `,
   moderne: `
 .s-head{max-width:40rem}.eyebrow{display:inline-block;padding:.3rem .8rem;border-radius:999px;background:color-mix(in srgb,var(--primary) 9%,var(--bg))}.tone-inverse .eyebrow{background:color-mix(in srgb,var(--accent) 16%,transparent)}
-.svc-item,.prod,.quote,.hours-box,.map-card{box-shadow:none}.btn:hover{transform:none}
+.svc-item,.prod,.quote,.hours-box,.map-card,.mod-offer,.mod-side{box-shadow:none}.btn:hover{transform:none}
 .s-hero--split{background:var(--bg)}.hero-photo{border-radius:var(--r-lg)}
 `,
   premium: `
 h1,h2{font-weight:500}.lead{font-size:1.2rem}
 .eyebrow{display:flex;align-items:center;gap:1rem}.eyebrow::after{content:"";height:1px;width:3rem;background:var(--accent)}.s-head.center .eyebrow{justify-content:center}.s-head.center .eyebrow::before{content:"";height:1px;width:3rem;background:var(--accent)}.s-hero--photo .eyebrow::after{background:var(--accent)}.hero-center .eyebrow{justify-content:center}.hero-center .eyebrow::before{content:"";height:1px;width:3rem;background:var(--accent)}
-.svc-item,.prod,.quote,.hours-box,.map-card,.form-card,.faq-list details{box-shadow:none}.btn:hover{transform:none}
+.svc-item,.prod,.quote,.hours-box,.map-card,.form-card,.faq-list details,.mod-offer,.mod-side{box-shadow:none}.btn:hover{transform:none}
 .media-box{border-radius:var(--r-sm)}.svc-icon{background:transparent;border:1px solid var(--accent);border-radius:0;color:var(--accent)}
 .s-services--icons .svc-icon{background:transparent;color:var(--accent);border:1px solid var(--accent)}
 .stat-value{font-weight:500}.s-hero--photo .hero-inner{padding-block:clamp(9rem,22vw,15rem) clamp(4rem,9vw,7rem)}
@@ -234,7 +255,7 @@ h1,h2{font-weight:500}.lead{font-size:1.2rem}
   dynamique: `
 .eyebrow{display:inline-block;background:var(--accent);color:var(--on-accent);padding:.35rem .9rem;border-radius:999px;transform:rotate(-2deg)}.tone-inverse .eyebrow{color:var(--on-accent)}.s-hero--photo .eyebrow{color:var(--on-accent)}
 .btn:hover{transform:translateY(-3px) rotate(-.6deg)}.btn:active{transform:translateY(1px);box-shadow:none}
-.svc-item,.prod,.quote,.hours-box,.map-card,.form-card{border:2px solid var(--text)}.svc-item:nth-child(3n+2){background:var(--alt)}
+.svc-item,.prod,.quote,.hours-box,.map-card,.form-card,.mod-offer,.mod-list,.mod-panel .mod-side{border:2px solid var(--text)}.svc-item:nth-child(3n+2){background:var(--alt)}
 .svc-icon{background:var(--accent);color:var(--on-accent);border-radius:var(--r-sm);transform:rotate(-4deg)}
 .s-hero--split{background:var(--alt)}.hero-photo{border:3px solid var(--text);transform:rotate(1.5deg)}
 .stat-value{-webkit-text-stroke:0}.chips li{border:2px solid var(--text)}.s-cta--banner{border-block:4px solid var(--accent)}
@@ -249,6 +270,9 @@ export function minify(css: string): string {
 export function buildCss(theme: { style: StyleId; palette?: string }, used: Iterable<SectionType>, fontBase = '/fonts'): string {
   const { style, palette } = resolveTheme(theme);
   const fonts = [style.fonts.heading, style.fonts.body].filter((font, index, list) => list.findIndex((other) => other.file === font.file) === index);
-  const sections = [...new Set(used)].map((type) => SECTION_CSS[type]).join('\n');
+  const types = new Set(used);
+  // Le module devis réutilise le formulaire de la section contact.
+  if (types.has('module')) types.add('contact');
+  const sections = [...types].map((type) => SECTION_CSS[type]).join('\n');
   return minify([fonts.map((font) => fontFace(font, fontBase)).join(''), tokens(style, palette), BASE, sections, STYLE_EXTRAS[theme.style]].join('\n'));
 }

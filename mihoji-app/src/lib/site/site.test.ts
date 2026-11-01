@@ -29,8 +29,8 @@ describe('thèmes', () => {
 });
 
 describe('schéma de description', () => {
-  it('propose 15 types de sections avec 2 ou 3 variantes chacun', () => {
-    expect(sectionTypes).toHaveLength(15);
+  it('propose 16 types de sections (15 d’affichage + les modules fonctionnels) avec 2 ou 3 variantes chacun', () => {
+    expect(sectionTypes).toHaveLength(16);
     for (const type of sectionTypes) expect(sectionVariants[type].length, type).toBeGreaterThanOrEqual(2);
     for (const type of sectionTypes) expect(sectionVariants[type].length, type).toBeLessThanOrEqual(3);
   });

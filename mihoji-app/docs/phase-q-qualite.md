@@ -39,3 +39,21 @@ L'IA ne doit plus écrire de HTML/CSS brut. Elle produit une **description struc
 
 ## Fin de mission
 Mets à jour docs/phase-q-progress.md, push sur main.
+
+## Ajout important : sites fonctionnels, pas seulement informatifs
+La description structurée du site doit prévoir dès le lot 2 des MODULES fonctionnels, en plus des sections d'affichage. Le modèle de design peut les proposer quand la demande ou le métier s'y prête (ex. restaurant → réservation, boutique → vente, artisan → devis, coach → rendez-vous + paiement).
+
+## Lot 7 : modules transactionnels
+- Devis/contact : réception côté serveur (plus de mailto), stockage, notification email, tableau « Demandes reçues » dans le Studio.
+- Rendez-vous : créneaux configurables, confirmation et rappel par email, gestion dans le Studio.
+- Paiement et boutique simple : catalogue, panier, click & collect, acomptes ; paiement via Stripe Connect (l'argent va directement au commerçant, Mihoji ne le détient jamais).
+- Newsletter : inscription avec consentement RGPD, export des contacts.
+- Espace client : connexion des clients du commerçant, documents, historique.
+Chaque module fonctionne en simulation en développement, avec des tests e2e.
+
+## Lot 8 : intégrations
+- Widgets : Google Maps, avis Google, Calendly, bouton WhatsApp, flux Instagram.
+- Webhooks sortants configurables par site (nouveau devis, rendez-vous, commande, inscription), signés, avec relance en cas d'échec et journal des envois. Documentation pour Make et Zapier.
+
+## Lot 9 : bloc sur mesure (mode expert)
+- En mode expert, un type de section « sur mesure » dont le code est généré par l'IA et testé dans le bac à sable E2B avant intégration, pour les besoins hors catalogue.

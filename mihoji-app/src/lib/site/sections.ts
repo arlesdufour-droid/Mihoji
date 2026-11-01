@@ -1,10 +1,13 @@
 import { button, esc, head, icon, initials, media, stars, ticks } from './html';
+import { moduleSection } from './module-sections';
+import type { SiteModules } from './modules';
 import type { Cta, Section, SiteDescription } from './schema';
 
 export type SectionContext = {
   id: string;
   tone: 'default' | 'alt' | 'inverse';
   primaryCta: SiteDescription['primaryCta'];
+  modules?: SiteModules;
 };
 
 function open(section: Section, context: SectionContext, extra = ''): string {
@@ -172,5 +175,6 @@ export function renderSection(section: Section, context: SectionContext, navLink
     case 'contact': return contact(section, context);
     case 'map': return mapSection(section, context);
     case 'footer': return footer(section, context, navLinks);
+    case 'module': return moduleSection(section, context.modules, open(section, context, `s-module--${section.module}`));
   }
 }

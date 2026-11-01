@@ -31,3 +31,35 @@
 
 - `ANTHROPIC_API_KEY`, `UNSPLASH_ACCESS_KEY` et `AI_MODEL_DESIGN` sont documentées dans `.env.example` (les deux clés sont déjà dans `.env.local`).
 - Quota Unsplash en mode démonstration : 50 requêtes par heure ; l’application de production devra demander le passage en « Production » (5 000 requêtes par heure).
+
+## Lot 2 — génération par un modèle de design — en cours (WIP, commit « WIP lot 2 »)
+
+### Fait
+- **Modules fonctionnels dans la description du site** (`src/lib/site/modules.ts`) : devis (`quote`), rendez-vous (`booking`), boutique / click & collect (`shop`), paiement en ligne (`payment`), newsletter, espace client (`clientArea`), widgets (Google Maps, avis Google, Calendly, WhatsApp, Instagram) et webhooks (événements). Contrôles de cohérence : un acompte exige le module paiement, le click & collect exige des horaires de retrait, un widget de chaque type, chaque module affichable a exactement une section `module` (16e type de section, variantes `panel` / `split`).
+- **Rendu des modules** (`src/lib/site/module-sections.ts`) : contenu réel (prestations, durées, prix, créneaux, catalogue, offres) ; les actions pas encore actives sont des boutons désactivés « Bientôt disponible », avec en attendant le téléphone et l'email de l'entreprise. Le formulaire de devis reste un formulaire `mailto:`.
+- **Fournisseur Anthropic** (`src/lib/ai/providers/anthropic.ts`, SDK officiel `@anthropic-ai/sdk`) derrière `LlmProvider` : modèle `AI_MODEL_DESIGN` (défaut `claude-sonnet-5-5`), prompt système mis en cache, repli serveur automatique en cas de refus (`fallbacks: "default"`). Routage (`designRoute`) : Anthropic → modèle fort Groq si la clé manque → simulation en développement, erreur explicite `ai_not_configured` en production. Les petites retouches (`edit`) restent sur le modèle rapide Groq.
+- **Création et changement de style** (`src/lib/site/design.ts`, `design-prompt.ts`) : le modèle choisit style, palette, sections, ordre, modules et rédige les textes ; validation zod stricte, nouvel essai guidé par les erreurs (3 essais au maximum). Le changement de style ne choisit que le thème et les variantes, appliqués par le code : textes, sections et modules restent identiques.
+- **Coût réel par génération** en euros (`shadowCostEur`, `src/lib/ai/pricing.ts`), enregistré dans la nouvelle table `site_generations` (migration `0016_phase_q_lot_2.sql`, appliquée sur la base de développement).
+- **Laboratoire `/admin/design/generate`** (administrateurs) : formulaire avec 3 exemples cliquables, aperçu du site, coût, modèle, nombre d'essais, modules, changement de style, historique. Route `POST /api/admin/design/generate`.
+- **Génération réelle** : `npm run design:generate` (base de développement uniquement). Résultats dans `docs/screenshots/phase-q-lot2/` (JSON, HTML, captures ordinateur et mobile, `resume.txt`) :
+  - boulangerie avec click & collect : 1 essai, 23 s, **0,041 €**, style Artisan chaleureux, modules boutique + newsletter ;
+  - coach avec rendez-vous et paiement : 1 essai, 23 s, **0,032 €**, style Dynamique coloré, modules rendez-vous (paiement à la réservation) + paiement (séance, forfait 10 séances) ;
+  - plombier avec demande de devis : 1 essai, 19 s, **0,028 €**, style Moderne épuré, module devis (adresse, date, photos, bouton urgence).
+  Objectif < 0,10 € par création atteint.
+
+### Vérifié
+- `npx vitest run` : 114 tests passent (nouveau `src/lib/site/design.test.ts`, routage dans `routing.test.ts`).
+- `npm run lint` : OK.
+- `npm run build` : passé plus tôt dans le lot ; **à relancer** après les derniers changements (interrompu).
+- e2e : suite complète passée (43 tests, dont `e2e/phase-q-lot-2.spec.ts` Q2.1 à Q2.3 et Q1.5 étendu au type `module`) ; Q2.3 légèrement modifié ensuite et repassé seul.
+
+### Simulé ou restant
+- Simulé : le fonctionnement des modules (réservation, commande, paiement, newsletter, espace client) — lots 7 et 8 ; widgets et webhooks seulement décrits, pas rendus.
+- Photos : le modèle propose des requêtes (en anglais) mais les images ne sont pas encore récupérées (lot 3) ; les captures montrent des visuels aux couleurs du thème.
+- Les générations du laboratoire ne débitent pas de crédits (outil d'administration) ; le branchement au Studio et à l'onboarding relève des lots 4 et 5.
+- Repli Groq non testé en réel (limite de 8 000 jetons/min susceptible de bloquer une création complète).
+
+### Reste à faire pour clore le lot 2
+1. Relancer `npm run build`.
+2. Rédiger le résumé final du lot (section « Comment vérifier ») et faire le commit « Phase Q – Lot 2 : génération par un modèle de design ».
+- Note : le serveur de développement de l'aperçu (port 3000) a été arrêté pour les e2e puis relancé avec `npm run dev` ; vérifier qu'il tourne.

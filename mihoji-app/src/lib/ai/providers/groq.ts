@@ -6,6 +6,10 @@ import { LlmProviderError } from './types';
 
 const endpoint = 'https://api.groq.com/openai/v1';
 
+function withSystem(req: CompletionRequest) {
+  return req.rawSystem ? req.messages : [{ role: 'system' as const, content: systemPrompt }, ...req.messages];
+}
+
 function requireApiKey() {
   const key = process.env.GROQ_API_KEY;
   if (!key) throw new LlmProviderError('ai_not_configured', 503);
@@ -32,7 +36,7 @@ export class GroqProvider implements LlmProvider {
       method: 'POST',
       signal: req.signal,
       headers: { Authorization: `Bearer ${requireApiKey()}`, 'Content-Type': 'application/json' },
-      body: JSON.stringify({ model: req.model, messages: [{ role: 'system', content: systemPrompt }, ...req.messages], stream: true, stream_options: { include_usage: true }, ...(req.maxTokens ? { max_tokens: req.maxTokens } : {}), ...(req.jsonMode ? { response_format: { type: 'json_object' } } : {}) }),
+      body: JSON.stringify({ model: req.model, messages: withSystem(req), stream: true, stream_options: { include_usage: true }, ...(req.maxTokens ? { max_tokens: req.maxTokens } : {}), ...(req.jsonMode ? { response_format: { type: 'json_object' } } : {}) }),
     });
     if (!response.ok || !response.body) await responseError(response);
     const body = response.body;
@@ -66,12 +70,12 @@ export class GroqProvider implements LlmProvider {
       method: 'POST',
       signal: req.signal,
       headers: { Authorization: `Bearer ${requireApiKey()}`, 'Content-Type': 'application/json' },
-      body: JSON.stringify({ model: req.model, messages: [{ role: 'system', content: systemPrompt }, ...req.messages], ...(req.maxTokens ? { max_tokens: req.maxTokens } : {}), ...(req.jsonMode ? { response_format: { type: 'json_object' } } : {}) }),
+      body: JSON.stringify({ model: req.model, messages: withSystem(req), ...(req.maxTokens ? { max_tokens: req.maxTokens } : {}), ...(req.jsonMode ? { response_format: { type: 'json_object' } } : {}) }),
     });
     if (!response.ok) await responseError(response);
-    const data = await response.json() as { choices?: { message?: { content?: string } }[]; usage?: { prompt_tokens?: number; completion_tokens?: number; total_tokens?: number }; x_groq?: { usage?: { prompt_tokens?: number; completion_tokens?: number; total_tokens?: number } } };
+    const data = await response.json() as { model?: string; choices?: { message?: { content?: string }; finish_reason?: string }[]; usage?: { prompt_tokens?: number; completion_tokens?: number; total_tokens?: number }; x_groq?: { usage?: { prompt_tokens?: number; completion_tokens?: number; total_tokens?: number } } };
     const usage = data.usage ?? data.x_groq?.usage;
-    return { content: data.choices?.[0]?.message?.content || '', totalTokens: usage?.total_tokens, promptTokens: usage?.prompt_tokens, completionTokens: usage?.completion_tokens };
+    return { content: data.choices?.[0]?.message?.content || '', totalTokens: usage?.total_tokens, promptTokens: usage?.prompt_tokens, completionTokens: usage?.completion_tokens, model: data.model ?? req.model, truncated: data.choices?.[0]?.finish_reason === 'length' };
   }
 
   async listModels() {

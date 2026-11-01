@@ -1,7 +1,21 @@
 export type CompletionMessage = { role: 'user' | 'assistant' | 'system'; content: string };
-export type CompletionRequest = { model: string; messages: CompletionMessage[]; maxTokens?: number; signal?: AbortSignal; jsonMode?: boolean };
+// rawSystem : n'ajoute pas le prompt système générique du fournisseur (les tâches de design ont le leur).
+export type CompletionRequest = { model: string; messages: CompletionMessage[]; maxTokens?: number; signal?: AbortSignal; jsonMode?: boolean; rawSystem?: boolean };
 export type CompletionChunk = { content?: string; totalTokens?: number; promptTokens?: number; completionTokens?: number; mock?: boolean };
-export type CompletionResult = { content: string; totalTokens?: number; promptTokens?: number; completionTokens?: number };
+export type CompletionResult = {
+  content: string;
+  totalTokens?: number;
+  promptTokens?: number;
+  completionTokens?: number;
+  // Jetons lus / écrits dans le cache de prompt (Anthropic), facturés à un tarif différent.
+  cacheReadTokens?: number;
+  cacheWriteTokens?: number;
+  // Modèle ayant réellement répondu (peut différer en cas de repli côté fournisseur).
+  model?: string;
+  // La réponse a été coupée par la limite de jetons.
+  truncated?: boolean;
+  mock?: boolean;
+};
 
 export interface LlmProvider {
   stream(req: CompletionRequest): AsyncIterable<CompletionChunk>;

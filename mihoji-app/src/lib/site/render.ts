@@ -1,6 +1,7 @@
 import { buildCss } from './css';
 import { esc, menuIcon } from './html';
 import type { Section, SectionType, SiteDescription } from './schema';
+import { moduleAnchors, type DisplayModule } from './modules';
 import { renderSection, type SectionContext } from './sections';
 import { resolveTheme } from './themes';
 
@@ -22,7 +23,19 @@ export function pageFile(slug: string): string {
   return `${slug}.html`;
 }
 
+const MODULE_NAV: Record<DisplayModule, string> = {
+  quote: 'Devis', booking: 'Réserver', shop: 'Commander', payment: 'Tarifs', newsletter: 'Newsletter', clientArea: 'Espace client',
+};
+
+function navLabel(section: Section): string | undefined {
+  if (section.nav === false) return undefined;
+  if (typeof section.nav === 'string') return section.nav;
+  return section.type === 'module' ? MODULE_NAV[section.module] : NAV_LABELS[section.type];
+}
+
 function sectionTone(section: Section, previous: 'default' | 'alt' | 'inverse'): 'default' | 'alt' | 'inverse' {
+  // Les modules (formulaires, listes, boutons) restent sur fond clair.
+  if (section.type === 'module') return section.tone && section.tone !== 'inverse' ? section.tone : previous === 'default' ? 'alt' : 'default';
   if (section.tone) return section.tone;
   if (section.type === 'stats') return section.variant === 'row' ? 'inverse' : previous === 'default' ? 'alt' : 'default';
   if (section.type === 'cta') return 'default';
@@ -32,8 +45,8 @@ function sectionTone(section: Section, previous: 'default' | 'alt' | 'inverse'):
 function navFor(site: SiteDescription, contexts: { section: Section; id: string }[]): { label: string; href: string }[] {
   if (site.pages.length > 1) return site.pages.map((page) => ({ label: page.title, href: pageFile(page.slug) }));
   const links = contexts
-    .filter(({ section }) => section.nav !== false && (section.nav || NAV_LABELS[section.type]))
-    .map(({ section, id }) => ({ label: typeof section.nav === 'string' ? section.nav : NAV_LABELS[section.type]!, href: `#${id}`, type: section.type }))
+    .filter(({ section }) => navLabel(section))
+    .map(({ section, id }) => ({ label: navLabel(section)!, href: `#${id}`, type: section.type }))
     .filter((link, index, list) => list.findIndex((other) => other.label === link.label) === index);
   if (links.length <= 5) return links.map(({ label, href }) => ({ label, href }));
   const contact = links.find((link) => link.type === 'contact');
@@ -50,7 +63,7 @@ function siteHeader(site: SiteDescription, nav: { label: string; href: string }[
 function uniqueIds(sections: Section[]): { section: Section; id: string }[] {
   const seen = new Map<string, number>();
   return sections.map((section) => {
-    const base = section.id ?? section.type;
+    const base = section.id ?? (section.type === 'module' ? moduleAnchors[section.module] : section.type);
     const count = (seen.get(base) ?? 0) + 1;
     seen.set(base, count);
     return { section, id: count === 1 ? base : `${base}-${count}` };
@@ -80,7 +93,7 @@ export function renderSite(site: SiteDescription, options: RenderOptions = {}): 
     const body = identified.map(({ section, id }) => {
       const resolved = section.type === 'hero' || section.type === 'footer' ? 'default' : sectionTone(section, tone);
       if (section.type !== 'hero' && section.type !== 'footer') tone = resolved;
-      const context: SectionContext = { id, tone: resolved, primaryCta: site.primaryCta };
+      const context: SectionContext = { id, tone: resolved, primaryCta: site.primaryCta, modules: site.modules };
       return renderSection(section, context, site.pages.length > 1 ? [] : nav);
     });
     const hero = body[0] && sections[0].type === 'hero' ? body.shift()! : '';

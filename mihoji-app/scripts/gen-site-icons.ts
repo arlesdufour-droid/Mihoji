@@ -11,7 +11,7 @@ const icons: Record<string, string> = {
   leaf: 'leaf', flower: 'flower-2', scissors: 'scissors', camera: 'camera', dumbbell: 'dumbbell', utensils: 'utensils', wheat: 'wheat',
   croissant: 'croissant', car: 'car', stethoscope: 'stethoscope', scale: 'scale', briefcase: 'briefcase', graduation: 'graduation-cap',
   smile: 'face-slightly-smiling', sparkles: 'sparkles', thermometer: 'thermometer', ruler: 'ruler', helmet: 'hard-hat', check: 'check', award: 'award',
-  users: 'users', calendar: 'calendar-days', sun: 'sun', snowflake: 'snowflake', cake: 'cake', bike: 'bike', plug: 'plug', sprout: 'sprout', chevron: 'chevron-down',
+  users: 'users', calendar: 'calendar-days', sun: 'sun', snowflake: 'snowflake', cake: 'cake', bike: 'bike', plug: 'plug', sprout: 'sprout', chevron: 'chevron-down', bag: 'shopping-bag', card: 'credit-card',
 };
 
 type Node = [string, Record<string, string>];

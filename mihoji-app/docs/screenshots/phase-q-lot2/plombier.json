@@ -1,0 +1,286 @@
+{
+  "version": 1,
+  "theme": {
+    "style": "moderne",
+    "palette": "bleu"
+  },
+  "seo": {
+    "title": "{{company.name}} – Plombier-chauffagiste à {{company.city}}",
+    "description": "Dépannage plomberie, rénovation de salle de bain, chaudières et pompes à chaleur à {{company.city}}. Devis gratuit avec photos et numéro d'urgence."
+  },
+  "primaryCta": {
+    "label": "Demander un devis gratuit",
+    "href": "#devis"
+  },
+  "pages": [
+    {
+      "slug": "index",
+      "title": "Accueil",
+      "sections": [
+        {
+          "type": "hero",
+          "variant": "photo",
+          "eyebrow": "Plombier-chauffagiste à {{company.city}}",
+          "title": "Plomberie et chauffage à {{company.city}} : on intervient, on répare, on installe",
+          "subtitle": "{{company.name}} dépanne en urgence, rénove votre salle de bain et installe chaudières et pompes à chaleur. Envoyez des photos de votre besoin, recevez un devis clair.",
+          "cta": {
+            "label": "Demander un devis gratuit",
+            "href": "#devis"
+          },
+          "secondaryCta": {
+            "label": "Urgence : appeler",
+            "href": "tel:{{company.phone}}"
+          },
+          "highlights": [
+            "Devis gratuit",
+            "Dépannage urgent",
+            "Eau et gaz",
+            "Photos acceptées"
+          ],
+          "image": {
+            "query": "plumber repairing pipe under sink",
+            "alt": "Plombier en intervention sous un évier"
+          }
+        },
+        {
+          "id": "services",
+          "type": "services",
+          "variant": "cards",
+          "eyebrow": "Nos prestations",
+          "title": "Du robinet qui fuit à la pompe à chaleur",
+          "intro": "Un seul interlocuteur pour l'eau, le gaz et le chauffage de votre logement ou de vos locaux.",
+          "items": [
+            {
+              "title": "Dépannage plomberie",
+              "description": "Fuite, canalisation bouchée, chasse d'eau défectueuse, chauffe-eau en panne : nous intervenons rapidement.",
+              "icon": "wrench",
+              "price": "dès 89 €"
+            },
+            {
+              "title": "Rénovation de salle de bain",
+              "description": "Dépose de l'ancienne installation, plomberie, douche à l'italienne, baignoire, meuble vasque et carrelage coordonné.",
+              "icon": "droplets"
+            },
+            {
+              "title": "Chaudières gaz et fioul",
+              "description": "Remplacement, installation et mise en service de chaudières à condensation, avec évacuation de l'ancien appareil.",
+              "icon": "flame"
+            },
+            {
+              "title": "Pompes à chaleur",
+              "description": "Étude de votre logement, pose d'une pompe à chaleur air-eau ou air-air et réglage du chauffage.",
+              "icon": "thermometer"
+            },
+            {
+              "title": "Entretien de chaudière",
+              "description": "Contrôle, nettoyage et réglage annuels de votre chaudière, avec remise de l'attestation d'entretien.",
+              "icon": "check",
+              "price": "dès 120 €"
+            },
+            {
+              "title": "Installation eau et gaz",
+              "description": "Création ou reprise de réseaux d'eau et de gaz dans les logements, commerces et bureaux.",
+              "icon": "shield"
+            }
+          ]
+        },
+        {
+          "type": "module",
+          "variant": "split",
+          "module": "quote",
+          "eyebrow": "Devis avec photos",
+          "title": "Décrivez votre besoin, joignez vos photos",
+          "intro": "Une photo de la fuite, de la chaudière ou de la salle de bain nous permet de vous répondre avec un devis précis, souvent sans déplacement préalable."
+        },
+        {
+          "id": "entreprise",
+          "type": "about",
+          "variant": "image-right",
+          "eyebrow": "L'entreprise",
+          "title": "Un plombier-chauffagiste de {{company.city}}, joignable quand ça compte",
+          "paragraphs": [
+            "{{company.name}} réalise des travaux d'installation d'eau et de gaz dans tous types de locaux : maisons, appartements, commerces et bureaux.",
+            "Chaque chantier commence par un échange clair sur votre besoin, puis un devis détaillé. Nous protégeons les lieux, travaillons proprement et vous expliquons ce qui a été fait."
+          ],
+          "highlights": [
+            "Devis détaillé et gratuit",
+            "Chantier protégé et nettoyé",
+            "Un seul interlocuteur"
+          ],
+          "image": {
+            "query": "plumber installing boiler in home",
+            "alt": "Installation d'une chaudière dans un logement"
+          }
+        },
+        {
+          "type": "gallery",
+          "variant": "masonry",
+          "eyebrow": "Réalisations",
+          "title": "Nos installations en images",
+          "images": [
+            {
+              "image": {
+                "query": "modern bathroom renovation walk-in shower",
+                "alt": "Salle de bain rénovée avec douche à l'italienne"
+              },
+              "caption": "Salle de bain avec douche à l'italienne"
+            },
+            {
+              "image": {
+                "query": "heat pump outdoor unit house",
+                "alt": "Unité extérieure de pompe à chaleur"
+              },
+              "caption": "Pompe à chaleur air-eau"
+            },
+            {
+              "image": {
+                "query": "condensing gas boiler installed wall",
+                "alt": "Chaudière à condensation murale"
+              },
+              "caption": "Chaudière à condensation"
+            },
+            {
+              "image": {
+                "query": "copper pipes plumbing installation",
+                "alt": "Tuyauterie en cuivre posée"
+              },
+              "caption": "Réseau de cuivre"
+            }
+          ]
+        },
+        {
+          "type": "area",
+          "variant": "chips",
+          "eyebrow": "Zone d'intervention",
+          "title": "Autour de {{company.city}}",
+          "intro": "Nous nous déplaçons dans l'agglomération nantaise et ses communes voisines.",
+          "places": [
+            "Nantes",
+            "Rezé",
+            "Saint-Herblain",
+            "Orvault",
+            "Vertou",
+            "Carquefou",
+            "Saint-Sébastien-sur-Loire",
+            "Bouguenais",
+            "Couëron",
+            "La Chapelle-sur-Erdre",
+            "Sainte-Luce-sur-Loire",
+            "Basse-Goulaine"
+          ],
+          "note": "Une autre commune ? Appelez-nous, nous vous le dirons tout de suite."
+        },
+        {
+          "id": "faq",
+          "type": "faq",
+          "variant": "accordion",
+          "eyebrow": "Questions fréquentes",
+          "title": "Avant de nous contacter",
+          "items": [
+            {
+              "question": "Que faire en cas de fuite d'eau importante ?",
+              "answer": "Coupez l'arrivée d'eau au robinet d'arrêt général, coupez l'électricité si l'eau approche des prises, puis appelez-nous au numéro d'urgence. Une photo de la fuite nous aide à préparer l'intervention."
+            },
+            {
+              "question": "Le devis est-il vraiment gratuit ?",
+              "answer": "Oui. Envoyez votre demande avec des photos, nous revenons vers vous sous 48 h avec un devis détaillé. Pour un gros chantier, nous nous déplaçons pour mesurer."
+            },
+            {
+              "question": "Intervenez-vous le soir et le week-end ?",
+              "answer": "Pour les urgences (fuite, panne de chauffage, odeur de gaz), appelez le numéro dédié : nous répondons selon nos disponibilités, y compris en dehors des heures de bureau."
+            },
+            {
+              "question": "Combien de temps dure une rénovation de salle de bain ?",
+              "answer": "Comptez en général une à deux semaines selon l'ampleur : dépose, plomberie, pose des équipements et finitions. Nous vous donnons un calendrier précis dans le devis."
+            },
+            {
+              "question": "Quelle différence entre chaudière et pompe à chaleur ?",
+              "answer": "Une chaudière brûle du gaz ou du fioul pour chauffer. Une pompe à chaleur capte les calories de l'air et consomme surtout de l'électricité. Nous étudions votre logement pour vous conseiller la solution adaptée."
+            }
+          ]
+        },
+        {
+          "type": "cta",
+          "variant": "banner",
+          "title": "Une urgence plomberie ou chauffage ?",
+          "text": "Appelez-nous directement : nous organisons l'intervention au plus vite.",
+          "button": {
+            "label": "Appeler maintenant",
+            "href": "tel:{{company.phone}}"
+          }
+        },
+        {
+          "id": "contact",
+          "type": "contact",
+          "variant": "details",
+          "mode": "contact",
+          "eyebrow": "Contact",
+          "title": "Parlons de votre projet",
+          "intro": "Une question avant de demander un devis ? Écrivez-nous ou appelez-nous.",
+          "services": [
+            "Dépannage",
+            "Salle de bain",
+            "Chaudière",
+            "Pompe à chaleur",
+            "Autre"
+          ],
+          "submitLabel": "Envoyer ma demande"
+        },
+        {
+          "type": "footer",
+          "variant": "simple",
+          "tagline": "{{company.name}} – plomberie et chauffage à {{company.city}}",
+          "links": [
+            {
+              "label": "Prestations",
+              "href": "#services"
+            },
+            {
+              "label": "Devis",
+              "href": "#devis"
+            },
+            {
+              "label": "Questions",
+              "href": "#faq"
+            },
+            {
+              "label": "Contact",
+              "href": "#contact"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "modules": {
+    "quote": {
+      "services": [
+        "Dépannage plomberie",
+        "Fuite d'eau",
+        "Rénovation de salle de bain",
+        "Remplacement de chaudière",
+        "Installation de pompe à chaleur",
+        "Entretien de chaudière",
+        "Autre demande"
+      ],
+      "fields": [
+        "address",
+        "date",
+        "photos"
+      ],
+      "responseDelay": "Devis gratuit sous 48 h",
+      "emergency": true
+    },
+    "widgets": [
+      {
+        "type": "google-maps"
+      }
+    ],
+    "webhooks": {
+      "events": [
+        "quote.created",
+        "contact.created"
+      ]
+    }
+  }
+}

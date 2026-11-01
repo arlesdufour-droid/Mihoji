@@ -1,6 +1,7 @@
 import { getSession } from '@/lib/auth';
 import { isAdmin } from '@/lib/admin';
 import { injectCompanyData } from '@/lib/company/render';
+import { generationById, generationSite } from '@/lib/site/design-service';
 import { renderSite } from '@/lib/site/render';
 import { catalogueSite, sampleById, withSamplePhotos, type SampleCompany } from '@/lib/site/samples';
 import { sectionTypes, siteSchema, styleIds, type SectionType, type SiteDescription } from '@/lib/site/schema';
@@ -20,6 +21,17 @@ export async function GET(request: Request) {
   const params = new URL(request.url).searchParams;
   const style = styleIds.find((id) => id === params.get('style'));
   const palette = params.get('palette') ?? undefined;
+
+  // Site produit par le modèle de design (laboratoire /admin/design/generate).
+  const generationId = params.get('generation');
+  if (generationId) {
+    const record = await generationById(generationId);
+    const site = record && generationSite(record);
+    if (!record || !site) return new Response('not_found', { status: 404 });
+    const stored = record.company as Partial<Record<'name' | 'activity' | 'address' | 'email' | 'phone', string>>;
+    if (style) site.theme = { style, palette };
+    return page(site, { name: stored.name ?? 'Entreprise', activity: stored.activity ?? '', address: stored.address ?? '', legalForm: '', email: stored.email ?? '', phone: stored.phone ?? '' });
+  }
 
   const sampleId = params.get('sample');
   if (sampleId) {

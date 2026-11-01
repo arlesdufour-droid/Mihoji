@@ -1,4 +1,4 @@
-import { pgTable, text, timestamp, uuid, integer, primaryKey, jsonb } from 'drizzle-orm/pg-core';
+import { pgTable, text, timestamp, uuid, integer, primaryKey, jsonb, numeric } from 'drizzle-orm/pg-core';
 
 export const users = pgTable('users', {
   id: uuid('id').primaryKey(),
@@ -165,5 +165,29 @@ export const creditLedger = pgTable('credit_ledger', {
   amount: integer('amount').notNull(),
   shadowCost: integer('shadow_cost').notNull().default(0),
   reason: text('reason').notNull(),
+  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+});
+
+// Générations de sites par le modèle de design (phase Q, lot 2), avec leur coût réel en euros.
+export const siteGenerations = pgTable('site_generations', {
+  id: uuid('id').defaultRandom().primaryKey(),
+  workspaceId: uuid('workspace_id').references(() => workspaces.id, { onDelete: 'cascade' }),
+  projectId: uuid('project_id'),
+  task: text('task', { enum: ['create', 'restyle'] }).notNull(),
+  request: text('request').notNull(),
+  company: jsonb('company').notNull().default({}),
+  provider: text('provider').notNull(),
+  model: text('model').notNull(),
+  status: text('status', { enum: ['succeeded', 'failed'] }).notNull(),
+  attempts: integer('attempts').notNull().default(1),
+  promptTokens: integer('prompt_tokens').notNull().default(0),
+  completionTokens: integer('completion_tokens').notNull().default(0),
+  cacheReadTokens: integer('cache_read_tokens').notNull().default(0),
+  cacheWriteTokens: integer('cache_write_tokens').notNull().default(0),
+  durationMs: integer('duration_ms').notNull().default(0),
+  shadowCostEur: numeric('shadow_cost_eur', { precision: 10, scale: 6, mode: 'number' }).notNull().default(0),
+  site: jsonb('site'),
+  error: text('error'),
+  createdBy: uuid('created_by'),
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
 });

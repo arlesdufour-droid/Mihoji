@@ -22,6 +22,7 @@ export default async function DesignPage({ searchParams }: { searchParams: Promi
     <main className="min-h-screen bg-slate-950 p-8 text-slate-100">
       <h1 className="text-3xl font-semibold">Design des sites générés</h1>
       <p className="mt-2 max-w-3xl text-slate-400">{style.tagline}</p>
+      <p className="mt-3"><Link href="/admin/design/generate" className="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-500">Générer un site avec l’IA</Link></p>
       <nav aria-label="Styles" className="mt-6 flex flex-wrap gap-2">
         {styles.map((candidate) => <Link key={candidate.id} href={`/admin/design?style=${candidate.id}`} aria-current={candidate.id === style.id ? 'page' : undefined} className={`rounded-lg px-4 py-2 text-sm ${candidate.id === style.id ? 'bg-indigo-600 text-white' : 'bg-slate-800 text-slate-300 hover:bg-slate-700'}`}>{candidate.label}</Link>)}
       </nav>
@@ -36,7 +37,7 @@ export default async function DesignPage({ searchParams }: { searchParams: Promi
 
       <section className="mt-10">
         <h2 className="text-xl font-semibold">Catalogue des sections</h2>
-        <p className="mt-1 text-sm text-slate-400">{sectionTypes.length} types de sections, chacun en 2 ou 3 variantes.</p>
+        <p className="mt-1 text-sm text-slate-400">{sectionTypes.length} types de sections (dont les modules fonctionnels), chacun en 2 ou 3 variantes.</p>
         <ul className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
           {sectionTypes.map((type) => (
             <li key={type} className="rounded-xl border border-slate-800 bg-slate-900 p-4">
