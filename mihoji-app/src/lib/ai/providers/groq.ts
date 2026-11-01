@@ -21,7 +21,9 @@ async function responseError(response: Response): Promise<never> {
   } catch {
     // The provider may return a non-JSON error body.
   }
-  throw new LlmProviderError(code, response.status);
+  const retryAfter = Number(response.headers.get('retry-after'));
+  const retryAfterMs = Number.isFinite(retryAfter) && retryAfter > 0 ? Math.min(retryAfter, 120) * 1000 : undefined;
+  throw new LlmProviderError(code, response.status, retryAfterMs);
 }
 
 export class GroqProvider implements LlmProvider {

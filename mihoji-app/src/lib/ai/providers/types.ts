@@ -10,7 +10,7 @@ export interface LlmProvider {
 }
 
 export class LlmProviderError extends Error {
-  constructor(public readonly code: string, public readonly status?: number) {
+  constructor(public readonly code: string, public readonly status?: number, public readonly retryAfterMs?: number) {
     super(code);
     this.name = 'LlmProviderError';
   }
@@ -20,6 +20,6 @@ export function isContentRefusal(error: unknown) {
   return error instanceof LlmProviderError && ['content_filter', 'content_policy', 'safety_violation', 'refusal'].some((code) => error.code.toLowerCase().includes(code));
 }
 
-export function isRateLimitError(error: unknown) {
+export function isRateLimitError(error: unknown): error is LlmProviderError {
   return error instanceof LlmProviderError && (error.status === 429 || error.code === 'rate_limit_exceeded');
 }

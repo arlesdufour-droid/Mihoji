@@ -1,20 +1,22 @@
 # Progression phase 4a
 
-## Où on en est (30 octobre 2026, après `e34c371`)
+## Où on en est (1er novembre 2026)
 
 ### Ce qui fonctionne
 
 - **Lots 0 à 8 terminés et poussés sur `main`**, avec migrations appliquées sur la base de développement (jusqu’à `0015`).
-- **Parcours lot 0 corrigé et prouvé par 22 tests e2e Playwright** (`npm run test:e2e`, deux passes vertes consécutives) : redirection `/studio/demo`, chat en français simple sans code visible, historique du chat sur tous les onglets, panneau « Mon site », aperçu d’une ancienne version avec bandeau (heure de Paris), champs légaux complets, libellés NAF/juridiques, conformité qui ne réclame pas les champs remplis, publication bloquée avec les raisons exactes, compteur de sites distincts en ligne, nom d’espace lisible, factures en français, zéro erreur d’hydratation.
+- **Parcours lot 0 corrigé et prouvé par 23 tests e2e Playwright** (`npm run test:e2e`) : redirection `/studio/demo`, chat en français simple sans code visible, historique du chat sur tous les onglets, panneau « Mon site », aperçu d’une ancienne version avec bandeau (heure de Paris), champs légaux complets, libellés NAF/juridiques, conformité qui ne réclame pas les champs remplis, publication bloquée avec les raisons exactes, compteur de sites distincts en ligne, nom d’espace lisible, factures en français, zéro erreur d’hydratation.
 - **IA réelle (Groq) fonctionnelle** : protocole JSON `{ summary, operations }` avec `response_format: json_object`, 2 essais max seulement si nécessaire, réponse brute loggée en cas d’échec, aucun crédit débité si la génération échoue. Prouvé avec la vraie clé contre le serveur : « Nos spécialités avec 3 pains » et « titres en bleu foncé » sont réellement appliqués au site.
+- **Consommation Groq réduite et mesurée** (offre gratuite : **8 000 tokens/minute et 1 000 requêtes/jour par modèle**, relevés dans les en-têtes `x-ratelimit-*` de l’API) : le chat n’envoie au modèle que les fichiers utiles à la demande (mots-clés, `index.html` toujours inclus, plafond 12 000 caractères au lieu de 20 000), les petites modifications passent par le modèle rapide `openai/gpt-oss-20b`, et un 429 respecte l’en-tête `retry-after` avant un unique second essai. Requête typique mesurée avec la vraie clé (`npx tsx scripts/smoke-ai-real.ts`, « Ajoute une section Témoignages avec 2 avis clients ») : **≈ 1 000 tokens au total** et 4 s de réponse, contre ≈ 6 000 tokens de seuls fichiers auparavant sur un site de 20 Ko.
+- **Back-office `/admin` réel** : la page affiche utilisateurs, espaces et soldes de crédits, ajout manuel de crédits (tracé dans `credit_ledger`), coût IA estimé par espace (`shadowCost`), sites publiés avec suspension, signalements et demandes de support. Couvert par le test e2e n° 22.
 - **Données entreprise injectées depuis la base** (jetons `{{company.*}}`) : une modification dans « Mes informations » se répercute sur le site sans IA, y compris sur les projets existants (BOULANGERIE BRION migré, plus aucun code NAF ni coordonnée figée en base).
 - **Tests e2e protégés** : `npm run test:e2e` refuse de démarrer si `APP_ENV=production` ou si `DATABASE_URL` n’est pas celle de la base de développement (`scripts/e2e-guard.ts`, règle 10 de `AGENTS.md`). Les utilisateurs de test (`e2e+…@mihoji.test`) et toutes leurs données sont supprimés par le teardown Playwright ; les 49 utilisateurs de test hérités des anciens formats ont été nettoyés.
 - **Limite Groq (429) claire pour l’utilisateur** : l’API renvoie `ai_rate_limited` et le chat affiche « L’assistant est très sollicité, réessayez dans une minute. ».
 
 ### Ce qui reste cassé ou à surveiller
 
-- **Limite Groq (429 `rate_limit_exceeded`)** : la cause des échecs « service IA indisponible » était la limite du compte Groq. Le code est corrigé, mais si le message réapparaît, c’est la limite du compte — vérifier la console Groq et les logs serveur (la cause y est écrite explicitement).
-- **IA simulée dans les tests e2e** : les tests utilisent le mock (déterministe, sans crédits) ; la vraie clé est validée manuellement, pas en e2e.
+- **Limite Groq (429 `rate_limit_exceeded`)** : la cause des échecs « service IA indisponible » était la limite du compte Groq (8 000 tokens/minute en offre gratuite ; une requête chat envoyait jusqu’à ≈ 6 000 tokens de fichiers, donc 2 requêtes dans la minute suffisaient à déclencher le 429). La consommation est désormais ≈ 1 000 tokens par requête et `retry-after` est respecté ; si le message réapparaît, c’est la limite du compte — vérifier la console Groq et les logs serveur (la cause y est écrite explicitement).
+- **IA simulée dans les tests e2e** : les tests utilisent le mock (déterministe, sans crédits) via `AI_MOCK=1` ; la vraie clé est validée par `scripts/smoke-ai-real.ts`, pas en e2e.
 - **Configuration de production non faite** (volontairement reportée en fin de phase) : Vercel, second projet Supabase, domaines, Stripe, Brevo, Sentry, Google OAuth, E2B — voir la liste ordonnée en bas de ce fichier.
 
 ### Prochaine étape
@@ -178,7 +180,7 @@ Reprendre la mission `docs/phase-4a-mission.md` au **lot suivant non couvert par
 ### Réel
 
 - `/admin` et `/api/admin` réservés aux emails de `ADMIN_EMAILS`.
-- Liste des comptes, espaces, soldes, publications, signalements, support et `shadowCost`.
+- La page `/admin` affiche réellement le back-office : comptes, espaces, soldes, publications, signalements, support et `shadowCost` (coût IA estimé par espace), avec formulaire d’ajout de crédits et bouton de suspension (test e2e n° 22).
 - Ajout manuel de crédits journalisé dans `credit_ledger`, et suspension depuis le back-office.
 - Export JSON des données de l’espace et suppression effective avec dépublication et suppression Supabase.
 - Réglages avec boutons d’export et de suppression confirmée.

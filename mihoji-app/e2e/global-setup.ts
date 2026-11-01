@@ -53,4 +53,6 @@ export default async function globalSetup(_config: FullConfig) {
   const verified = await verifier.auth.verifyOtp({ token_hash: tokenHash, type: 'email' });
   if (verified.error || !verified.data.session) throw verified.error ?? new Error('e2e_session_failed');
   writeFileSync('e2e/.state.json', JSON.stringify({ email, userId, workspaceId, projectId, legacyProjectId, session: verified.data.session }));
+  // Relais pour playwright.config.ts : l'utilisateur de test est administrateur pendant la suite.
+  writeFileSync('e2e/.admin-email', email);
 }

@@ -45,4 +45,5 @@ export default async function globalTeardown(_config: FullConfig) {
     console.log(`${testUsers.length} utilisateur(s) de test supprimé(s).`);
   }
   rmSync('e2e/.state.json', { force: true });
+  rmSync('e2e/.admin-email', { force: true });
 }

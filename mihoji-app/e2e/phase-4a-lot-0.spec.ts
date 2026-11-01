@@ -281,3 +281,26 @@ test('16. aucune erreur d’hydratation ni erreur console sur Studio, Réglages 
   expect(pageErrors).toEqual([]);
   expect(consoleErrors.filter((error) => /hydration|did not match|Minified React error|instant|blocking/i.test(error))).toEqual([]);
 });
+
+test('22. le back-office /admin affiche utilisateurs, espaces, crédits, sites et support', async ({ page, context }) => {
+  await login(page, context);
+  await page.goto('/admin');
+  await expect(page.getByRole('heading', { name: 'Back-office Mihoji' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Utilisateurs' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Espaces et crédits' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Sites publiés' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Signalements' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Demandes de support' })).toBeVisible();
+  await expect(page.getByText('Espace E2E réel')).toBeVisible();
+  await expect(page.getByText('https://e2e.mihoji.app').first()).toBeVisible();
+  // Ajout manuel de crédits
+  const creditsCell = page.getByRole('row', { name: /Espace E2E réel/ });
+  await expect(creditsCell).toContainText('100');
+  await creditsCell.getByLabel('Montant de crédits').fill('5000');
+  await creditsCell.getByRole('button', { name: 'Ajouter' }).click();
+  await expect(creditsCell).toContainText('105');
+  // Suspension d'un site publié (les deux lignes identiques peuvent changer d'ordre après rafraîchissement)
+  const siteRow = page.getByRole('row', { name: /e2e\.mihoji\.app/ }).first();
+  await siteRow.getByRole('button', { name: 'Suspendre' }).click();
+  await expect(page.getByRole('row', { name: /e2e\.mihoji\.app/ }).filter({ hasText: 'Suspendu' })).toBeVisible();
+});

@@ -1,3 +1,4 @@
+import { aiModels } from '../models';
 import type { CompletionRequest, CompletionResult, LlmProvider } from './types';
 
 const mockText = 'Mihoji a préparé une réponse de démonstration. Décrivez une modification pour continuer.';
@@ -63,6 +64,6 @@ export class MockProvider implements LlmProvider {
   }
 
   async listModels() {
-    return ['openai/gpt-oss-20b', 'openai/gpt-oss-120b', 'qwen/qwen3.6-27b'];
+    return [...aiModels];
   }
 }

@@ -26,7 +26,7 @@ export function resetModelCache() {
 
 export class AiRouter {
   constructor(
-    private readonly provider: LlmProvider = process.env.GROQ_API_KEY ? new GroqProvider() : new MockProvider(),
+    private readonly provider: LlmProvider = process.env.GROQ_API_KEY && process.env.AI_MOCK !== '1' ? new GroqProvider() : new MockProvider(),
     private readonly mockProvider: LlmProvider = new MockProvider(),
   ) {}
 
@@ -45,7 +45,7 @@ export class AiRouter {
   async *stream(task: AiTask, messages: CompletionMessage[], signal: AbortSignal, maxTokens?: number, jsonMode = false) {
     const config = modelConfig();
     let model = selectModel(task, config);
-    if (!process.env.GROQ_API_KEY && process.env.NODE_ENV !== 'production') {
+    if ((!process.env.GROQ_API_KEY || process.env.AI_MOCK === '1') && process.env.NODE_ENV !== 'production') {
       console.warn(`Groq model "${model}" is not configured; using simulated response in development.`);
     }
     try {
@@ -56,7 +56,7 @@ export class AiRouter {
       }
       yield* this.provider.stream({ model, messages, signal, maxTokens, jsonMode });
     } catch (error) {
-      if (!process.env.GROQ_API_KEY && process.env.NODE_ENV !== 'production') {
+      if ((!process.env.GROQ_API_KEY || process.env.AI_MOCK === '1') && process.env.NODE_ENV !== 'production') {
         console.warn(`Groq model "${model}" failed; using simulated response in development.`, error);
         yield* this.mockProvider.stream({ model: config.fallback, messages, signal, maxTokens });
         return;
