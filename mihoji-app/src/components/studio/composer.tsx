@@ -13,12 +13,21 @@ type Props = {
   projectId: string;
   remaining: number;
   messages: ChatMessage[];
-  onMessages: (messages: ChatMessage[]) => void;
+  onMessages: (messages: ChatMessage[], options?: { persist?: boolean }) => void;
   streaming: boolean;
   onStreamingChange: (streaming: boolean) => void;
   onStop: () => void;
   uiMode: 'simple' | 'expert';
 };
+
+// L'historique complet fait échouer la validation de /api/generate (30 messages max, 8 000 caractères)
+// et consomme des tokens inutiles : on n'envoie que les 10 derniers messages, tronqués.
+const CONTEXT_MESSAGES = 10;
+const CONTEXT_MESSAGE_LENGTH = 1_000;
+
+function contextFor(messages: ChatMessage[]): ChatMessage[] {
+  return messages.slice(-CONTEXT_MESSAGES).map((message) => ({ ...message, content: message.content.slice(0, CONTEXT_MESSAGE_LENGTH) }));
+}
 
 export function Composer({ projectId, remaining, messages, onMessages, streaming, onStreamingChange, onStop, uiMode }: Props) {
   const [value, setValue] = useState('');
@@ -43,10 +52,10 @@ export function Composer({ projectId, remaining, messages, onMessages, streaming
     onStreamingChange(true);
     controller.current = new AbortController();
     try {
-      const response = await fetch('/api/generate', { method: 'POST', signal: controller.current.signal, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ projectId, task: mode === 'plan' ? 'plan' : 'chat', messages: [...messages, { role: 'user', content }] }) });
+      const response = await fetch('/api/generate', { method: 'POST', signal: controller.current.signal, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ projectId, task: mode === 'plan' ? 'plan' : 'chat', messages: [...contextFor(messages), { role: 'user', content }] }) });
       if (!response.ok || !response.body) {
         const data = await response.json().catch(() => ({})) as { error?: string };
-        onMessages([...next.slice(0, -1), { role: 'assistant', content: data.error === 'insufficient_credits' ? 'Crédits insuffisants. Achetez des crédits ou changez de formule.' : data.error === 'ai_rate_limited' ? 'L’assistant est très sollicité, réessayez dans une minute.' : 'Le service IA est momentanément indisponible.' }]);
+        onMessages([...next.slice(0, -1), { role: 'assistant', content: data.error === 'insufficient_credits' ? 'Crédits insuffisants. Achetez des crédits ou changez de formule.' : data.error === 'ai_rate_limited' ? 'L’assistant est très sollicité, réessayez dans une minute.' : data.error === 'invalid_request' ? 'Votre message est trop long. Raccourcissez-le et réessayez.' : 'Le service IA est momentanément indisponible.' }]);
         return;
       }
       const reader = response.body.getReader();
@@ -56,14 +65,15 @@ export function Composer({ projectId, remaining, messages, onMessages, streaming
         const chunk = await reader.read();
         if (chunk.done) break;
         assistant += decoder.decode(chunk.value, { stream: true });
-        onMessages([...next.slice(0, -1), { role: 'assistant', content: assistant }]);
+        // Les morceaux intermédiaires ne sont pas persistés : seule la réponse finale est enregistrée.
+        onMessages([...next.slice(0, -1), { role: 'assistant', content: assistant }], { persist: false });
       }
-      if (uiMode === 'simple') {
-        const changed = response.headers.get('x-mihoji-changed') === '1';
-        const files = (response.headers.get('x-mihoji-files') ?? '').split(',').filter(Boolean);
-        const cleaned = sanitizeSimpleText(assistant) ?? (changed ? filesSummaryForUser(files) : 'Je n’ai pas pu appliquer cette modification. Pouvez-vous reformuler ?');
-        onMessages([...next.slice(0, -1), { role: 'assistant', content: cleaned }]);
-      }
+      const changed = response.headers.get('x-mihoji-changed') === '1';
+      const files = (response.headers.get('x-mihoji-files') ?? '').split(',').filter(Boolean);
+      const final = uiMode === 'simple'
+        ? sanitizeSimpleText(assistant) ?? (changed ? filesSummaryForUser(files) : 'Je n’ai pas pu appliquer cette modification. Pouvez-vous reformuler ?')
+        : assistant;
+      onMessages([...next.slice(0, -1), { role: 'assistant', content: final }]);
       router.refresh();
     } catch (error) {
       if (error instanceof DOMException && error.name === 'AbortError') return;

@@ -42,7 +42,9 @@ export default async function AdminPage() {
     db.select({ id: users.id, email: users.email, createdAt: users.createdAt }).from(users).orderBy(desc(users.createdAt)).limit(200),
     db.select({ id: workspaces.id, name: workspaces.name, ownerId: workspaces.ownerId }).from(workspaces).limit(200),
     db.select({ workspaceId: subscriptions.workspaceId, creditsRemaining: subscriptions.creditsRemaining }).from(subscriptions),
-    db.select({ id: publications.id, projectId: publications.projectId, url: publications.url, status: publications.status }).from(publications).orderBy(desc(publications.createdAt)).limit(200),
+    // Un site par projet : la publication la plus récente (distinct on équivalent, tri desc puis premier par projet).
+    db.select({ id: publications.id, projectId: publications.projectId, url: publications.url, status: publications.status, createdAt: publications.createdAt }).from(publications).orderBy(desc(publications.createdAt)).limit(500)
+      .then((rows) => rows.filter((row, index, list) => list.findIndex((other) => other.projectId === row.projectId) === index).slice(0, 200)),
     db.select({ id: abuseReports.id, publicationId: abuseReports.publicationId, reason: abuseReports.reason, reporterEmail: abuseReports.reporterEmail, createdAt: abuseReports.createdAt }).from(abuseReports).orderBy(desc(abuseReports.createdAt)).limit(200),
     db.select({ id: supportRequests.id, email: supportRequests.email, subject: supportRequests.subject, status: supportRequests.status, createdAt: supportRequests.createdAt }).from(supportRequests).orderBy(desc(supportRequests.createdAt)).limit(200),
     db.select({ workspaceId: creditLedger.workspaceId, shadowCost: sql<number>`coalesce(sum(${creditLedger.shadowCost}), 0)` }).from(creditLedger).groupBy(creditLedger.workspaceId),

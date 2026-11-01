@@ -10,9 +10,11 @@
     "i18n:check": "tsx scripts/i18n-check.ts",
     "db:seed": "tsx scripts/seed.ts",
     "db:migrate": "tsx scripts/migrate.ts",
-    "test": "vitest run"
-    ,"pretest:e2e": "tsx scripts/check-e2e-env.ts"
-    ,"test:e2e": "playwright test"
+    "test": "vitest run",
+    "pretest:e2e": "tsx scripts/check-e2e-env.ts",
+    "test:e2e": "playwright test",
+    "pretest:e2e:real": "tsx scripts/check-e2e-env.ts",
+    "test:e2e:real": "playwright test --config playwright.real.config.ts"
   },
   "dependencies": {
     "@e2b/code-interpreter": "^2.9.0",

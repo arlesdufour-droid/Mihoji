@@ -2,7 +2,7 @@
 'use client';
 
 import { usePathname, useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { ChatPanel } from '@/components/studio/chat-panel';
 import { EditDesignBar } from '@/components/studio/edit-design-bar';
 import { PreviewToolbar } from '@/components/studio/preview-toolbar';
@@ -77,11 +77,22 @@ export function StudioShell({ projectId, remaining, isDemo, email, workspaceName
         ? <div className="h-full overflow-auto p-6"><SiteSettings project={null} /></div>
         : <div className="flex h-full items-center justify-center p-8 text-center"><div><p className="text-sm font-semibold text-slate-200">Espace {activeTab}</p><p className="mt-2 text-xs text-slate-500">Cet espace est prêt pour les données et les réglages de votre projet.</p></div></div>;
 
-  const handleMessages = (next: ChatMessage[]) => {
+  const refreshProject = useCallback(() => {
+    void fetch(`/api/projects/${projectId}`).then((response) => response.ok ? response.json() : null).then((value) => { if (value?.html) { setHtml(value.html); setVersionPreview(null); setReload((count) => count + 1); } });
+  }, [projectId]);
+
+  useEffect(() => {
+    // « Mes informations » enregistrées : l'aperçu reflète immédiatement les nouvelles coordonnées.
+    window.addEventListener('mihoji-company-updated', refreshProject);
+    return () => window.removeEventListener('mihoji-company-updated', refreshProject);
+  }, [refreshProject]);
+
+  const handleMessages = (next: ChatMessage[], options?: { persist?: boolean }) => {
     setMessages(next);
+    if (options?.persist === false) return;
     void fetch(`/api/projects/${projectId}/chat`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ messages: next.filter((message) => message.content) }) });
     const latest = next[next.length - 1];
-    if (latest?.role === 'assistant' && latest.content) void fetch(`/api/projects/${projectId}`).then((response) => response.ok ? response.json() : null).then((value) => { if (value?.html) { setHtml(value.html); setVersionPreview(null); setReload((count) => count + 1); } });
+    if (latest?.role === 'assistant' && latest.content) refreshProject();
   };
 
   const handlePreviewVersion = (version: VersionPreview) => {

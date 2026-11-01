@@ -33,6 +33,11 @@ export default async function globalSetup(_config: FullConfig) {
     await tx`insert into project_files (project_id, path, hash) values (${projectId}, 'index.html', ${hash})`;
     await tx`insert into project_versions (id, project_id, created_by, summary, files_snapshot, status) values (${versionId}, ${projectId}, 'agent', 'Version E2E', ${JSON.stringify({ 'index.html': hash })}, 'built')`;
     await tx`insert into publications (project_id, version_id, url, status) values (${projectId}, ${versionId}, 'https://e2e.mihoji.app', 'published'), (${projectId}, ${versionId}, 'https://e2e.mihoji.app', 'published')`;
+    // Long historique avec du code (comme les projets réels d'avant le mode simple) : le chat doit continuer à fonctionner.
+    const legacyAssistant = 'Voici le code à insérer :\n\n```tsx\n<section className="hero">…</section>\n```\nBon codage !';
+    for (let i = 1; i <= 35; i += 1) {
+      await tx`insert into chat_messages (project_id, role, content) values (${projectId}, ${i % 2 === 1 ? 'user' : 'assistant'}, ${i % 2 === 1 ? `Question ${i} : pouvez-vous améliorer le design ?` : legacyAssistant})`;
+    }
     // Projet « pré-migration » : coordonnées figées en dur, comme avant la migration 0015.
     legacyProjectId = randomUUID();
     const legacyVersionId = randomUUID();

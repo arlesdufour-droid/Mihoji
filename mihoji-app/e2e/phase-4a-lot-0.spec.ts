@@ -217,7 +217,8 @@ test('19. le téléphone modifié dans Mes informations se répercute sur le sit
   const saved = page.waitForResponse((response) => response.url().includes('/api/onboarding/company') && response.request().method() === 'POST');
   await page.getByRole('button', { name: 'Enregistrer les modifications' }).click();
   expect((await saved).status()).toBe(200);
-  await page.reload();
+  // Sans rechargement : la confirmation reste affichée et l'aperçu se rafraîchit tout seul.
+  await expect(page.getByRole('status')).toContainText('Modifications enregistrées');
   await page.getByRole('link', { name: 'Aperçu' }).click();
   await waitForPreview(page, '0500000099');
   const srcdoc = await page.locator('iframe[title="Aperçu du site généré"]').getAttribute('srcdoc');
@@ -292,15 +293,33 @@ test('22. le back-office /admin affiche utilisateurs, espaces, crédits, sites e
   await expect(page.getByRole('heading', { name: 'Signalements' })).toBeVisible();
   await expect(page.getByRole('heading', { name: 'Demandes de support' })).toBeVisible();
   await expect(page.getByText('Espace E2E réel')).toBeVisible();
-  await expect(page.getByText('https://e2e.mihoji.app').first()).toBeVisible();
+  // Un site par projet : les deux publications identiques du projet E2E n'affichent qu'une ligne.
+  await expect(page.getByRole('row', { name: /e2e\.mihoji\.app/ })).toHaveCount(1);
+  // L'en-tête compte les lignes réellement affichées.
+  const sitesSection = page.locator('section', { has: page.getByRole('heading', { name: 'Sites publiés' }) });
+  const siteRows = await sitesSection.getByRole('row').count() - 1;
+  await expect(page.getByText(new RegExp(`· ${siteRows} site\\(s\\) publié\\(s\\)`))).toBeVisible();
   // Ajout manuel de crédits
   const creditsCell = page.getByRole('row', { name: /Espace E2E réel/ });
   await expect(creditsCell).toContainText('100');
   await creditsCell.getByLabel('Montant de crédits').fill('5000');
   await creditsCell.getByRole('button', { name: 'Ajouter' }).click();
   await expect(creditsCell).toContainText('105');
-  // Suspension d'un site publié (les deux lignes identiques peuvent changer d'ordre après rafraîchissement)
-  const siteRow = page.getByRole('row', { name: /e2e\.mihoji\.app/ }).first();
+  // Suspension du site publié
+  const siteRow = page.getByRole('row', { name: /e2e\.mihoji\.app/ });
   await siteRow.getByRole('button', { name: 'Suspendre' }).click();
-  await expect(page.getByRole('row', { name: /e2e\.mihoji\.app/ }).filter({ hasText: 'Suspendu' })).toBeVisible();
+  await expect(siteRow).toContainText('Suspendu');
+});
+
+test('23. un long historique ne bloque pas le chat et la réponse ne contient pas de code', async ({ page, context }) => {
+  await login(page, context);
+  // L'historique semé par le setup dépasse 30 messages : avant le correctif, /api/generate renvoyait 400.
+  await sendChat(page, 'Ajoute une section Nos spécialités avec 3 pains');
+  const lastMessage = page.locator('aside div.leading-6').last();
+  await expect(lastMessage).toContainText('Nos spécialités', { timeout: 30_000 });
+  await expect(lastMessage).not.toContainText('momentanément indisponible');
+  const text = await lastMessage.textContent();
+  for (const marker of ['```', '<section', 'className', 'app/page.tsx', 'Bon codage']) {
+    expect(text, `la réponse ne doit pas contenir « ${marker} »`).not.toContain(marker);
+  }
 });

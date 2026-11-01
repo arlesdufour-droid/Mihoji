@@ -29,7 +29,10 @@ export async function POST(request: Request) {
   if (!parsed.success) return NextResponse.json({ error: 'invalid_admin_action' }, { status: 400 });
   const db = getDb();
   if (parsed.data.action === 'suspend_publication' && parsed.data.publicationId) {
-    await db.update(publications).set({ status: 'suspended' }).where(eq(publications.id, parsed.data.publicationId));
+    // Suspendre un site = suspendre toutes les publications de son projet.
+    const [publication] = await db.select({ projectId: publications.projectId }).from(publications).where(eq(publications.id, parsed.data.publicationId)).limit(1);
+    if (!publication) return NextResponse.json({ error: 'publication_not_found' }, { status: 404 });
+    await db.update(publications).set({ status: 'suspended' }).where(eq(publications.projectId, publication.projectId));
     return NextResponse.json({ ok: true });
   }
   if (parsed.data.action === 'add_credits' && parsed.data.workspaceId && parsed.data.amount) {
