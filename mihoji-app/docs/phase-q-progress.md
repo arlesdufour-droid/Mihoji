@@ -32,7 +32,7 @@
 - `ANTHROPIC_API_KEY`, `UNSPLASH_ACCESS_KEY` et `AI_MODEL_DESIGN` sont documentées dans `.env.example` (les deux clés sont déjà dans `.env.local`).
 - Quota Unsplash en mode démonstration : 50 requêtes par heure ; l’application de production devra demander le passage en « Production » (5 000 requêtes par heure).
 
-## Lot 2 — génération par un modèle de design — en cours (WIP, commit « WIP lot 2 »)
+## Lot 2 — génération par un modèle de design — terminé
 
 ### Fait
 - **Modules fonctionnels dans la description du site** (`src/lib/site/modules.ts`) : devis (`quote`), rendez-vous (`booking`), boutique / click & collect (`shop`), paiement en ligne (`payment`), newsletter, espace client (`clientArea`), widgets (Google Maps, avis Google, Calendly, WhatsApp, Instagram) et webhooks (événements). Contrôles de cohérence : un acompte exige le module paiement, le click & collect exige des horaires de retrait, un widget de chaque type, chaque module affichable a exactement une section `module` (16e type de section, variantes `panel` / `split`).
@@ -50,7 +50,7 @@
 ### Vérifié
 - `npx vitest run` : 114 tests passent (nouveau `src/lib/site/design.test.ts`, routage dans `routing.test.ts`).
 - `npm run lint` : OK.
-- `npm run build` : passé plus tôt dans le lot ; **à relancer** après les derniers changements (interrompu).
+- `npm run build` : OK (relancé sur la version finale, le 2 novembre 2026).
 - e2e : suite complète passée (43 tests, dont `e2e/phase-q-lot-2.spec.ts` Q2.1 à Q2.3 et Q1.5 étendu au type `module`) ; Q2.3 légèrement modifié ensuite et repassé seul.
 
 ### Simulé ou restant
@@ -59,7 +59,24 @@
 - Les générations du laboratoire ne débitent pas de crédits (outil d'administration) ; le branchement au Studio et à l'onboarding relève des lots 4 et 5.
 - Repli Groq non testé en réel (limite de 8 000 jetons/min susceptible de bloquer une création complète).
 
-### Reste à faire pour clore le lot 2
-1. Relancer `npm run build`.
-2. Rédiger le résumé final du lot (section « Comment vérifier ») et faire le commit « Phase Q – Lot 2 : génération par un modèle de design ».
-- Note : le serveur de développement de l'aperçu (port 3000) a été arrêté pour les e2e puis relancé avec `npm run dev` ; vérifier qu'il tourne.
+### Résumé du lot
+
+- **Ce qui marche** : à partir d'une demande et des données de l'entreprise, le modèle de design d'Anthropic crée un site complet en une vingtaine de secondes. Il choisit le style, la palette, les sections et les modules, puis rédige des textes propres au métier. Le coût réel est enregistré pour chaque création, entre 0,03 € et 0,04 € sur 3 essais réels. Le changement de style ne modifie que l'apparence du site.
+- **Réel** : appel à Anthropic, validation et nouvel essai automatique, coût en euros, table `site_generations`, laboratoire d'administration.
+- **Simulé** : le fonctionnement des modules (lots 7 et 8) et, en développement sans clé, la génération elle-même.
+- **Reste en attente** : les photos (lot 3) et le branchement au Studio et à l'onboarding (lots 4 et 5).
+
+### Comment vérifier
+
+1. Dans l'aperçu, connectez-vous avec un compte administrateur, puis ouvrez `/admin/design`.
+2. Cliquez sur « Générer un site avec l'IA » : la page `/admin/design/generate` s'ouvre.
+3. Cliquez sur un des 3 exemples (boulangerie, coach ou plombier) : le formulaire se remplit.
+4. Cliquez sur « Générer le site » et attendez environ 20 secondes. L'aperçu du site s'affiche avec le coût, le modèle, le nombre d'essais et les modules.
+5. Dans le champ de changement de style, tapez par exemple « un style plus élégant, en bleu marine », puis cliquez sur « Changer le style ». Le style change, mais les textes et les sections restent les mêmes.
+6. Les deux générations apparaissent dans le tableau « Dernières générations ».
+
+Couvert par `e2e/phase-q-lot-2.spec.ts` (Q2.1 à Q2.3).
+
+### À faire côté utilisateur
+
+- Rien de bloquant : `ANTHROPIC_API_KEY` est déjà dans `.env.local`. Pour changer de modèle, renseignez `AI_MODEL_DESIGN` (documentée dans `.env.example`).
