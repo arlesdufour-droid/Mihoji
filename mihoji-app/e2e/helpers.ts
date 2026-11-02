@@ -59,3 +59,29 @@ export async function versionCount(page: Page, projectId: string): Promise<numbe
   expect(response.ok()).toBe(true);
   return ((await response.json()) as unknown[]).length;
 }
+
+// Utilisateur de test tout neuf (sans entreprise ni projet) pour rejouer l'onboarding. Son email est reconnaissable (e2e+…@mihoji.test) :
+// le teardown global le supprime avec toutes ses données.
+export async function createOnboardingUser(context: BrowserContext): Promise<{ email: string }> {
+  const { createClient } = await import('@supabase/supabase-js');
+  const email = `e2e+onb${Date.now()}${Math.floor(Math.random() * 1000)}@mihoji.test`;
+  const admin = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!);
+  const created = await admin.auth.admin.createUser({ email, email_confirm: true });
+  if (created.error || !created.data.user) throw created.error ?? new Error('e2e_user_creation_failed');
+  const link = await admin.auth.admin.generateLink({ type: 'magiclink', email });
+  const tokenHash = link.data.properties?.hashed_token;
+  if (link.error || !tokenHash) throw link.error ?? new Error('e2e_magic_link_failed');
+  const verifier = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!, { auth: { persistSession: false, autoRefreshToken: false } });
+  const verified = await verifier.auth.verifyOtp({ token_hash: tokenHash, type: 'email' });
+  if (verified.error || !verified.data.session) throw verified.error ?? new Error('e2e_session_failed');
+  await context.addCookies(authCookies({ ...readState(), session: verified.data.session }));
+  return { email };
+}
+
+// Remplit l'étape « informations manquantes » de l'onboarding.
+export async function fillMissingFields(page: Page) {
+  await expect(page.getByRole('heading', { name: 'Complétez les informations de votre site' })).toBeVisible();
+  await page.getByLabel('Email de contact').fill('contact@onboarding.test');
+  await page.getByLabel('Téléphone de contact').fill('0546000000');
+  await page.getByRole('button', { name: 'Continuer' }).click();
+}

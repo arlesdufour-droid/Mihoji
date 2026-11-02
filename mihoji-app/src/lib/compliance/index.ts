@@ -1,7 +1,7 @@
 type Company = {
   name: string;
   legalForm: string;
-  siren: string;
+  siren?: string | null;
   address: string;
   activity: string;
   missingFields?: unknown;
@@ -33,7 +33,7 @@ export function complianceStatus(company: Company | null) {
 export function generateComplianceDocuments(company: Company) {
   const status = complianceStatus(company);
   if (!status.complete) throw new Error('compliance_incomplete');
-  const identity = `${company.name}, ${company.legalForm}, SIREN ${company.siren}, ${company.address}`;
+  const identity = `${company.name}, ${company.legalForm}${company.siren ? `, SIREN ${company.siren}` : ''}, ${company.address}`;
   const fields = company.missingFields && typeof company.missingFields === 'object' ? company.missingFields as Record<string, string> : {};
   return {
     'legal-notice.md': `# Mentions légales\n\n${identity}.\n\nActivité : ${company.activity}.\n\nDirecteur de la publication : ${fields.director}.`,

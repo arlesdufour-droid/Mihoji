@@ -49,8 +49,8 @@ export const onboardingStates = pgTable('onboarding_states', {
 export const companies = pgTable('companies', {
   id: uuid('id').defaultRandom().primaryKey(),
   workspaceId: uuid('workspace_id').notNull().unique().references(() => workspaces.id),
-  siret: text('siret').notNull().unique(),
-  siren: text('siren').notNull(),
+  siret: text('siret').unique(),
+  siren: text('siren'),
   name: text('name').notNull(),
   legalForm: text('legal_form').notNull(),
   address: text('address').notNull(),

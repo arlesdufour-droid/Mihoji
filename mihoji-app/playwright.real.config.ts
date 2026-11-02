@@ -4,9 +4,10 @@ import { defineConfig } from '@playwright/test';
 // SANS AI_MOCK — les réponses viennent réellement de Groq. Lancer : npm run test:e2e:real
 export default defineConfig({
   testDir: './e2e',
-  testMatch: ['real-ai.spec.ts', 'phase-q-lot-4-real.spec.ts'],
+  testMatch: ['real-ai.spec.ts', 'phase-q-lot-4-real.spec.ts', 'phase-q-lot-5-real.spec.ts'],
   timeout: 180_000,
   workers: 1,
+  expect: { timeout: 30_000 },
   use: { baseURL: 'http://127.0.0.1:3000', headless: true },
   webServer: { command: 'npm run dev', url: 'http://127.0.0.1:3000', reuseExistingServer: true, timeout: 120_000 },
   globalSetup: './e2e/global-setup.ts',

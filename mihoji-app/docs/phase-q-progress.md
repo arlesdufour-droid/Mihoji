@@ -141,3 +141,21 @@ Couvert par `e2e/phase-q-lot-3.spec.ts`.
 4. Cliquez sur l'icône d'historique : les versions d'avant la migration sont toujours là ; « Restaurer » rend l'ancien site.
 
 Couvert par `e2e/phase-q-lot-4.spec.ts` (simulation) et `e2e/phase-q-lot-4-real.spec.ts` (vraie IA).
+
+
+## Lot 5 — la demande au cœur de l'onboarding — EN COURS (WIP)
+
+### Fait (code écrit)
+- Nouvelle étape 4 « Décrivez le site que vous voulez » (`src/app/onboarding/request/page.tsx`) : grand champ, 3 exemples cliquables, choix facultatif de l'un des 4 styles (vignettes) ou « Mihoji choisit ».
+- `POST /api/onboarding/site` + `src/lib/site/onboarding-service.ts` : création du projet au nouveau format (site.json + HTML rendu, photos, modules) via le modèle de design, journal `site_generations` rattaché au projet, messages du chat initiaux, débit de crédits (`site_creation`) hors simulation, limitation de débit.
+- Parcours : SIRET → confirmation → coordonnées → demande → Studio. La saisie manuelle (`/onboarding/manual`) est maintenant un vrai formulaire (migration `0019_phase_q_lot_5.sql` : `companies.siret` et `siren` deviennent facultatifs, appliquée sur la base de développement).
+- Logique pure testée : `src/lib/site/onboarding-request.ts` (+ test, 4 tests).
+
+### Vérifié
+- `npm run lint` OK, `npx vitest run` : 144 tests OK, `tsc` OK.
+- e2e simulé `e2e/phase-q-lot-5.spec.ts` (Q5.1 saisie manuelle → demande → Studio, Q5.2) : 2 tests OK.
+
+### Reste à faire
+- Lancer l'e2e réel `e2e/phase-q-lot-5-real.spec.ts` (SIRET 91285838800024 → « Je veux un site chaleureux avec prise de commande en ligne » → Studio). Premier essai échoué uniquement par délai (compilation à froid, 5 s) : ajouter `expect: { timeout: 30_000 }` dans `playwright.real.config.ts` (non fait), puis `npm run test:e2e:real -- phase-q-lot-5-real`.
+- `npm run build`, suite e2e complète, captures `docs/screenshots/phase-q-lot5/`, section « Comment vérifier » et résumé final.
+- Le serveur de développement du port 3000 a été arrêté pour les tests : à relancer avec `npm run dev`.

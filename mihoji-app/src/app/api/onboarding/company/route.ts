@@ -7,14 +7,15 @@ import { z } from 'zod';
 import { legalFormLabel, nafLabel } from '@/lib/company/lookup';
 
 const companySchema = z.object({
-  siret: z.string().regex(/^\d{14}$/),
-  siren: z.string().regex(/^\d{9}$/),
+  // Saisie manuelle (entreprise sans SIRET) : numéros absents.
+  siret: z.string().regex(/^\d{14}$/).nullish(),
+  siren: z.string().regex(/^\d{9}$/).nullish(),
   name: z.string().min(1),
   legalForm: z.string().min(1),
   address: z.string().min(1),
   activity: z.string().min(1),
   createdAt: z.string().min(1),
-  vatNumber: z.string().min(1),
+  vatNumber: z.string().default(''),
   status: z.enum(['active', 'closed']),
   missingFields: z.record(z.string(), z.string()).default({}),
 });
@@ -33,7 +34,8 @@ export async function POST(request: Request) {
   const parsed = companySchema.safeParse(await request.json().catch(() => null));
   if (!parsed.success) return NextResponse.json({ error: 'invalid_company' }, { status: 400 });
   if (session.isDemo) return NextResponse.json(parsed.data);
-  const { createdAt, ...companyData } = parsed.data;
+  const { createdAt, ...rest } = parsed.data;
+  const companyData = { ...rest, siret: rest.siret ?? null, siren: rest.siren ?? null };
   const values = { ...companyData, legalForm: legalFormLabel(companyData.legalForm), activity: nafLabel(companyData.activity), createdAt: new Date(createdAt), workspaceId: session.workspaceId };
   const [company] = await getDb().insert(companies).values(values).onConflictDoUpdate({ target: companies.workspaceId, set: { ...companyData, legalForm: values.legalForm, activity: values.activity } }).returning();
   return NextResponse.json(company);
