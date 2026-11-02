@@ -15,6 +15,10 @@ import { isContentRefusal, isRateLimitError, type CompletionMessage } from '@/li
 import { chatProtocolPrompt, parseChatPlan, retryFeedbackMessage } from '@/lib/ai/chat-plan';
 import { dropFailedExchanges, GENERATION_FAILED_MESSAGE, GENERATION_SCOPE_FAILED_MESSAGE } from '@/lib/ai/failure';
 import { keywordsOf } from '@/lib/ai/keywords';
+import { runSiteEdit } from '@/lib/site/edit-service';
+
+// Une modification structurée peut demander plusieurs essais du modèle de design.
+export const maxDuration = 300;
 
 const requestSchema = z.object({
   projectId: z.string().min(1),
@@ -73,6 +77,19 @@ async function handleChat(session: AppSession, workspaceId: string, parsed: Pars
   if (session.isDemo) {
     const { text } = await collectStream('chat', baseMessages, signal, maxTokens);
     return new Response(text, { headers: { 'Content-Type': 'text/plain; charset=utf-8', 'Cache-Control': 'no-cache', 'x-mihoji-changed': '0', 'x-mihoji-mock': '1' } });
+  }
+
+  // Projet au nouveau format : la demande modifie la description structurée du site (jamais le HTML), avec contrôles et annulation.
+  const siteEdit = await runSiteEdit({ projectId: parsed.projectId, workspaceId, userId: session.user.id, request: prompt, history: history.slice(0, -1), signal });
+  if (siteEdit.status !== 'not_a_site') {
+    const headers = { 'Content-Type': 'text/plain; charset=utf-8', 'Cache-Control': 'no-cache', ...(siteEdit.mock ? { 'x-mihoji-mock': '1' } : {}) };
+    if (siteEdit.status !== 'rejected' && !siteEdit.mock && siteEdit.tokens > 0) await debitCredits(workspaceId, tokensToCredits(siteEdit.tokens), 'chat');
+    if (siteEdit.status === 'rejected') {
+      console.warn('Site modification cancelled by automatic checks.', { reasons: siteEdit.reasons });
+      return new Response(GENERATION_SCOPE_FAILED_MESSAGE, { headers: { ...headers, 'x-mihoji-changed': '0' } });
+    }
+    if (siteEdit.status === 'unchanged') return new Response(siteEdit.summary, { headers: { ...headers, 'x-mihoji-changed': '0' } });
+    return new Response(siteEdit.summary, { headers: { ...headers, 'x-mihoji-changed': '1', 'x-mihoji-files': siteEdit.files.filter((file) => file !== 'site.json').join(',') } });
   }
 
   let text = '';
@@ -172,7 +189,7 @@ export async function POST(request: Request) {
   if (maxTokens < 16 && !session.isDemo) return jsonError('insufficient_credits', 402);
 
   const abortController = new AbortController();
-  const timeout = setTimeout(() => abortController.abort(), 30_000);
+  const timeout = setTimeout(() => abortController.abort(), parsed.data.task === 'chat' ? 150_000 : 30_000);
 
   try {
     if (parsed.data.task === 'chat') {

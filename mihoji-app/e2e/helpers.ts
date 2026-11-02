@@ -1,7 +1,7 @@
 import { expect, type BrowserContext, type Page } from '@playwright/test';
 import { readFileSync } from 'node:fs';
 
-export type E2eState = { email: string; userId: string; workspaceId: string; projectId: string; legacyProjectId: string; qualityProjectId: string; session: unknown };
+export type E2eState = { email: string; userId: string; workspaceId: string; projectId: string; legacyProjectId: string; qualityProjectId: string; siteProjectId: string; session: unknown };
 
 export function readState(): E2eState {
   return JSON.parse(readFileSync('e2e/.state.json', 'utf8')) as E2eState;

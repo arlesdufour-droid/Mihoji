@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { and, desc, eq, inArray } from 'drizzle-orm';
+import { and, desc, eq, inArray, notInArray } from 'drizzle-orm';
 import { getDb } from '@/db/client';
 import { companies, fileBlobs, projectFiles, projectVersions, projects } from '@/db/schema';
 import { assertProjectAccess, getSession } from '@/lib/auth';
@@ -33,6 +33,9 @@ export async function POST(request: Request, { params }: { params: Promise<{ pro
     for (const [path, hash] of Object.entries(snapshot)) {
       await tx.insert(projectFiles).values({ projectId, path, hash }).onConflictDoUpdate({ target: [projectFiles.projectId, projectFiles.path], set: { hash, updatedAt: new Date() } });
     }
+    // Les fichiers absents de cette version disparaissent (ex. site.json en revenant à une version d'avant le nouveau format).
+    const paths = Object.keys(snapshot);
+    if (paths.includes('index.html')) await tx.delete(projectFiles).where(and(eq(projectFiles.projectId, projectId), notInArray(projectFiles.path, paths)));
     const [nextVersion] = await tx.insert(projectVersions).values({ projectId, parentVersionId: body.versionId, createdBy: 'user', summary: 'Restauration d’une version précédente', filesSnapshot: snapshot, status: 'built' }).returning({ id: projectVersions.id });
     if (!nextVersion) throw new Error('version_restore_failed');
     await tx.update(projects).set({ currentVersionId: nextVersion.id }).where(eq(projects.id, projectId));

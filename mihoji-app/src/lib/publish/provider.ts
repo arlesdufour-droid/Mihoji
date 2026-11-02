@@ -9,13 +9,13 @@ class MockPublishProvider implements PublishProvider {
 }
 
 class VercelPublishProvider implements PublishProvider {
-  async publish({ siteName, files }: Parameters<PublishProvider['publish']>[0]) {
+  async publish({ siteName, files, assetOrigin }: Parameters<PublishProvider['publish']>[0]) {
     const token = process.env.VERCEL_TOKEN;
     if (!token) throw new Error('VERCEL_TOKEN_missing');
     const response = await fetch('https://api.vercel.com/v13/deployments', {
       method: 'POST',
       headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
-      body: JSON.stringify({ name: siteName, files: Object.entries(files).map(([file, data]) => ({ file, data })), target: 'production', routes: [{ src: '/(.*)', headers: { 'Content-Security-Policy': "default-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; script-src 'self'", 'Strict-Transport-Security': 'max-age=31536000; includeSubDomains', 'X-Content-Type-Options': 'nosniff' } }] }),
+      body: JSON.stringify({ name: siteName, files: Object.entries(files).map(([file, data]) => ({ file, data })), target: 'production', routes: [{ src: '/(.*)', headers: { 'Content-Security-Policy': `default-src 'self'; font-src 'self'${assetOrigin ? ` ${assetOrigin}` : ''}; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; script-src 'self'`, 'Strict-Transport-Security': 'max-age=31536000; includeSubDomains', 'X-Content-Type-Options': 'nosniff' } }] }),
     });
     if (!response.ok) throw new Error('publish_provider_failed');
     const result = await response.json() as { url?: string };

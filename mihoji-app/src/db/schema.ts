@@ -173,7 +173,7 @@ export const siteGenerations = pgTable('site_generations', {
   id: uuid('id').defaultRandom().primaryKey(),
   workspaceId: uuid('workspace_id').references(() => workspaces.id, { onDelete: 'cascade' }),
   projectId: uuid('project_id'),
-  task: text('task', { enum: ['create', 'restyle'] }).notNull(),
+  task: text('task', { enum: ['create', 'restyle', 'edit'] }).notNull(),
   request: text('request').notNull(),
   company: jsonb('company').notNull().default({}),
   provider: text('provider').notNull(),

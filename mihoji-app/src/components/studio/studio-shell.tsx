@@ -69,7 +69,7 @@ export function StudioShell({ projectId, remaining, isDemo, email, workspaceName
             </div>
           )}
           <div className="flex h-[calc(100%-49px)] items-center justify-center overflow-auto bg-slate-950 p-4 md:p-8">
-            <iframe key={`${reload}-${versionPreview?.createdAt ?? 'current'}`} title="Aperçu du site généré" srcDoc={`<!doctype html><html lang="fr"><head><script src="https://cdn.tailwindcss.com"></script></head><body>${previewHtml}</body></html>`} className="h-full w-full rounded-xl border border-slate-800 bg-white" sandbox="allow-scripts" />
+            <iframe key={`${reload}-${versionPreview?.createdAt ?? 'current'}`} title="Aperçu du site généré" srcDoc={/^\s*<!doctype/i.test(previewHtml) ? previewHtml : `<!doctype html><html lang="fr"><head><script src="https://cdn.tailwindcss.com"></script></head><body>${previewHtml}</body></html>`} className="h-full w-full rounded-xl border border-slate-800 bg-white" sandbox="allow-scripts" />
             <EditDesignBar />
           </div>
         </div>

@@ -53,3 +53,53 @@ export function mockRestyleJson(userMessage: string): string {
 export function isRestylePrompt(system: string | undefined): boolean {
   return Boolean(system?.startsWith(RESTYLE_PROMPT_MARKER));
 }
+
+// --- Modifications par le chat (simulation) ------------------------------------------------------------------------
+
+const MOCK_REMOVABLE: [RegExp, string][] = [
+  [/faq|question/, 'faq'], [/galerie|photos?/, 'gallery'], [/avis|temoignage/, 'testimonials'], [/equipe/, 'team'],
+  [/horaire/, 'hours'], [/zone|intervention/, 'area'], [/chiffre/, 'stats'], [/specialite|produit|nos pains/, 'products'],
+];
+
+export function mockEditJson(userMessage: string, retried: boolean): string {
+  const raw = userMessage.match(/Demande du client : « ([\s\S]*?) »\n/)?.[1] ?? '';
+  const plain = normalize(raw);
+  const outline = [...userMessage.matchAll(/^(\d+) : (\w+) \(/gm)].map((match) => ({ index: Number(match[1]), type: match[2] }));
+  const footer = outline.find((entry) => entry.type === 'footer')?.index ?? outline.length;
+  const quoted = raw.match(/[«"“]\s*([^»"”]+?)\s*[»"”]/)?.[1];
+  const reply = (summary: string, operations: unknown[]) => JSON.stringify({ summary, operations });
+
+  // Premier essai volontairement défectueux (texte de remplissage) : les contrôles doivent l'annuler, puis le second essai est correct.
+  if (/maladroit/.test(plain)) {
+    const hero = outline.find((entry) => entry.type === 'hero');
+    if (!hero) return reply('Je ne trouve pas l’en-tête du site.', []);
+    return retried
+      ? reply('J’ai modifié le titre de l’en-tête.', [{ op: 'updateSection', index: hero.index, set: { title: 'Le pain du quartier, chaque matin' } }])
+      : reply('J’ai modifié le titre de l’en-tête.', [{ op: 'updateSection', index: hero.index, set: { title: 'Lorem ipsum dolor sit amet' } }]);
+  }
+  const target = MOCK_REMOVABLE.find(([pattern]) => pattern.test(plain))?.[1];
+  if (/supprim|enlev|retir/.test(plain) && target) {
+    const entry = outline.find((candidate) => candidate.type === target);
+    return entry ? reply('J’ai retiré cette section du site.', [{ op: 'removeSection', index: entry.index }]) : reply('Cette section n’existe pas sur votre site, je n’ai rien changé.', []);
+  }
+  if (/ajout|insere|cree/.test(plain) && /faq|question/.test(plain)) {
+    if (outline.some((entry) => entry.type === 'faq')) return reply('Votre site a déjà une section de questions fréquentes.', []);
+    return reply('J’ai ajouté une section de questions fréquentes avant le pied de page.', [{ op: 'insertSection', index: footer, section: {
+      type: 'faq', variant: 'accordion', title: 'Vos questions, nos réponses', intro: 'Les questions que l’on nous pose le plus souvent.',
+      items: [
+        { question: 'Peut-on commander à l’avance ?', answer: 'Oui, appelez-nous ou passez au comptoir : votre commande est prête à l’heure convenue.' },
+        { question: 'Où nous trouver ?', answer: 'Toutes les informations d’accès figurent plus bas, avec nos horaires d’ouverture.' },
+        { question: 'Proposez-vous des produits adaptés aux allergies ?', answer: 'Dites-nous vos contraintes à la commande, nous vous conseillons les produits adaptés.' },
+      ],
+    } }]);
+  }
+  const asked = styles.find((style) => plain.includes(normalize(style.label.split(' ')[0])) || plain.includes(style.id));
+  if (/style|ambiance|look|elegant|moderne|colore|chaleureux/.test(plain) && asked) {
+    return reply(`J’ai appliqué le style « ${asked.label} ».`, [{ op: 'setTheme', style: asked.id, palette: asked.palettes[0].id }]);
+  }
+  if (/titre/.test(plain) && quoted) {
+    const hero = outline.find((entry) => entry.type === 'hero');
+    if (hero) return reply('J’ai modifié le titre de l’en-tête.', [{ op: 'updateSection', index: hero.index, set: { title: quoted } }]);
+  }
+  return reply('Je n’ai pas bien compris ce que vous souhaitez modifier. Pouvez-vous préciser, par exemple « ajoute une FAQ » ou « supprime la galerie » ?', []);
+}

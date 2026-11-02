@@ -3,6 +3,9 @@ import { writeFileSync } from 'node:fs';
 import { createClient } from '@supabase/supabase-js';
 import postgres from 'postgres';
 import type { FullConfig } from '@playwright/test';
+import { siteFiles } from '../src/lib/site/files';
+import { samples, withSamplePhotos } from '../src/lib/site/samples';
+import { siteSchema } from '../src/lib/site/schema';
 import { assertE2eEnvironment, E2E_EMAIL_DOMAIN, E2E_EMAIL_PREFIX, loadEnv } from '../scripts/e2e-guard';
 
 export default async function globalSetup(config: FullConfig) {
@@ -19,6 +22,11 @@ export default async function globalSetup(config: FullConfig) {
   let legacyProjectId = '';
   const qualityProjectId = randomUUID();
   const qualityVersionId = randomUUID();
+  const siteProjectId = randomUUID();
+  const siteVersionId = randomUUID();
+  // Projet au nouveau format (lot 4) : description structurée + rendu, avec les photos libres de la bibliothèque d'exemples.
+  const siteContents = siteFiles(siteSchema.parse(withSamplePhotos(samples.find((sample) => sample.id === 'boulangerie')!.site)));
+  const siteHashes = Object.fromEntries([...siteContents].map(([path, content]) => [path, createHash('sha256').update(content).digest('hex')]));
   // Site proche des projets réels : bandeau violet avec titre clair, et un bloc Horaires que les modifications de style ne doivent pas abîmer.
   const qualityHtml = '<div class="min-h-full bg-white text-slate-900"><header class="bg-indigo-700 px-8 py-16 text-white"><p class="text-sm font-semibold uppercase tracking-[0.2em] text-indigo-200">{{company.activity}}</p><h1 class="mt-4 text-4xl font-bold text-white">{{company.name}}</h1><p class="mt-4 max-w-2xl text-indigo-100">Un service professionnel, proche de vous.</p></header><main class="space-y-8 p-8"><section><h2 class="text-2xl font-bold text-slate-900">Bienvenue chez {{company.name}}</h2><p class="mt-3 text-slate-600">Découvrez nos services et contactez-nous pour votre projet.</p></section><section data-mihoji="horaires" class="mt-8 rounded-xl bg-slate-100 p-5"><h2 class="text-2xl font-bold text-slate-900">Horaires</h2><p class="mt-2">Du lundi au vendredi, de 8h à 18h.</p></section></main><footer class="border-t border-slate-200 px-8 py-6 text-sm text-slate-500"><span>{{company.name}}</span></footer></div>';
   const qualityHash = createHash('sha256').update(qualityHtml).digest('hex');
@@ -55,6 +63,12 @@ export default async function globalSetup(config: FullConfig) {
     await tx`insert into file_blobs (hash, content) values (${qualityHash}, ${qualityHtml}) on conflict (hash) do nothing`;
     await tx`insert into project_files (project_id, path, hash) values (${qualityProjectId}, 'index.html', ${qualityHash})`;
     await tx`insert into project_versions (id, project_id, created_by, summary, files_snapshot, status) values (${qualityVersionId}, ${qualityProjectId}, 'agent', 'Version qualité', ${JSON.stringify({ 'index.html': qualityHash })}, 'built')`;
+    await tx`insert into projects (id, workspace_id, name, current_version_id, created_at) values (${siteProjectId}, ${workspaceId}, 'Projet E2E site structuré', ${siteVersionId}, now() - interval '3 minutes')`;
+    for (const [path, content] of siteContents) {
+      await tx`insert into file_blobs (hash, content) values (${siteHashes[path]}, ${content}) on conflict (hash) do nothing`;
+      await tx`insert into project_files (project_id, path, hash) values (${siteProjectId}, ${path}, ${siteHashes[path]})`;
+    }
+    await tx`insert into project_versions (id, project_id, created_by, summary, files_snapshot, status) values (${siteVersionId}, ${siteProjectId}, 'agent', 'Version initiale du site structuré', ${JSON.stringify(siteHashes)}, 'built')`;
   });
   await sql.end();
   const link = await supabase.auth.admin.generateLink({ type: 'magiclink', email });
@@ -65,7 +79,7 @@ export default async function globalSetup(config: FullConfig) {
   });
   const verified = await verifier.auth.verifyOtp({ token_hash: tokenHash, type: 'email' });
   if (verified.error || !verified.data.session) throw verified.error ?? new Error('e2e_session_failed');
-  writeFileSync('e2e/.state.json', JSON.stringify({ email, userId, workspaceId, projectId, legacyProjectId, qualityProjectId, session: verified.data.session }));
+  writeFileSync('e2e/.state.json', JSON.stringify({ email, userId, workspaceId, projectId, legacyProjectId, qualityProjectId, siteProjectId, session: verified.data.session }));
   // Relais pour playwright.config.ts : l'utilisateur de test est administrateur pendant la suite.
   writeFileSync('e2e/.admin-email', email);
   // Préchauffe la route de génération (compilée à la demande par le serveur de développement) pour que le premier test ne dépasse pas ses délais.

@@ -34,6 +34,9 @@ export async function POST(request: Request) {
         await tx.insert(fileBlobs).values({ hash, content }).onConflictDoNothing();
         await tx.insert(projectFiles).values({ projectId: body.projectId!, path, hash }).onConflictDoUpdate({ target: [projectFiles.projectId, projectFiles.path], set: { hash, updatedAt: new Date() } });
       }
+      // L'instantané couvre tous les fichiers du projet (pas seulement les documents), pour que la restauration d'une version reste complète.
+      const all = await tx.select({ path: projectFiles.path, hash: projectFiles.hash }).from(projectFiles).where(eq(projectFiles.projectId, body.projectId!));
+      for (const file of all) snapshot[file.path] = file.hash;
       const [version] = await tx.insert(projectVersions).values({ projectId: body.projectId!, parentVersionId: project?.currentVersionId ?? null, createdBy: 'agent', summary: 'Génération des documents de conformité', filesSnapshot: snapshot, status: 'built' }).returning({ id: projectVersions.id });
       if (version) await tx.update(projects).set({ currentVersionId: version.id }).where(eq(projects.id, body.projectId!));
     });

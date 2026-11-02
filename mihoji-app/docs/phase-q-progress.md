@@ -111,3 +111,33 @@ Couvert par `e2e/phase-q-lot-3.spec.ts`.
 
 ### À faire côté utilisateur
 - Demander le passage en « Production » de l'application Unsplash (5 000 requêtes/h) avant le banc d'essai de 10 sites.
+
+
+## Lot 4 — modifications et migration — terminé
+
+### Fait
+- **Le chat modifie la description du site, jamais le HTML** : pour un projet au nouveau format (`site.json` + HTML rendu, enregistrés ensemble dans chaque version), `/api/generate` appelle `runSiteEdit` (`src/lib/site/edit-service.ts`). Le modèle de design (Anthropic ; repli Groq fort ; simulation en développement sans clé) renvoie des opérations (`updateSection`, `insertSection`, `removeSection`, `moveSection`, `setTheme`, `setSeo`, `setPrimaryCta`, `setModules`) validées par zod ; les photos choisies lui sont masquées puis rendues aux requêtes inchangées ; les nouvelles requêtes passent par le service de photos.
+- **Contrôles automatiques puis annulation** (`edit.ts`, `edit-run.ts`, 3 essais) : sections non concernées strictement identiques et dans le même ordre, style/SEO/appel à l'action/modules inchangés sauf demande, pas de page vidée, aucun téléphone/email en dur, aucune adresse d'image inventée, contraste WCAG AA de la palette, rendu valide (un seul h1, HTML bien formé, aucun script). Au moindre problème : rien n'est enregistré, le modèle reçoit la raison et réessaie ; après 3 échecs, message clair et aucun crédit débité. Coût réel de chaque modification enregistré dans `site_generations` (tâche `edit`, migration 0018).
+- **Migration** (`migrate.ts`, `npm run sites:migrate`, route admin `POST /api/admin/migrate-project`) : le site est recréé par le modèle de design à partir des données de l'entreprise et devient une NOUVELLE version ; anciennes versions, publications et messages du chat intacts. Restaurer une ancienne version rend le HTML d'origine et retire `site.json` (la restauration supprime désormais les fichiers absents de la version). Le snapshot des documents de conformité couvre maintenant tous les fichiers.
+- **BOULANGERIE BRION migrée** (base de développement) : 1 essai, 0,044 €, 13 photos (Unsplash en mode Démonstration avec cache ; le quota de 50/h étant épuisé en cours de route, les photos manquantes ont été complétées après réinitialisation via `npm run sites:migrate -- --photos <id>`). Captures : `docs/screenshots/phase-q-lot4/`.
+- **Publication** : un site au nouveau format est rendu depuis sa description (feuille de style séparée, polices servies par l'application, origine ajoutée à `font-src` de la CSP).
+- Aperçu du Studio : un document HTML complet est affiché tel quel (plus de CDN Tailwind pour ces sites).
+
+### Vérifié
+- `npm run build`, `npm run lint`, `npx vitest run` (140 tests, dont 16 nouveaux `edit.test.ts`) : OK. `npm run test:e2e` : 49 tests OK (`e2e/phase-q-lot-4.spec.ts` Q4.1 à Q4.4, en simulation).
+- **e2e avec la vraie IA** (`npm run test:e2e:real -- phase-q-lot-4-real`) : 2 demandes dans le chat (ajout d'une FAQ, puis style Élégant premium) ; sections existantes inchangées, 2 versions créées, contraste/débordement/alt mesurés dans le navigateur (ordinateur et mobile), journal : Anthropic `claude-sonnet-5-5`, 1 essai chacune, **0,0088 € et 0,0062 €**.
+
+### Simulé ou restant
+- Simulé : en développement sans clé (et dans la suite e2e normale), le « modèle » de modification est déterministe (FAQ, suppression d'une section, style, titre).
+- Les modifications utilisent le modèle de design (et non Groq rapide comme prévu pour les petites retouches) : la description complète dépasse les 8 000 jetons/min de Groq. Coût mesuré < 0,01 € par demande.
+- Les projets créés par l'onboarding actuel restent à l'ancien format (chat HTML historique) jusqu'au lot 5, qui crée directement des sites structurés ; on peut aussi les migrer avec `npm run sites:migrate`.
+- Les modifications visent la page d'accueil (un seul site à une page pour l'instant).
+- Unsplash reste en mode Démonstration (cache 30 jours) ; passage en Production non exigé avant le lancement.
+
+### Comment vérifier
+1. Connecté, ouvrez le Studio de BOULANGERIE BRION : l'aperçu montre le nouveau site avec photos.
+2. Dans le chat, tapez « Ajoute une FAQ sur les commandes à l'avance » puis envoyez : une section de questions apparaît, le reste est identique.
+3. Tapez « Passe le site au style Élégant premium » : l'apparence change, les textes restent.
+4. Cliquez sur l'icône d'historique : les versions d'avant la migration sont toujours là ; « Restaurer » rend l'ancien site.
+
+Couvert par `e2e/phase-q-lot-4.spec.ts` (simulation) et `e2e/phase-q-lot-4-real.spec.ts` (vraie IA).

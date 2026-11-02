@@ -8,12 +8,12 @@ import { styles } from './themes';
 
 export const DESIGN_PROMPT_MARKER = 'Tu es le directeur artistique et rédacteur web de Mihoji';
 
-const styleGuide = styles.map((style) => `- "${style.id}" (${style.label}) : ${style.tagline} Palettes : ${style.palettes.map((palette) => `"${palette.id}" (${palette.label})`).join(', ')}.`).join('\n');
+export const styleGuide = styles.map((style) => `- "${style.id}" (${style.label}) : ${style.tagline} Palettes : ${style.palettes.map((palette) => `"${palette.id}" (${palette.label})`).join(', ')}.`).join('\n');
 
 const v = (type: keyof typeof sectionVariants) => sectionVariants[type].map((variant) => `"${variant}"`).join('|');
 
 // Champs de chaque section (« ? » = facultatif ; [n-m] = nombre d'éléments). Doit rester aligné sur schema.ts (vérifié par les tests).
-const sectionGuide = `Champs communs facultatifs de toute section : id (ancre, minuscules), nav (libellé de menu ou false), tone ("default"|"alt"|"inverse", laisse vide en général).
+export const sectionGuide = `Champs communs facultatifs de toute section : id (ancre, minuscules), nav (libellé de menu ou false), tone ("default"|"alt"|"inverse", laisse vide en général).
 - hero (variant ${v('hero')}) : eyebrow?, title (≤110), subtitle? (≤280), cta? {label,href}, secondaryCta?, highlights? [0-4] (≤44 car.), image? {query, alt}
 - about (variant ${v('about')}) : eyebrow?, title, paragraphs [1-3] (≤640), highlights? [0-4], image?
 - services (variant ${v('services')}) : eyebrow?, title, intro?, items [2-8] {title (≤60), description (≤240), icon?, price? (texte, ex. "dès 89 €")}
@@ -32,7 +32,7 @@ const sectionGuide = `Champs communs facultatifs de toute section : id (ancre, m
 - module (variant ${v('module')}) : module (${displayModules.map((module) => `"${module}"`).join('|')}), eyebrow?, title, intro? — affiche le module fonctionnel correspondant décrit dans "modules".
 Icônes autorisées : ${iconNames.join(', ')}.`;
 
-const moduleGuide = `Modules fonctionnels (objet "modules", chaque clé facultative). Propose-les quand la demande ou le métier s'y prête, jamais par défaut :
+export const moduleGuide = `Modules fonctionnels (objet "modules", chaque clé facultative). Propose-les quand la demande ou le métier s'y prête, jamais par défaut :
 - quote (artisans, travaux, services sur mesure) : {services [1-12] (≤60), fields [0-5] parmi "address"|"date"|"budget"|"photos"|"surface", responseDelay (ex. "Devis gratuit sous 48 h"), emergency (true pour un dépannage urgent)}
 - booking (coach, kiné, coiffeur, esthéticienne, garage, consultant…) : {services [1-12] {name, durationMinutes (10-480), price? (nombre en euros, 0 = offert), location? "onsite"|"home"|"remote"|"outdoor"}, schedule {days [jours en minuscules : "lundi"…"dimanche"], start "HH:MM", end "HH:MM"}, slotMinutes?, leadTimeHours, cancellationPolicy?, payment "none"|"deposit"|"full", depositPercent? (obligatoire si "deposit"), reminders}
 - shop (commerce de bouche, boutique, click & collect) : {mode "click-collect"|"delivery"|"both", products [1-40] {name, description?, price (nombre en euros), unit?, category?, preorderHours?}, pickup? {schedule {days,start,end}, leadTimeHours} (obligatoire sauf "delivery"), payment "online"|"on-pickup"|"both", minimumOrder?}

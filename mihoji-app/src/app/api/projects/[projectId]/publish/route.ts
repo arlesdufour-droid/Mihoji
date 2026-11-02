@@ -7,8 +7,11 @@ import { getPublishProvider } from '@/lib/publish/provider';
 import { complianceMissingLabels, complianceStatus } from '@/lib/compliance';
 import { injectCompanyData } from '@/lib/company/render';
 import { scanPublishedSite } from '@/lib/abuse/site-scan';
+import { getPublicOrigin } from '@/lib/site-url';
+import { renderSite } from '@/lib/site/render';
+import { parseStoredSite, SITE_FILE } from '@/lib/site/store';
 
-export async function POST(_request: Request, { params }: { params: Promise<{ projectId: string }> }) {
+export async function POST(request: Request, { params }: { params: Promise<{ projectId: string }> }) {
   const { projectId } = await params;
   const session = await getSession();
   if (!session) return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
@@ -21,7 +24,11 @@ export async function POST(_request: Request, { params }: { params: Promise<{ pr
   const [version] = await getDb().select({ id: projectVersions.id, filesSnapshot: projectVersions.filesSnapshot }).from(projectVersions).where(eq(projectVersions.id, project.currentVersionId)).limit(1);
   if (!version) return NextResponse.json({ error: 'version_not_found' }, { status: 404 });
   const files = await getDb().select({ path: projectFiles.path, content: fileBlobs.content }).from(projectFiles).innerJoin(fileBlobs, eq(projectFiles.hash, fileBlobs.hash)).where(eq(projectFiles.projectId, projectId));
-  const siteFiles = Object.fromEntries(files.map((file) => [file.path, injectCompanyData(file.content, company)]));
+  // Projet au nouveau format : le site publié est rendu depuis sa description (feuille de style séparée, polices servies par l'application).
+  const site = parseStoredSite(files.find((file) => file.path === SITE_FILE)?.content);
+  const assetOrigin = getPublicOrigin(request) ?? undefined;
+  const publishable = site ? Object.entries(renderSite(site, { fontBase: `${assetOrigin ?? ''}/fonts` }).files) : files.filter((file) => file.path !== SITE_FILE).map((file) => [file.path, file.content] as const);
+  const siteFiles = Object.fromEntries(publishable.map(([path, content]) => [path, injectCompanyData(content, company)]));
   const findings = scanPublishedSite(siteFiles);
   if (findings.length > 0) {
     const [publication] = await getDb().insert(publications).values({ projectId, versionId: version.id, url: 'blocked', status: 'failed' }).returning({ id: publications.id });
@@ -30,7 +37,7 @@ export async function POST(_request: Request, { params }: { params: Promise<{ pr
   }
   const provider = getPublishProvider();
   try {
-    const result = await provider.publish({ projectId, versionId: version.id, siteName: project.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || 'mihoji', files: siteFiles });
+    const result = await provider.publish({ projectId, versionId: version.id, assetOrigin: site ? assetOrigin : undefined, siteName: project.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || 'mihoji', files: siteFiles });
     await getDb().insert(publications).values({ projectId, versionId: version.id, url: result.url, status: 'published' });
     return NextResponse.json(result);
   } catch (error) {

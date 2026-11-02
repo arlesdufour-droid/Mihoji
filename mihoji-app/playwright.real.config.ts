@@ -4,7 +4,7 @@ import { defineConfig } from '@playwright/test';
 // SANS AI_MOCK — les réponses viennent réellement de Groq. Lancer : npm run test:e2e:real
 export default defineConfig({
   testDir: './e2e',
-  testMatch: 'real-ai.spec.ts',
+  testMatch: ['real-ai.spec.ts', 'phase-q-lot-4-real.spec.ts'],
   timeout: 180_000,
   workers: 1,
   use: { baseURL: 'http://127.0.0.1:3000', headless: true },

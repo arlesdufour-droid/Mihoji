@@ -1,7 +1,8 @@
 import { aiModels } from '../models';
 import { RETRY_FEEDBACK_PREFIX } from '../failure';
 import { DESIGN_PROMPT_MARKER } from '../../site/design-prompt';
-import { isRestylePrompt, mockDesignJson, mockRestyleJson } from '../../site/design-mock';
+import { isRestylePrompt, mockDesignJson, mockEditJson, mockRestyleJson } from '../../site/design-mock';
+import { EDIT_PROMPT_MARKER } from '../../site/edit-prompt';
 import type { CompletionRequest, CompletionResult, LlmProvider } from './types';
 
 const mockText = 'Mihoji a préparé une réponse de démonstration. Décrivez une modification pour continuer.';
@@ -91,6 +92,7 @@ export class MockProvider implements LlmProvider {
     const user = req.messages.find((message) => message.role === 'user')?.content ?? '';
     // Tâches de design simulées : site d'exemple adapté à la demande, ou changement de style.
     if (system?.startsWith(DESIGN_PROMPT_MARKER)) return { content: mockDesignJson(user), promptTokens: 0, completionTokens: 0, totalTokens: 0, model: 'simulation', mock: true };
+    if (system?.startsWith(EDIT_PROMPT_MARKER)) return { content: mockEditJson(user, req.messages.some((message) => message.content.startsWith(RETRY_FEEDBACK_PREFIX))), promptTokens: 0, completionTokens: 0, totalTokens: 0, model: 'simulation', mock: true };
     if (isRestylePrompt(system)) return { content: mockRestyleJson(user), promptTokens: 0, completionTokens: 0, totalTokens: 0, model: 'simulation', mock: true };
     return { content: mockText, totalTokens: 24, promptTokens: 12, completionTokens: 12 };
   }
