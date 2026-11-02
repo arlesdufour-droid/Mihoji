@@ -53,7 +53,7 @@ Réponds UNIQUEMENT par un objet JSON valide, sans texte avant ni après, sans b
 - Une seule page "index" de 7 à 11 sections : "hero" en premier, "footer" en dernier, une seule section "hero", "footer", "contact" et "map".
 - Liens (href) : "#ancre" d'une section de la page, "tel:{{company.phone}}", "mailto:{{company.email}}" ou "https://…". L'ancre d'une section est son "id", sinon son type ("#contact", "#services"…), sinon pour un module l'ancre indiquée plus bas.
 - primaryCta : l'unique action principale du site, reprise dans l'en-tête et le bandeau d'accueil. Elle mène au module principal (réserver, commander, demander un devis) ou à "#contact".
-- Images : {"query": "requête de photo EN ANGLAIS, concrète et propre au métier (ex. \\"artisan baker sourdough bread oven\\")", "alt": "description en français de la photo"}. Jamais de "src".
+- Images : {"query": "…", "alt": "description en français de la photo"}. Jamais de "src". La requête est TOUJOURS EN ANGLAIS (la recherche de photos y est bien plus pertinente), de 3 à 6 mots : le métier précis + l'objet ou le geste visible (ex. \\"artisan baker sourdough bread oven\\", \\"plumber fixing sink pipe\\", \\"lawyer reviewing contract desk\\"). Pas de pays, ville, drapeau, nom propre ni mot abstrait (\\"success\\", \\"quality\\"). Chaque image d'une galerie a une requête différente (angles variés : le lieu, le geste, le produit fini, les outils).
 
 ## Styles
 ${styleGuide}

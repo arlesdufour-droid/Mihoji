@@ -233,7 +233,7 @@ export function catalogueSite(style: StyleId, palette: string | undefined, type:
 
 type PhotoEntry = { src: string; credit: { name: string; url: string } };
 
-// Complète les emplacements d'images des exemples avec les photos récupérées par scripts/fetch-sample-photos.ts (si présentes).
+// Complète les emplacements d'images des exemples avec les photos récupérées par scripts/fetch-photo-library.ts (si présentes).
 export function withSamplePhotos<T>(value: T): T {
   const library = photos as Record<string, PhotoEntry>;
   const visit = (node: unknown): unknown => {

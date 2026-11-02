@@ -10,7 +10,7 @@
 - **CSS compilé, site statique léger** : aucun CDN ni script ; une feuille de style par site (19 à 21 Ko, ≈ 5 Ko compressée ; pages HTML de 11 à 17 Ko) qui n’inclut que les blocs des sections utilisées ; polices variables woff2 (sous-ensemble latin, 27 à 48 Ko, licence OFL) auto-hébergées dans `public/fonts/`, 2 familles au maximum par site, `font-display: swap`, préchargement ; images adaptatives (`srcset`, WebP) pour Unsplash, chargement différé, texte alternatif obligatoire, crédit photographe affiché.
 - **Données entreprise toujours injectées** par `{{company.*}}` ; nouveau jeton `{{company.city}}` (ville déduite de l’adresse) ; les téléphone et email absents font disparaître leur ligne au lieu d’afficher un lien vide.
 - **Galerie de contrôle `/admin/design`** (administrateurs) : 4 sites d’exemple (boulangerie, kiné, cabinet d’avocats, coach sportif), changement de style et de palette, catalogue des 15 types × variantes. Pages de rendu `/admin/design/render` (403 pour les non-admins).
-- **Aperçu photo** : les exemples utilisent de vraies photos Unsplash récupérées par `scripts/fetch-sample-photos.ts` (`UNSPLASH_ACCESS_KEY`), avec crédit. Sans photo, un visuel aux couleurs du thème s’affiche.
+- **Aperçu photo** : les exemples utilisent de vraies photos Unsplash récupérées par `scripts/fetch-photo-library.ts` (`UNSPLASH_ACCESS_KEY`), avec crédit. Sans photo, un visuel aux couleurs du thème s’affiche.
 - Bonus : `scripts/gen-tailwind-palette.ts`, `scripts/gen-site-icons.ts` (44 icônes lucide statiques), analyse HTML qui ignore `<!doctype>`.
 
 ### Preuves
@@ -80,3 +80,34 @@ Couvert par `e2e/phase-q-lot-2.spec.ts` (Q2.1 à Q2.3).
 ### À faire côté utilisateur
 
 - Rien de bloquant : `ANTHROPIC_API_KEY` est déjà dans `.env.local`. Pour changer de modèle, renseignez `AI_MODEL_DESIGN` (documentée dans `.env.example`).
+
+
+## Lot 3 — photos — terminé
+
+### Fait
+- **Fournisseur d'images derrière une interface** (`src/lib/photos/`) : `PhotoProvider` avec Unsplash (`UNSPLASH_ACCESS_KEY`) et une bibliothèque locale de 35 requêtes × 3 photos libres par métier (`library.json`, produite par `npm run … scripts/fetch-photo-library.ts`) en repli (clé absente, quota épuisé, panne, requête sans résultat). Pas de simulation en production : les photos locales sont de vraies photos libres.
+- **Requêtes en anglais** : le prompt du modèle de design l'impose (3 à 6 mots, métier + geste visible, pas de pays ni de mot abstrait, une requête différente par image de galerie).
+- **Meilleure photo selon le métier** (`select.ts`, pur, testé) : 20 résultats récupérés, chacun noté sur sa description, son texte alternatif et ses mots-clés (couverture de tous les mots de la requête) ; les motifs hors sujet (drapeau, affiche, parapluie, logo…) sont pénalisés. Le drapeau américain du cabinet d'avocats est remplacé par une photo de signature de contrat ; deux autres photos hors sujet des exemples (parapluie, ponton) ont aussi été remplacées.
+- **Requêtes trop précises** : Unsplash exige tous les mots ; sans résultat, on réessaie avec les 3 puis 2 premiers mots (le métier d'abord). Une même photo n'est jamais utilisée deux fois dans un site (`assign.ts`).
+- **Quota économisé** : cache en base `photo_cache` (migration `0017`, 30 jours, y compris les requêtes sans résultat) + cache mémoire ; une seule recherche par requête ; compteur horaire déduit de la base (budget 45 par heure, `UNSPLASH_HOURLY_BUDGET`) et lecture de `X-Ratelimit-Remaining` (réserve de 5). Simulation (mock) et tests : aucun appel Unsplash.
+- **Règles d'Unsplash** : images servies depuis `images.unsplash.com` (tailles 480 à 1600, WebP, `srcset`, chargement différé), texte alternatif obligatoire en français, crédit photographe + lien Unsplash avec `utm_source=mihoji`, événement de téléchargement signalé quand la photo est utilisée.
+- Branché dans `runDesignGeneration` : une panne de photos ne fait jamais échouer la création.
+
+### Vérifié
+- Génération réelle (plombier, Anthropic + Unsplash) : 6 images, 6 photos pertinentes (robinet, chaudière, tuyaux cuivre…), 0,036 €. La requête du hero, trop précise, a été résolue à la 2e tentative. Captures : `docs/screenshots/phase-q-lot3/`.
+- `npx vitest run` : 124 tests (10 nouveaux dans `src/lib/photos/photos.test.ts`) ; `npm run lint` et `npm run build` : OK ; e2e lots 1, 2 et 3 (`e2e/phase-q-lot-3.spec.ts`, Q3.1 et Q3.2) : OK.
+
+### Simulé ou restant
+- Simulé : en simulation/tests, les photos viennent uniquement de la bibliothèque locale.
+- Quota Unsplash démonstration (50/h) très limité : environ 6 à 10 recherches par site neuf. Le banc d'essai (lot 6) s'appuiera sur le cache ; passer l'application en « Production » Unsplash (5 000/h) avant le lancement.
+- Faiblesses de la bibliothèque locale : pas de photo « plombier » ni « peintre » directement (seulement par recoupement de mots) ; quelques photos moyennes (« plank core workout », salle de bain bleue).
+- Le script `fetch-sample-photos.ts` est remplacé par `fetch-photo-library.ts`.
+
+### Comment vérifier
+1. Connecté en administrateur, ouvrez `/admin/design`, choisissez l'exemple « cabinet d'avocats » : la photo d'en-tête montre une signature de contrat, plus de drapeau ; sous chaque photo, « Photo : nom · Unsplash ».
+2. Ouvrez `/admin/design/generate`, cliquez « Plombier (demande de devis) » puis « Générer le site » : l'aperçu contient des photos avec crédit (en développement avec clé, ce sont de vraies recherches Unsplash).
+
+Couvert par `e2e/phase-q-lot-3.spec.ts`.
+
+### À faire côté utilisateur
+- Demander le passage en « Production » de l'application Unsplash (5 000 requêtes/h) avant le banc d'essai de 10 sites.

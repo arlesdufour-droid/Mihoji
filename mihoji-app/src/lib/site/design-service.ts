@@ -9,6 +9,7 @@ import { MockProvider } from '@/lib/ai/providers/mock';
 import { LlmProviderError, type LlmProvider } from '@/lib/ai/providers/types';
 import { designRoute, type DesignTask } from '@/lib/ai/routing';
 import { createSiteDesign, restyleSiteDesign, type Complete, type CreateInput, type DesignResult } from './design';
+import { resolveSitePhotos } from '@/lib/photos/service';
 import { siteSchema, type SiteDescription } from './schema';
 
 export type DesignProvider = { provider: 'anthropic' | 'groq' | 'mock'; model: string; complete: Complete };
@@ -39,6 +40,16 @@ export async function runDesignGeneration(input: RunInput, signal?: AbortSignal)
     console.error('Design generation failed.', error);
     const code = error instanceof LlmProviderError ? error.code : error instanceof Error ? error.message : 'erreur inconnue';
     result = { ok: false, error: `fournisseur IA indisponible (${code})`, usage: { promptTokens: 0, completionTokens: 0, cacheReadTokens: 0, cacheWriteTokens: 0, costEur: 0, attempts: 1, model } };
+  }
+  // Photos : meilleure photo par requête (cache, Unsplash, bibliothèque locale). Une panne ne fait jamais échouer la création.
+  if (result.ok) {
+    try {
+      const { site, report } = await resolveSitePhotos(result.value, { offline: provider === 'mock' });
+      result = { ...result, value: siteSchema.parse(site) };
+      console.info('Photos resolved.', report);
+    } catch (error) {
+      console.error('Photo resolution failed.', error);
+    }
   }
   const [record] = await getDb().insert(siteGenerations).values({
     workspaceId: input.workspaceId,

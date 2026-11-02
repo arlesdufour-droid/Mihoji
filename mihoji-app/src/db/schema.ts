@@ -191,3 +191,11 @@ export const siteGenerations = pgTable('site_generations', {
   createdBy: uuid('created_by'),
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
 });
+
+// Cache des recherches de photos (phase Q, lot 3) : meilleures photos classées par requête normalisée.
+export const photoCache = pgTable('photo_cache', {
+  query: text('query').primaryKey(),
+  source: text('source', { enum: ['unsplash', 'local'] }).notNull(),
+  candidates: jsonb('candidates').notNull().default([]),
+  fetchedAt: timestamp('fetched_at', { withTimezone: true }).defaultNow().notNull(),
+});

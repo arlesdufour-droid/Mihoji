@@ -1,10 +1,170 @@
 {
-  "bakery bread loaves": {
-    "src": "https://images.unsplash.com/photo-1608198093002-ad4e005484ec",
-    "alt": "brown bread on brown wicker basket",
+  "electrician installing electrical panel": {
+    "src": "https://images.unsplash.com/photo-1758101755915-462eddc23f57",
+    "alt": "Electrician testing electrical panel with multimeter",
     "credit": {
-      "name": "mohamed hassouna",
-      "url": "https://unsplash.com/@mhassouna931?utm_source=mihoji&utm_medium=referral"
+      "name": "Toolmash Expo",
+      "url": "https://unsplash.com/@toolmash?utm_source=mihoji&utm_medium=referral"
+    }
+  },
+  "restaurant chef plating dish": {
+    "src": "https://images.unsplash.com/photo-1578425570232-bf51f753dd5e",
+    "alt": "grayscale photography of person doing plating of dishes",
+    "credit": {
+      "name": "Louis Hansel",
+      "url": "https://unsplash.com/@louishansel?utm_source=mihoji&utm_medium=referral"
+    }
+  },
+  "florist arranging bouquet flowers shop": {
+    "src": "https://images.unsplash.com/photo-1678394535834-c2bdb4fa2566",
+    "alt": "a woman arranging flowers in a flower shop",
+    "credit": {
+      "name": "Maxim Tolchinskiy",
+      "url": "https://unsplash.com/@shaikhulud?utm_source=mihoji&utm_medium=referral"
+    }
+  },
+  "car mechanic garage repairing engine": {
+    "src": "https://images.unsplash.com/photo-1792793178803-455e5a544867",
+    "alt": "A mechanic working on the engine of a black car in a repair shop",
+    "credit": {
+      "name": "Mustafa Sheikhmouss",
+      "url": "https://unsplash.com/@xalo_mustafa?utm_source=mihoji&utm_medium=referral"
+    }
+  },
+  "photographer holding camera studio": {
+    "src": "https://images.unsplash.com/photo-1758613656365-5195c3b96ba3",
+    "alt": "Woman holding a professional camera in a studio",
+    "credit": {
+      "name": "Vitaly Gariev",
+      "url": "https://unsplash.com/@silverkblack?utm_source=mihoji&utm_medium=referral"
+    }
+  },
+  "business consultant meeting laptop": {
+    "src": "https://images.unsplash.com/photo-1616587224026-668840f26916",
+    "alt": "A man and a woman working on a laptop at a cafe table",
+    "credit": {
+      "name": "LinkedIn Sales Solutions",
+      "url": "https://unsplash.com/@linkedinsalesnavigator?utm_source=mihoji&utm_medium=referral"
+    }
+  },
+  "hairdresser salon cutting hair": {
+    "src": "https://images.unsplash.com/photo-1647462741268-e5724e5886c0",
+    "alt": "a woman cutting another woman's hair in a salon",
+    "credit": {
+      "name": "Gabriela",
+      "url": "https://unsplash.com/@gabigi?utm_source=mihoji&utm_medium=referral"
+    }
+  },
+  "carpenter woodworking workshop": {
+    "src": "https://images.unsplash.com/photo-1687422810663-c316494f725a",
+    "alt": "a man smiles as he works on a piece of wood",
+    "credit": {
+      "name": "Ali Mkumbwa",
+      "url": "https://unsplash.com/@mkumbwajr?utm_source=mihoji&utm_medium=referral"
+    }
+  },
+  "gardener landscaping garden": {
+    "src": "https://images.unsplash.com/photo-1743327811352-8f9b286f9c12",
+    "alt": "A beautiful garden with flowers and trees",
+    "credit": {
+      "name": "Ries Bosch",
+      "url": "https://unsplash.com/@ries_bosch?utm_source=mihoji&utm_medium=referral"
+    }
+  },
+  "cleaning service professional cleaning home": {
+    "src": "https://images.unsplash.com/photo-1740657254989-42fe9c3b8cce",
+    "alt": "A person in yellow gloves and blue gloves cleaning a floor",
+    "credit": {
+      "name": "PuroClean of Fort Worth",
+      "url": "https://unsplash.com/@purocleanoffortworth?utm_source=mihoji&utm_medium=referral"
+    }
+  },
+  "accountant desk calculator documents": {
+    "src": "https://images.unsplash.com/photo-1707902665498-a202981fb5ac",
+    "alt": "a person sitting at a desk with a calculator and a notebook",
+    "credit": {
+      "name": "Jakub Żerdzicki",
+      "url": "https://unsplash.com/@jakubzerdzicki?utm_source=mihoji&utm_medium=referral"
+    }
+  },
+  "dentist dental clinic": {
+    "src": "https://images.unsplash.com/photo-1598256989800-fe5f95da9787",
+    "alt": "An orange dental chair with medical equipment in a bright clinical office",
+    "credit": {
+      "name": "Atikah Akhtar",
+      "url": "https://unsplash.com/@atikahakhtar?utm_source=mihoji&utm_medium=referral"
+    }
+  },
+  "real estate agent keys house": {
+    "src": "https://images.unsplash.com/photo-1741156386380-0236c72eb6f9",
+    "alt": "Holding house keys in front of the entrance",
+    "credit": {
+      "name": "Jakub Żerdzicki",
+      "url": "https://unsplash.com/@jakubzerdzicki?utm_source=mihoji&utm_medium=referral"
+    }
+  },
+  "butcher shop meat counter": {
+    "src": "https://images.unsplash.com/photo-1777799095908-978e9f70a872",
+    "alt": "Customer selects raw meat from butcher display case",
+    "credit": {
+      "name": "Otto Freijser",
+      "url": "https://unsplash.com/@ottofreijser?utm_source=mihoji&utm_medium=referral"
+    }
+  },
+  "coffee shop barista espresso": {
+    "src": "https://images.unsplash.com/photo-1707241358597-bafcc8a8e73d",
+    "alt": "a coffee maker is making a cup of coffee",
+    "credit": {
+      "name": "Jakub Żerdzicki",
+      "url": "https://unsplash.com/@jakubzerdzicki?utm_source=mihoji&utm_medium=referral"
+    }
+  },
+  "lawyer office law books": {
+    "src": "https://images.unsplash.com/photo-1752697589018-64fc6b19cc9a",
+    "alt": "Books related to law and human rights are visible",
+    "credit": {
+      "name": "Krists Luhaers",
+      "url": "https://unsplash.com/@kristsll?utm_source=mihoji&utm_medium=referral"
+    }
+  },
+  "yoga class studio": {
+    "src": "https://images.unsplash.com/photo-1761034114082-c2d63456a82a",
+    "alt": "People practicing yoga in a studio class",
+    "credit": {
+      "name": "Christian Harb",
+      "url": "https://unsplash.com/@c7arb?utm_source=mihoji&utm_medium=referral"
+    }
+  },
+  "roofer working on roof": {
+    "src": "https://images.unsplash.com/photo-1726589004565-bedfba94d3a2",
+    "alt": "A man on a roof working on a roof",
+    "credit": {
+      "name": "Christer Lässman",
+      "url": "https://unsplash.com/@lassman?utm_source=mihoji&utm_medium=referral"
+    }
+  },
+  "locksmith lock door": {
+    "src": "https://images.unsplash.com/photo-1588689653688-9b312cd6bc2b",
+    "alt": "brown padlock on blue wooden door",
+    "credit": {
+      "name": "Jornada Produtora",
+      "url": "https://unsplash.com/@jornadaprodutora?utm_source=mihoji&utm_medium=referral"
+    }
+  },
+  "pastry chef croissants": {
+    "src": "https://images.unsplash.com/photo-1597528662465-55ece5734101",
+    "alt": "Croissants and chocolate pastries on a wooden board with a rolling pin and whisk",
+    "credit": {
+      "name": "tabitha turner",
+      "url": "https://unsplash.com/@tabithaturnervisuals?utm_source=mihoji&utm_medium=referral"
+    }
+  },
+  "bakery bread loaves": {
+    "src": "https://images.unsplash.com/photo-1509440159596-0249088772ff",
+    "alt": "Three loaves of rustic bread with sunflower seeds and wheat stalks on wood",
+    "credit": {
+      "name": "Wesual Click",
+      "url": "https://unsplash.com/@wesual?utm_source=mihoji&utm_medium=referral"
     }
   },
   "baker kneading dough bakery": {
@@ -16,11 +176,11 @@
     }
   },
   "physiotherapist treating patient": {
-    "src": "https://images.unsplash.com/photo-1649751361457-01d3a696c7e6",
-    "alt": "a man getting his leg examined by a doctor",
+    "src": "https://images.unsplash.com/photo-1746806942505-7215c07810ae",
+    "alt": "A healthcare worker examines a patient's feet",
     "credit": {
-      "name": "yury kirillov",
-      "url": "https://unsplash.com/@relievemassage?utm_source=mihoji&utm_medium=referral"
+      "name": "Judy Beth Morris",
+      "url": "https://unsplash.com/@judy_beth_morris_idaho?utm_source=mihoji&utm_medium=referral"
     }
   },
   "physiotherapy clinic": {
@@ -32,31 +192,31 @@
     }
   },
   "law office desk": {
-    "src": "https://images.unsplash.com/photo-1775144657566-e5b093073baf",
-    "alt": "Elegant office with american flag and presidential desk",
+    "src": "https://images.unsplash.com/photo-1758518731462-d091b0b4ed0d",
+    "alt": "Business people signing a contract at a table",
     "credit": {
-      "name": "Magic Fan",
-      "url": "https://unsplash.com/@magicunsplash?utm_source=mihoji&utm_medium=referral"
+      "name": "Vitaly Gariev",
+      "url": "https://unsplash.com/@silverkblack?utm_source=mihoji&utm_medium=referral"
     }
   },
   "personal trainer outdoor workout": {
-    "src": "https://images.unsplash.com/photo-1610026470365-48d91e7ba1ae",
-    "alt": "man in black jacket holding red and black umbrella",
+    "src": "https://images.unsplash.com/photo-1758875569399-99a7d80ace43",
+    "alt": "Trainer and client discussing workout plan in gym",
     "credit": {
-      "name": "lawrence wilcox",
-      "url": "https://unsplash.com/@wilcox?utm_source=mihoji&utm_medium=referral"
+      "name": "Vitaly Gariev",
+      "url": "https://unsplash.com/@silverkblack?utm_source=mihoji&utm_medium=referral"
     }
   },
   "outdoor group fitness class": {
-    "src": "https://images.unsplash.com/photo-1679500649263-e1be61dc15c8",
-    "alt": "a group of people doing yoga outside on a sunny day",
+    "src": "https://images.unsplash.com/photo-1758798458123-7b4fbcc92c1c",
+    "alt": "Group of people exercising outdoors in a park",
     "credit": {
-      "name": "Anna Stampfli",
-      "url": "https://unsplash.com/@annastampfli?utm_source=mihoji&utm_medium=referral"
+      "name": "Khanh Do",
+      "url": "https://unsplash.com/@donguyenkhanhs?utm_source=mihoji&utm_medium=referral"
     }
   },
   "kettlebell training gym": {
-    "src": "https://images.unsplash.com/photo-1758875570127-b6ff35e42436",
+    "src": "https://images.unsplash.com/photo-1758875570600-8daf8d2f05f3",
     "alt": "Man and woman performing kettlebell swings in gym",
     "credit": {
       "name": "Vitaly Gariev",
@@ -64,19 +224,19 @@
     }
   },
   "running sunrise training": {
-    "src": "https://images.unsplash.com/photo-1552674605-db6ffd4facb5",
-    "alt": "silhouette of three women running on grey concrete road",
+    "src": "https://images.unsplash.com/photo-1581889470536-467bdbe30cd0",
+    "alt": "man in black shorts running on gray asphalt road during daytime",
     "credit": {
-      "name": "Fitsum Admasu",
-      "url": "https://unsplash.com/@fitmasu?utm_source=mihoji&utm_medium=referral"
+      "name": "Isaac Wendland",
+      "url": "https://unsplash.com/@isaacwendland?utm_source=mihoji&utm_medium=referral"
     }
   },
   "stretching yoga session": {
-    "src": "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b",
-    "alt": "silhouette photography of woman doing yoga",
+    "src": "https://images.unsplash.com/photo-1588286840104-8957b019727f",
+    "alt": "woman in white tank top and pink leggings doing yoga",
     "credit": {
-      "name": "kike vega",
-      "url": "https://unsplash.com/@kikekiks?utm_source=mihoji&utm_medium=referral"
+      "name": "Dylan Gillis",
+      "url": "https://unsplash.com/@mainermedia?utm_source=mihoji&utm_medium=referral"
     }
   },
   "boxing training coach": {
@@ -88,19 +248,19 @@
     }
   },
   "plank core workout": {
-    "src": "https://images.unsplash.com/photo-1592334628151-36869c12ad0e",
-    "alt": "woman in blue sports bra and blue denim shorts standing on wooden dock during daytime",
+    "src": "https://images.unsplash.com/photo-1790746404846-513ae5319c05",
+    "alt": "An anatomical model of a person in a plank position on a dark platform",
     "credit": {
-      "name": "Minna Hamalainen",
-      "url": "https://unsplash.com/@yogaminna8?utm_source=mihoji&utm_medium=referral"
+      "name": "Brecht Corbeel",
+      "url": "https://unsplash.com/@brechtcorbeel?utm_source=mihoji&utm_medium=referral"
     }
   },
   "renovated modern bathroom": {
-    "src": "https://images.unsplash.com/photo-1696987007764-7f8b85dd3033",
-    "alt": "a bathroom with two sinks, a toilet and a shower",
+    "src": "https://images.unsplash.com/photo-1609946860441-a51ffcf22208",
+    "alt": "blue wooden cabinet near white wall",
     "credit": {
-      "name": "Clay Banks",
-      "url": "https://unsplash.com/@claybanks?utm_source=mihoji&utm_medium=referral"
+      "name": "Chastity Cortijo",
+      "url": "https://unsplash.com/@chastityco?utm_source=mihoji&utm_medium=referral"
     }
   },
   "plumber installing faucet": {

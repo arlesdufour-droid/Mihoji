@@ -1,0 +1,316 @@
+{
+  "version": 1,
+  "theme": {
+    "style": "moderne",
+    "palette": "bleu"
+  },
+  "seo": {
+    "title": "Lefèvre Plomberie – Plombier-chauffagiste à Nantes",
+    "description": "Dépannage plomberie, rénovation de salle de bain, chaudières et pompes à chaleur à Nantes. Devis gratuit avec photos et numéro d'urgence."
+  },
+  "primaryCta": {
+    "label": "Demander un devis gratuit",
+    "href": "#devis"
+  },
+  "pages": [
+    {
+      "slug": "index",
+      "title": "Accueil",
+      "sections": [
+        {
+          "type": "hero",
+          "variant": "photo",
+          "eyebrow": "Plombier-chauffagiste à {{company.city}}",
+          "title": "Plomberie et chauffage : on intervient vite, on travaille proprement",
+          "subtitle": "{{company.name}} dépanne, rénove votre salle de bain et installe chaudières et pompes à chaleur à {{company.city}} et alentours.",
+          "cta": {
+            "label": "Demander un devis gratuit",
+            "href": "#devis"
+          },
+          "secondaryCta": {
+            "label": "Urgence : appeler maintenant",
+            "href": "tel:{{company.phone}}"
+          },
+          "highlights": [
+            "Devis gratuit avec photos",
+            "Dépannage urgent par téléphone",
+            "Eau et gaz en tous locaux"
+          ],
+          "image": {
+            "query": "plumber fixing sink pipe",
+            "alt": "Plombier en train de réparer une canalisation sous un évier",
+            "src": "https://images.unsplash.com/photo-1585247411924-f1c8286ce3a1",
+            "credit": {
+              "url": "https://unsplash.com/@kellysikkema?utm_source=mihoji&utm_medium=referral",
+              "name": "Kelly Sikkema"
+            }
+          }
+        },
+        {
+          "type": "services",
+          "variant": "cards",
+          "eyebrow": "Nos prestations",
+          "title": "Tout pour l'eau et le chauffage de votre logement",
+          "intro": "Particuliers, copropriétés ou locaux professionnels : un seul interlocuteur du diagnostic à la mise en service.",
+          "items": [
+            {
+              "title": "Dépannage plomberie",
+              "description": "Fuite, canalisation bouchée, chasse d'eau défaillante, chauffe-eau en panne : nous recherchons la cause et réparons.",
+              "icon": "wrench"
+            },
+            {
+              "title": "Rénovation de salle de bain",
+              "description": "Dépose, plomberie, pose de douche à l'italienne, baignoire, vasque et meuble, jusqu'aux finitions d'étanchéité.",
+              "icon": "droplets"
+            },
+            {
+              "title": "Chaudières gaz et fioul",
+              "description": "Remplacement, installation et mise en service de chaudières à condensation, avec évacuation des fumées conforme.",
+              "icon": "flame"
+            },
+            {
+              "title": "Pompes à chaleur",
+              "description": "Étude de votre logement, installation de pompes à chaleur air-eau ou air-air, réglage et prise en main.",
+              "icon": "thermometer"
+            },
+            {
+              "title": "Entretien et contrôle",
+              "description": "Entretien annuel de chaudière, purge et équilibrage des radiateurs, contrôle de la sécurité de l'installation gaz.",
+              "icon": "check"
+            },
+            {
+              "title": "Chauffe-eau et sanitaires",
+              "description": "Remplacement de ballon électrique ou thermodynamique, pose de WC, robinetterie et lave-linge.",
+              "icon": "home"
+            }
+          ]
+        },
+        {
+          "type": "module",
+          "variant": "split",
+          "module": "quote",
+          "eyebrow": "Devis avec photos",
+          "title": "Décrivez votre projet, joignez quelques photos",
+          "intro": "Envoyez-nous des photos de l'installation ou de la pièce : nous préparons un devis précis, souvent sans déplacement préalable."
+        },
+        {
+          "type": "about",
+          "variant": "image-right",
+          "eyebrow": "Votre plombier à {{company.city}}",
+          "title": "Un artisan de proximité, des travaux faits dans les règles",
+          "paragraphs": [
+            "{{company.name}} réalise des travaux d'installation d'eau et de gaz en tous locaux : appartements, maisons, commerces et bureaux.",
+            "Nous annonçons le prix avant de commencer, protégeons vos sols et nettoyons le chantier à chaque fin d'intervention."
+          ],
+          "highlights": [
+            "Devis détaillé avant travaux",
+            "Chantier protégé et nettoyé",
+            "Explications claires à la remise des clés"
+          ],
+          "image": {
+            "query": "plumber installing boiler heating",
+            "src": "https://images.unsplash.com/photo-1751486289950-5c4898a4c773",
+            "alt": "Chauffagiste installant une chaudière murale",
+            "credit": {
+              "name": "Fabian Kleiser",
+              "url": "https://unsplash.com/@fabiankleiser?utm_source=mihoji&utm_medium=referral"
+            }
+          }
+        },
+        {
+          "type": "gallery",
+          "variant": "masonry",
+          "eyebrow": "Savoir-faire",
+          "title": "Nos domaines d'intervention",
+          "images": [
+            {
+              "image": {
+                "query": "bathroom renovation walk-in shower",
+                "src": "https://images.unsplash.com/photo-1679736907648-601dcb45b5b9",
+                "alt": "Salle de bain rénovée avec douche à l'italienne",
+                "credit": {
+                  "name": "Smart Renovations",
+                  "url": "https://unsplash.com/@smartrenovations?utm_source=mihoji&utm_medium=referral"
+                }
+              },
+              "caption": "Rénovation de salle de bain"
+            },
+            {
+              "image": {
+                "query": "heat pump outdoor unit house",
+                "src": "https://images.unsplash.com/photo-1776860150305-108ed577d7d4",
+                "alt": "Unité extérieure de pompe à chaleur contre une maison",
+                "credit": {
+                  "name": "alpha innotec",
+                  "url": "https://unsplash.com/@alpha_innotec?utm_source=mihoji&utm_medium=referral"
+                }
+              },
+              "caption": "Pompe à chaleur"
+            },
+            {
+              "image": {
+                "query": "copper pipes soldering plumber",
+                "src": "https://images.unsplash.com/photo-1769376695235-d3253548a5d7",
+                "alt": "Soudure de tuyaux en cuivre",
+                "credit": {
+                  "name": "Zach M",
+                  "url": "https://unsplash.com/@zachmmalin?utm_source=mihoji&utm_medium=referral"
+                }
+              },
+              "caption": "Tuyauterie cuivre"
+            },
+            {
+              "image": {
+                "query": "radiator valve thermostat adjusting",
+                "src": "https://images.unsplash.com/photo-1788469161958-60a29310c780",
+                "alt": "Réglage d'un robinet thermostatique de radiateur",
+                "credit": {
+                  "name": "Yuanzheng Xiang",
+                  "url": "https://unsplash.com/@yuan2heng?utm_source=mihoji&utm_medium=referral"
+                }
+              },
+              "caption": "Radiateurs et chauffage"
+            }
+          ]
+        },
+        {
+          "type": "cta",
+          "variant": "banner",
+          "title": "Une fuite ou une panne de chauffage ?",
+          "text": "Appelez-nous directement : nous vous disons rapidement si nous pouvons intervenir.",
+          "button": {
+            "label": "Appeler le numéro d'urgence",
+            "href": "tel:{{company.phone}}"
+          }
+        },
+        {
+          "type": "area",
+          "variant": "chips",
+          "eyebrow": "Zone d'intervention",
+          "title": "Nantes et son agglomération",
+          "intro": "Nous intervenons à {{company.city}} et dans les communes voisines.",
+          "places": [
+            "Nantes",
+            "Rezé",
+            "Saint-Herblain",
+            "Orvault",
+            "Vertou",
+            "Saint-Sébastien-sur-Loire",
+            "Carquefou",
+            "Bouguenais",
+            "Couëron",
+            "La Chapelle-sur-Erdre",
+            "Sainte-Luce-sur-Loire",
+            "Basse-Goulaine"
+          ],
+          "note": "Une autre commune ? Contactez-nous, nous étudions votre demande."
+        },
+        {
+          "type": "faq",
+          "variant": "accordion",
+          "eyebrow": "Questions fréquentes",
+          "title": "Avant de nous contacter",
+          "items": [
+            {
+              "question": "Comment obtenir un devis avec photos ?",
+              "answer": "Remplissez le formulaire de devis, précisez votre besoin et joignez des photos de l'installation ou de la pièce. Nous vous répondons sous 48 h. Un déplacement peut être proposé pour les projets plus complexes."
+            },
+            {
+              "question": "Que faire en cas de fuite importante ?",
+              "answer": "Coupez l'arrivée d'eau au robinet d'arrêt général, puis appelez notre numéro d'urgence. Si possible, coupez aussi le courant des pièces touchées."
+            },
+            {
+              "question": "Quelle pompe à chaleur choisir ?",
+              "answer": "Cela dépend de l'isolation, de la surface et du système de chauffage existant. Nous étudions votre logement avant de vous recommander un modèle adapté."
+            },
+            {
+              "question": "Faut-il entretenir sa chaudière chaque année ?",
+              "answer": "Oui, l'entretien annuel est obligatoire pour les chaudières gaz et fioul. Il garantit la sécurité, un meilleur rendement et limite les pannes."
+            },
+            {
+              "question": "Combien de temps dure une rénovation de salle de bain ?",
+              "answer": "Comptez en général une à deux semaines selon l'ampleur des travaux. Le calendrier précis figure dans votre devis."
+            }
+          ]
+        },
+        {
+          "type": "contact",
+          "variant": "split",
+          "mode": "contact",
+          "eyebrow": "Contact",
+          "title": "Une question ? Écrivez-nous",
+          "intro": "Pour une urgence, privilégiez le téléphone. Pour toute autre demande, nous répondons rapidement par email.",
+          "services": [
+            "Dépannage",
+            "Salle de bain",
+            "Chaudière",
+            "Pompe à chaleur",
+            "Autre"
+          ],
+          "submitLabel": "Envoyer ma demande"
+        },
+        {
+          "type": "map",
+          "variant": "card",
+          "eyebrow": "Où nous trouver",
+          "title": "Basés à {{company.city}}",
+          "intro": "Adresse : {{company.address}}.",
+          "access": [
+            "Interventions à domicile dans toute l'agglomération nantaise"
+          ]
+        },
+        {
+          "type": "footer",
+          "variant": "simple",
+          "tagline": "{{company.name}} – plomberie et chauffage à {{company.city}}",
+          "links": [
+            {
+              "label": "Services",
+              "href": "#services"
+            },
+            {
+              "label": "Devis",
+              "href": "#devis"
+            },
+            {
+              "label": "Contact",
+              "href": "#contact"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "modules": {
+    "quote": {
+      "services": [
+        "Dépannage plomberie urgent",
+        "Fuite d'eau",
+        "Rénovation de salle de bain",
+        "Installation ou remplacement de chaudière",
+        "Pompe à chaleur",
+        "Entretien de chaudière",
+        "Autre demande"
+      ],
+      "fields": [
+        "address",
+        "photos",
+        "date",
+        "budget"
+      ],
+      "responseDelay": "Devis gratuit sous 48 h",
+      "emergency": true
+    },
+    "widgets": [
+      {
+        "type": "google-maps"
+      }
+    ],
+    "webhooks": {
+      "events": [
+        "quote.created",
+        "contact.created"
+      ]
+    }
+  }
+}

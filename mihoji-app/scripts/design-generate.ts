@@ -8,7 +8,7 @@ import { assertE2eEnvironment, loadEnv } from './e2e-guard';
 // Génération réelle de sites par le modèle de design (vraie IA, base de développement), avec captures d'écran.
 // Usage : npm run design:generate [-- boulangerie coach plombier]
 // Les générations sont enregistrées dans site_generations (visibles sur /admin/design/generate) ;
-// la description, le HTML et les captures sont écrits dans docs/screenshots/phase-q-lot2/.
+// la description, le HTML et les captures sont écrits dans docs/screenshots/phase-q-lot3/.
 
 // Les modules serveur importent « server-only » (fourni par Next) : hors de Next, on le remplace par un module vide.
 const moduleInternals = Module as unknown as { _resolveFilename: (request: string, ...rest: unknown[]) => string };
@@ -30,7 +30,7 @@ async function main() {
   if (route.provider !== 'anthropic' && route.provider !== 'groq') throw new Error('Clé IA requise (ANTHROPIC_API_KEY ou GROQ_API_KEY) : ce script utilise la vraie IA.');
   const wanted = process.argv.slice(2);
   const examples = designExamples.filter((example) => wanted.length === 0 || wanted.includes(example.id));
-  const outDir = resolve('docs/screenshots/phase-q-lot2');
+  const outDir = resolve('docs/screenshots/phase-q-lot3');
   mkdirSync(outDir, { recursive: true });
   const browser = await chromium.launch();
   const summary: string[] = [];
@@ -55,6 +55,7 @@ async function main() {
         const page = await browser.newPage({ viewport });
         await page.goto(pathToFileURL(file).href);
         await page.evaluate(() => document.fonts.ready);
+        await page.evaluate(async () => { for (let y = 0; y < document.body.scrollHeight; y += 500) { window.scrollTo(0, y); await new Promise((r) => setTimeout(r, 120)); } window.scrollTo(0, 0); }); await page.waitForLoadState('networkidle');
         await page.screenshot({ path: resolve(outDir, `${example.id}-${label}.jpg`), fullPage: true, quality: 70, type: 'jpeg' });
         await page.close();
       }
