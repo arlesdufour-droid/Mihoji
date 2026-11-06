@@ -4,8 +4,10 @@ import { estimateCredits } from './estimate';
 describe('credit estimates', () => {
   it('scales with context and task type', () => {
     const chat = estimateCredits('a'.repeat(400), 'chat');
-    const generation = estimateCredits('a'.repeat(400), 'generate');
+    const plan = estimateCredits('a'.repeat(400), 'plan');
+    const longer = estimateCredits('a'.repeat(4_000), 'chat');
     expect(chat.low).toBeGreaterThan(0);
-    expect(generation.high).toBeGreaterThan(chat.high);
+    expect(plan.high).toBeLessThan(chat.high);
+    expect(longer.high).toBeGreaterThan(chat.high);
   });
 });

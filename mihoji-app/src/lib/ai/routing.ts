@@ -2,7 +2,7 @@ import { LlmProviderError } from './providers/types';
 import { defaultGroqModel } from './models';
 
 // create / restyle : création du site et changement de style (modèle de design) ; edit : petites retouches de texte (modèle rapide).
-export type AiTask = 'chat' | 'plan' | 'generate' | 'edit' | 'fix' | 'summarize' | 'create' | 'restyle';
+export type AiTask = 'chat' | 'plan' | 'edit' | 'create' | 'restyle';
 export const designTasks = ['create', 'restyle'] as const;
 export type DesignTask = (typeof designTasks)[number];
 
@@ -19,7 +19,7 @@ export function modelConfig(env: Partial<NodeJS.ProcessEnv> = process.env) {
 
 // Modèle Groq d'une tâche (les tâches de design y tombent sur le modèle fort, en repli).
 export function selectModel(task: AiTask, config = modelConfig()) {
-  return task === 'plan' || task === 'generate' || task === 'fix' || task === 'create' || task === 'restyle' ? config.strong : config.fast;
+  return task === 'plan' || task === 'create' || task === 'restyle' ? config.strong : config.fast;
 }
 
 export type DesignRoute = { provider: 'anthropic' | 'groq' | 'mock'; model: string } | { provider: 'none'; error: 'ai_not_configured' };

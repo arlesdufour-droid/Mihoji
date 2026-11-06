@@ -23,7 +23,7 @@ export const maxDuration = 300;
 const requestSchema = z.object({
   projectId: z.string().min(1),
   messages: z.array(z.object({ role: z.enum(['user', 'assistant']), content: z.string().min(1).max(8_000) })).min(1).max(30),
-  task: z.enum(['chat', 'plan', 'generate', 'edit', 'fix', 'summarize']).default('chat'),
+  task: z.enum(['chat', 'plan', 'edit']).default('chat'),
 });
 
 type ParsedRequest = z.infer<typeof requestSchema>;
