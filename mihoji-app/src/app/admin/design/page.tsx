@@ -22,7 +22,7 @@ export default async function DesignPage({ searchParams }: { searchParams: Promi
     <main className="min-h-screen bg-slate-950 p-8 text-slate-100">
       <h1 className="text-3xl font-semibold">Design des sites générés</h1>
       <p className="mt-2 max-w-3xl text-slate-400">{style.tagline}</p>
-      <p className="mt-3"><Link href="/admin/design/generate" className="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-500">Générer un site avec l’IA</Link></p>
+      <p className="mt-3 flex flex-wrap gap-3"><Link href="/admin/benchmark" className="rounded-lg bg-slate-800 px-4 py-2 text-sm font-medium text-slate-100 hover:bg-slate-700">Banc d’essai de qualité</Link><Link href="/admin/design/generate" className="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-500">Générer un site avec l’IA</Link></p>
       <nav aria-label="Styles" className="mt-6 flex flex-wrap gap-2">
         {styles.map((candidate) => <Link key={candidate.id} href={`/admin/design?style=${candidate.id}`} aria-current={candidate.id === style.id ? 'page' : undefined} className={`rounded-lg px-4 py-2 text-sm ${candidate.id === style.id ? 'bg-indigo-600 text-white' : 'bg-slate-800 text-slate-300 hover:bg-slate-700'}`}>{candidate.label}</Link>)}
       </nav>
