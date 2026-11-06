@@ -1,0 +1,279 @@
+{
+  "version": 1,
+  "theme": {
+    "style": "premium",
+    "palette": "marine"
+  },
+  "seo": {
+    "title": "Avocat en droit de la famille à Lille | {{company.name}}",
+    "description": "{{company.name}}, avocat à {{company.city}} : divorce, garde d'enfants, succession. Écoute, clarté et confidentialité. Prenez rendez-vous pour un premier échange."
+  },
+  "primaryCta": {
+    "label": "Demander un rendez-vous",
+    "href": "#contact"
+  },
+  "pages": [
+    {
+      "slug": "index",
+      "title": "Accueil",
+      "sections": [
+        {
+          "nav": false,
+          "type": "hero",
+          "variant": "photo",
+          "eyebrow": "Avocat en droit de la famille · {{company.city}}",
+          "title": "Vous accompagner avec clarté dans les moments qui comptent",
+          "subtitle": "Divorce, garde d'enfants, succession : {{company.name}} vous écoute, vous explique vos droits et vous conseille avec rigueur et discrétion.",
+          "cta": {
+            "label": "Demander un rendez-vous",
+            "href": "#contact"
+          },
+          "secondaryCta": {
+            "label": "Découvrir les domaines",
+            "href": "#domaines"
+          },
+          "highlights": [
+            "Écoute et confidentialité",
+            "Conseils clairs et honnêtes",
+            "Premier échange sur rendez-vous"
+          ],
+          "image": {
+            "query": "lawyer office desk consultation",
+            "src": "https://images.unsplash.com/photo-1758518731462-d091b0b4ed0d",
+            "alt": "Bureau d'avocat lumineux avec dossiers et ordinateur",
+            "credit": {
+              "name": "Vitaly Gariev",
+              "url": "https://unsplash.com/@silverkblack?utm_source=mihoji&utm_medium=referral"
+            }
+          }
+        },
+        {
+          "id": "cabinet",
+          "nav": "Le cabinet",
+          "type": "about",
+          "variant": "image-right",
+          "eyebrow": "Le cabinet",
+          "title": "Une approche humaine du droit de la famille",
+          "paragraphs": [
+            "Un divorce, une séparation ou un décès bouleversent le quotidien. Chez {{company.name}}, chaque situation est écoutée sans jugement, puis analysée avec méthode.",
+            "Je vous explique les options qui s'offrent à vous, leurs conséquences et leurs délais, pour que vous décidiez en connaissance de cause. Lorsque c'est possible, je privilégie le dialogue et les solutions amiables.",
+            "Le droit est complexe et chaque dossier est unique : je ne peux garantir aucun résultat, mais je m'engage à vous défendre avec sérieux et transparence."
+          ],
+          "highlights": [
+            "Secret professionnel",
+            "Honoraires expliqués dès le départ",
+            "Disponibilité pour répondre à vos questions"
+          ],
+          "image": {
+            "query": "lawyer listening to client",
+            "alt": "Avocat à l'écoute d'un client lors d'un entretien"
+          }
+        },
+        {
+          "id": "domaines",
+          "nav": "Domaines",
+          "type": "services",
+          "variant": "cards",
+          "eyebrow": "Domaines d'intervention",
+          "title": "Un accompagnement sur l'ensemble du droit de la famille",
+          "intro": "Des situations différentes, une même exigence : vous informer précisément et défendre vos intérêts.",
+          "items": [
+            {
+              "title": "Divorce",
+              "description": "Divorce par consentement mutuel, accepté, pour altération du lien conjugal ou pour faute : conseil sur la procédure, la prestation compensatoire et le partage des biens.",
+              "icon": "scale"
+            },
+            {
+              "title": "Garde d'enfants",
+              "description": "Résidence, droit de visite et d'hébergement, pension alimentaire : organisation de la vie des enfants dans leur intérêt.",
+              "icon": "users"
+            },
+            {
+              "title": "Séparation et concubinage",
+              "description": "Rupture de PACS ou d'union libre, répartition des biens et des dettes, situation du logement familial.",
+              "icon": "home"
+            },
+            {
+              "title": "Succession",
+              "description": "Ouverture de la succession, partage entre héritiers, indivision, donation et conseil en cas de désaccord familial.",
+              "icon": "briefcase"
+            },
+            {
+              "title": "Modification d'une décision",
+              "description": "Révision d'une pension alimentaire, d'un mode de garde ou d'une mesure fixée par jugement lorsque la situation évolue.",
+              "icon": "check"
+            },
+            {
+              "title": "Médiation et solutions amiables",
+              "description": "Négociation entre avocats, convention de divorce, accord parental : privilégier le dialogue quand il est possible.",
+              "icon": "heart"
+            }
+          ]
+        },
+        {
+          "id": "rendez-vous",
+          "nav": "Premier rendez-vous",
+          "type": "about",
+          "variant": "text",
+          "eyebrow": "Premier rendez-vous",
+          "title": "Comment se déroule notre première rencontre",
+          "paragraphs": [
+            "1. Vous me contactez par téléphone, par email ou via le formulaire. Je vous recontacte pour fixer un créneau et vous indiquer les documents utiles (livret de famille, jugement éventuel, actes notariés).",
+            "2. Lors du rendez-vous, vous exposez votre situation à votre rythme. Je pose les questions nécessaires, puis j'explique le cadre juridique, les démarches possibles et leurs délais.",
+            "3. Je vous présente le mode de fonctionnement et les honoraires avant tout engagement. Vous repartez avec une vision claire et le temps de la réflexion : rien ne vous oblige à poursuivre."
+          ],
+          "highlights": [
+            "Entretien confidentiel",
+            "Honoraires annoncés à l'avance",
+            "Aucun engagement à l'issue"
+          ]
+        },
+        {
+          "type": "gallery",
+          "variant": "grid",
+          "title": "Un cadre calme et confidentiel",
+          "images": [
+            {
+              "image": {
+                "query": "modern law office interior",
+                "src": "https://images.unsplash.com/photo-1752697589018-64fc6b19cc9a",
+                "alt": "Intérieur sobre d'un cabinet d'avocat",
+                "credit": {
+                  "name": "Krists Luhaers",
+                  "url": "https://unsplash.com/@kristsll?utm_source=mihoji&utm_medium=referral"
+                }
+              },
+              "caption": "Un lieu pensé pour parler sereinement"
+            },
+            {
+              "image": {
+                "query": "lawyer signing legal documents",
+                "alt": "Avocat relisant et signant un document juridique"
+              },
+              "caption": "Des dossiers étudiés avec rigueur"
+            },
+            {
+              "image": {
+                "query": "law books bookshelf",
+                "src": "https://images.unsplash.com/photo-1752697589000-9819ed4fc30c",
+                "alt": "Bibliothèque de codes et d'ouvrages juridiques",
+                "credit": {
+                  "name": "Krists Luhaers",
+                  "url": "https://unsplash.com/@kristsll?utm_source=mihoji&utm_medium=referral"
+                }
+              },
+              "caption": "Une veille juridique constante"
+            }
+          ]
+        },
+        {
+          "id": "faq",
+          "nav": "Questions",
+          "type": "faq",
+          "variant": "accordion",
+          "eyebrow": "Questions fréquentes",
+          "title": "Vos questions avant de nous contacter",
+          "items": [
+            {
+              "question": "Combien coûte un premier rendez-vous ?",
+              "answer": "Les honoraires de consultation vous sont communiqués au moment de la prise de rendez-vous. Ils sont ensuite détaillés par écrit avant toute suite, dans le cadre d'une convention d'honoraires."
+            },
+            {
+              "question": "Dois-je apporter des documents ?",
+              "answer": "Si vous les avez, apportez votre livret de famille, les éventuels jugements, votre contrat de mariage ou de PACS et tout document relatif à vos biens. Leur absence ne vous empêche pas de venir : nous ferons le point ensemble."
+            },
+            {
+              "question": "Un divorce se règle-t-il forcément au tribunal ?",
+              "answer": "Non. Selon votre situation, un divorce peut être conclu par consentement mutuel, sans passer devant le juge. Lorsque les désaccords sont trop importants, une procédure judiciaire est nécessaire. Je vous explique chaque option."
+            },
+            {
+              "question": "Pouvez-vous me garantir l'issue de ma procédure ?",
+              "answer": "Non. Aucun avocat ne peut promettre un résultat, car la décision appartient au juge ou à un accord entre les parties. Mon engagement porte sur la qualité de l'analyse, de la défense et de l'information."
+            },
+            {
+              "question": "Mes échanges avec le cabinet sont-ils confidentiels ?",
+              "answer": "Oui. Tout ce que vous me confiez est couvert par le secret professionnel, avant, pendant et après la mission."
+            }
+          ]
+        },
+        {
+          "type": "area",
+          "variant": "chips",
+          "title": "Un cabinet à {{company.city}} et dans la métropole",
+          "intro": "Je reçois au cabinet et accompagne des clients de toute la métropole lilloise.",
+          "places": [
+            "Lille",
+            "Villeneuve-d'Ascq",
+            "Roubaix",
+            "Tourcoing",
+            "La Madeleine",
+            "Marcq-en-Barœul",
+            "Lambersart",
+            "Wasquehal",
+            "Mons-en-Barœul",
+            "Croix"
+          ]
+        },
+        {
+          "id": "contact",
+          "nav": "Contact",
+          "type": "contact",
+          "variant": "split",
+          "mode": "contact",
+          "eyebrow": "Contact",
+          "title": "Parlons de votre situation",
+          "intro": "Décrivez brièvement votre demande : je vous réponds pour convenir d'un rendez-vous. Votre message reste strictement confidentiel.",
+          "services": [
+            "Divorce",
+            "Garde d'enfants",
+            "Séparation",
+            "Succession",
+            "Autre demande"
+          ],
+          "submitLabel": "Envoyer ma demande"
+        },
+        {
+          "type": "map",
+          "variant": "card",
+          "title": "Nous trouver à {{company.city}}",
+          "intro": "Le cabinet vous accueille sur rendez-vous au {{company.address}}.",
+          "access": [
+            "Accessible en transports en commun",
+            "Stationnement public à proximité"
+          ]
+        },
+        {
+          "type": "footer",
+          "variant": "simple",
+          "tagline": "{{company.name}} · Avocat en droit de la famille à {{company.city}}",
+          "links": [
+            {
+              "label": "Domaines",
+              "href": "#domaines"
+            },
+            {
+              "label": "Premier rendez-vous",
+              "href": "#rendez-vous"
+            },
+            {
+              "label": "Contact",
+              "href": "#contact"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "modules": {
+    "widgets": [
+      {
+        "type": "google-maps"
+      }
+    ],
+    "webhooks": {
+      "events": [
+        "contact.created"
+      ]
+    }
+  }
+}

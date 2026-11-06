@@ -1,0 +1,478 @@
+{
+  "version": 1,
+  "theme": {
+    "style": "artisan",
+    "palette": "terracotta"
+  },
+  "seo": {
+    "title": "{{company.name}} – Boulangerie artisanale au levain à {{company.city}}",
+    "description": "Pain au levain, viennoiseries et gâteaux sur commande à {{company.city}}. Commandez en ligne sur {{company.name}} et retirez en boutique en click & collect."
+  },
+  "primaryCta": {
+    "label": "Commander en ligne",
+    "href": "#commande"
+  },
+  "pages": [
+    {
+      "slug": "index",
+      "title": "Accueil",
+      "sections": [
+        {
+          "type": "hero",
+          "variant": "photo",
+          "eyebrow": "Boulangerie artisanale à {{company.city}}",
+          "title": "Le vrai pain au levain, pétri et cuit chaque matin",
+          "subtitle": "Pains, viennoiseries et gâteaux sur commande : commandez en ligne chez {{company.name}} et retirez en boutique, encore tièdes.",
+          "cta": {
+            "label": "Commander en ligne",
+            "href": "#commande"
+          },
+          "secondaryCta": {
+            "label": "Nos pains",
+            "href": "#pains"
+          },
+          "highlights": [
+            "Levain naturel",
+            "Beurre pour les viennoiseries",
+            "Retrait dès 7 h"
+          ],
+          "image": {
+            "query": "artisan baker sourdough bread oven",
+            "src": "https://images.unsplash.com/photo-1772758632382-ec45d8b4347e",
+            "alt": "Boulanger enfournant des pains au levain dans le four de la boulangerie",
+            "credit": {
+              "name": "Yasin Onus",
+              "url": "https://unsplash.com/@yasinonus?utm_source=mihoji&utm_medium=referral"
+            }
+          }
+        },
+        {
+          "id": "histoire",
+          "nav": "Notre savoir-faire",
+          "type": "about",
+          "variant": "image-right",
+          "eyebrow": "Le fournil",
+          "title": "Du temps, de la farine et du levain",
+          "paragraphs": [
+            "Chez {{company.name}}, le pain se fait à l'ancienne. Le levain se nourrit chaque jour, la pâte repose longuement et la cuisson se fait sur sole pour une croûte bien dorée.",
+            "Les viennoiseries sont tournées à la main au beurre, et la pâtisserie se prépare à la commande pour vos anniversaires, mariages et repas de famille."
+          ],
+          "highlights": [
+            "Fermentation lente",
+            "Fabrication sur place",
+            "Gâteaux personnalisés"
+          ],
+          "image": {
+            "query": "baker shaping dough flour workshop",
+            "src": "https://images.unsplash.com/photo-1772758632564-3c70e5260844",
+            "alt": "Boulanger façonnant la pâte à pain dans le fournil",
+            "credit": {
+              "name": "Yasin Onus",
+              "url": "https://unsplash.com/@yasinonus?utm_source=mihoji&utm_medium=referral"
+            }
+          }
+        },
+        {
+          "id": "pains",
+          "nav": "Nos pains",
+          "type": "products",
+          "variant": "grid",
+          "eyebrow": "Les pains du jour",
+          "title": "Des pains au levain pour tous les repas",
+          "intro": "Quelques-unes de nos fournées quotidiennes, à retrouver dans la commande en ligne.",
+          "items": [
+            {
+              "name": "Pain au levain nature",
+              "description": "Croûte épaisse, mie alvéolée et légèrement acidulée.",
+              "price": "4,80 €",
+              "tag": "Incontournable",
+              "image": {
+                "query": "sourdough loaf bread crust",
+                "src": "https://images.unsplash.com/photo-1691862471778-513a818a3463",
+                "alt": "Pain au levain à la croûte dorée",
+                "credit": {
+                  "name": "Ilham Putra",
+                  "url": "https://unsplash.com/@ilham_ps?utm_source=mihoji&utm_medium=referral"
+                }
+              }
+            },
+            {
+              "name": "Pain de campagne",
+              "description": "Blé et seigle, saveur rustique, se conserve plusieurs jours.",
+              "price": "4,20 €",
+              "image": {
+                "query": "country bread loaf sliced",
+                "src": "https://images.unsplash.com/photo-1509440159596-0249088772ff",
+                "alt": "Pain de campagne tranché",
+                "credit": {
+                  "name": "Wesual Click",
+                  "url": "https://unsplash.com/@wesual?utm_source=mihoji&utm_medium=referral"
+                }
+              }
+            },
+            {
+              "name": "Baguette de tradition",
+              "description": "Croustillante, parfumée, cuite plusieurs fois par jour.",
+              "price": "1,30 €",
+              "image": {
+                "query": "french baguette bakery basket",
+                "alt": "Baguettes de tradition dans un panier de boulangerie"
+              }
+            },
+            {
+              "name": "Pain aux céréales",
+              "description": "Tournesol, lin et sésame pour une mie dense et goûteuse.",
+              "price": "4,60 €",
+              "image": {
+                "query": "multigrain bread seeds loaf",
+                "src": "https://images.unsplash.com/photo-1586765501019-cbe3973ef8fa",
+                "alt": "Pain aux céréales et aux graines",
+                "credit": {
+                  "name": "Tommaso Urli",
+                  "url": "https://unsplash.com/@tunnuz?utm_source=mihoji&utm_medium=referral"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "nav": "Commander",
+          "type": "module",
+          "variant": "panel",
+          "module": "shop",
+          "eyebrow": "Click & collect",
+          "title": "Commandez, nous préparons, vous retirez",
+          "intro": "Choisissez vos produits, sélectionnez votre créneau de retrait et payez en ligne ou en boutique. Les gâteaux se commandent 48 à 72 h à l'avance."
+        },
+        {
+          "id": "gateaux",
+          "nav": "Sur commande",
+          "type": "services",
+          "variant": "icons",
+          "eyebrow": "Pâtisserie",
+          "title": "Gâteaux et viennoiseries sur commande",
+          "intro": "Pour un anniversaire, un baptême ou un brunch, nous préparons vos douceurs à l'avance.",
+          "items": [
+            {
+              "title": "Gâteaux d'anniversaire",
+              "description": "Chocolat, vanille ou fruits, avec message personnalisé. De 6 à 12 parts.",
+              "icon": "cake",
+              "price": "dès 28 €"
+            },
+            {
+              "title": "Tartes et entremets",
+              "description": "Tarte aux fruits de saison, fraisier, entremets chocolat : tout est fait maison.",
+              "icon": "sparkles",
+              "price": "dès 22 €"
+            },
+            {
+              "title": "Viennoiseries pour brunch",
+              "description": "Croissants, pains au chocolat et chaussons livrés en boîte, prêts à partager.",
+              "icon": "croissant"
+            },
+            {
+              "title": "Pains pour réceptions",
+              "description": "Pains au levain et pains surprises pour vos buffets et repas de famille.",
+              "icon": "wheat"
+            }
+          ]
+        },
+        {
+          "type": "gallery",
+          "variant": "masonry",
+          "eyebrow": "En boutique",
+          "title": "Un aperçu de nos fournées",
+          "images": [
+            {
+              "image": {
+                "query": "croissants golden tray bakery",
+                "src": "https://images.unsplash.com/photo-1597528662465-55ece5734101",
+                "alt": "Plateau de croissants dorés",
+                "credit": {
+                  "name": "tabitha turner",
+                  "url": "https://unsplash.com/@tabithaturnervisuals?utm_source=mihoji&utm_medium=referral"
+                }
+              },
+              "caption": "Croissants pur beurre"
+            },
+            {
+              "image": {
+                "query": "layered cake strawberries pastry",
+                "alt": "Gâteau aux fraises sur un présentoir"
+              },
+              "caption": "Fraisier maison"
+            },
+            {
+              "image": {
+                "query": "bread display wooden shelves bakery",
+                "alt": "Étagères en bois garnies de pains"
+              },
+              "caption": "Le comptoir du matin"
+            },
+            {
+              "image": {
+                "query": "fruit tart pastry chef",
+                "src": "https://images.unsplash.com/photo-1769596717694-dc2a0a55e5d3",
+                "alt": "Tarte aux fruits décorée",
+                "credit": {
+                  "name": "Kyle Hinkson",
+                  "url": "https://unsplash.com/@whereiskylenow?utm_source=mihoji&utm_medium=referral"
+                }
+              },
+              "caption": "Tarte aux fruits de saison"
+            },
+            {
+              "image": {
+                "query": "baker hands scoring bread dough",
+                "src": "https://images.unsplash.com/photo-1772758632366-bb56797f50b0",
+                "alt": "Mains de boulanger incisant une pâte à pain",
+                "credit": {
+                  "name": "Yasin Onus",
+                  "url": "https://unsplash.com/@yasinonus?utm_source=mihoji&utm_medium=referral"
+                }
+              },
+              "caption": "Le geste du boulanger"
+            }
+          ]
+        },
+        {
+          "id": "horaires",
+          "nav": "Horaires",
+          "type": "hours",
+          "variant": "card",
+          "eyebrow": "Retrait en boutique",
+          "title": "Horaires d'ouverture",
+          "rows": [
+            {
+              "day": "Lundi",
+              "hours": "Fermé"
+            },
+            {
+              "day": "Mardi – Vendredi",
+              "hours": "7 h – 19 h"
+            },
+            {
+              "day": "Samedi",
+              "hours": "7 h – 19 h 30"
+            },
+            {
+              "day": "Dimanche",
+              "hours": "7 h – 13 h"
+            }
+          ],
+          "note": "Retrait des commandes en ligne pendant les heures d'ouverture, sur le créneau choisi."
+        },
+        {
+          "nav": "Questions",
+          "type": "faq",
+          "variant": "accordion",
+          "eyebrow": "Bon à savoir",
+          "title": "Vos questions sur la commande et le retrait",
+          "items": [
+            {
+              "question": "Comment fonctionne le click & collect ?",
+              "answer": "Vous composez votre panier en ligne, choisissez un créneau de retrait puis réglez en ligne ou en boutique. Votre commande vous attend au comptoir, prête à emporter."
+            },
+            {
+              "question": "Quel délai pour un gâteau sur commande ?",
+              "answer": "Comptez 48 h pour une tarte et 72 h pour un fraisier ou un gâteau d'anniversaire. Pour une grande tablée, appelez-nous afin d'adapter la recette."
+            },
+            {
+              "question": "Puis-je commander le jour même ?",
+              "answer": "Oui, pour les pains et viennoiseries, avec un délai minimum de 3 heures avant le retrait, dans la limite des fournées disponibles."
+            },
+            {
+              "question": "Pouvez-vous tenir compte d'une allergie ?",
+              "answer": "Nos produits contiennent du gluten, du lait et des œufs, et peuvent contenir des fruits à coque. Précisez-nous votre besoin à la commande : nous vous conseillons."
+            },
+            {
+              "question": "Peut-on modifier ou annuler une commande ?",
+              "answer": "Les commandes de pain se modifient jusqu'à la veille. Les gâteaux, préparés pour vous, ne peuvent plus l'être une fois la préparation lancée : contactez-nous au plus vite."
+            }
+          ]
+        },
+        {
+          "type": "module",
+          "variant": "split",
+          "module": "newsletter",
+          "eyebrow": "Restons en contact",
+          "title": "Les nouveautés du fournil dans votre boîte mail",
+          "intro": "Pains de saison, gâteaux de fête et dates de fermeture : une lettre par mois, rien de plus."
+        },
+        {
+          "id": "contact",
+          "nav": "Contact",
+          "type": "contact",
+          "variant": "split",
+          "mode": "contact",
+          "eyebrow": "Une demande particulière ?",
+          "title": "Parlons de votre gâteau ou de votre événement",
+          "intro": "Mariage, anniversaire, buffet : décrivez-nous votre projet, nous vous répondons rapidement. Vous pouvez aussi nous appeler au {{company.phone}}.",
+          "services": [
+            "Gâteau d'anniversaire",
+            "Pièce montée ou entremets",
+            "Pains pour réception",
+            "Autre demande"
+          ],
+          "submitLabel": "Envoyer ma demande"
+        },
+        {
+          "nav": "Accès",
+          "type": "map",
+          "variant": "split",
+          "eyebrow": "Nous trouver",
+          "title": "{{company.name}}, à {{company.city}}",
+          "intro": "Retrouvez-nous en boutique : {{company.address}}.",
+          "access": [
+            "Retrait au comptoir sur présentation du nom de commande",
+            "Stationnement à proximité",
+            "Accès facile à pied et à vélo"
+          ]
+        },
+        {
+          "type": "footer",
+          "variant": "columns",
+          "tagline": "{{company.name}} – boulangerie artisanale à {{company.city}}.",
+          "links": [
+            {
+              "label": "Nos pains",
+              "href": "#pains"
+            },
+            {
+              "label": "Commander",
+              "href": "#commande"
+            },
+            {
+              "label": "Gâteaux sur commande",
+              "href": "#gateaux"
+            },
+            {
+              "label": "Horaires",
+              "href": "#horaires"
+            },
+            {
+              "label": "Contact",
+              "href": "#contact"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "modules": {
+    "shop": {
+      "mode": "click-collect",
+      "products": [
+        {
+          "name": "Pain au levain nature",
+          "description": "Grande miche à la croûte épaisse et à la mie alvéolée, fermentation lente.",
+          "price": 4.8,
+          "unit": "la pièce",
+          "category": "Pains"
+        },
+        {
+          "name": "Baguette de tradition",
+          "description": "Farine de tradition française, pétrie lentement, cuite sur sole.",
+          "price": 1.3,
+          "unit": "la pièce",
+          "category": "Pains"
+        },
+        {
+          "name": "Pain de campagne",
+          "description": "Mélange de blé et de seigle, au levain naturel.",
+          "price": 4.2,
+          "unit": "la pièce",
+          "category": "Pains"
+        },
+        {
+          "name": "Pain aux céréales",
+          "description": "Graines de tournesol, lin et sésame, mie dense et savoureuse.",
+          "price": 4.6,
+          "unit": "la pièce",
+          "category": "Pains"
+        },
+        {
+          "name": "Croissant au beurre",
+          "description": "Pur beurre, feuilletage croustillant.",
+          "price": 1.3,
+          "unit": "la pièce",
+          "category": "Viennoiseries"
+        },
+        {
+          "name": "Pain au chocolat",
+          "description": "Deux barres de chocolat noir dans une pâte feuilletée dorée.",
+          "price": 1.4,
+          "unit": "la pièce",
+          "category": "Viennoiseries"
+        },
+        {
+          "name": "Chausson aux pommes",
+          "description": "Compote de pommes maison dans un feuilletage fin.",
+          "price": 1.9,
+          "unit": "la pièce",
+          "category": "Viennoiseries"
+        },
+        {
+          "name": "Tarte aux fruits de saison",
+          "description": "Pâte sablée, crème d'amande et fruits frais. 6 parts.",
+          "price": 22,
+          "unit": "la tarte",
+          "category": "Gâteaux sur commande",
+          "preorderHours": 48
+        },
+        {
+          "name": "Fraisier",
+          "description": "Génoise, crème mousseline vanille et fraises fraîches. 6 parts.",
+          "price": 28,
+          "unit": "le gâteau",
+          "category": "Gâteaux sur commande",
+          "preorderHours": 72
+        },
+        {
+          "name": "Gâteau d'anniversaire chocolat",
+          "description": "Biscuit moelleux et ganache chocolat, message personnalisé. 8 parts.",
+          "price": 34,
+          "unit": "le gâteau",
+          "category": "Gâteaux sur commande",
+          "preorderHours": 72
+        }
+      ],
+      "pickup": {
+        "schedule": {
+          "days": [
+            "mardi",
+            "mercredi",
+            "jeudi",
+            "vendredi",
+            "samedi",
+            "dimanche"
+          ],
+          "start": "07:00",
+          "end": "19:00"
+        },
+        "leadTimeHours": 3
+      },
+      "payment": "both",
+      "minimumOrder": 5
+    },
+    "newsletter": {
+      "incentive": "Recevez les nouveautés de saison et les dates de fermeture.",
+      "frequency": "Une lettre par mois"
+    },
+    "widgets": [
+      {
+        "type": "google-maps"
+      },
+      {
+        "type": "instagram"
+      }
+    ],
+    "webhooks": {
+      "events": [
+        "order.created",
+        "newsletter.subscribed",
+        "contact.created"
+      ]
+    }
+  }
+}

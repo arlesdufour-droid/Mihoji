@@ -1,0 +1,371 @@
+{
+  "version": 1,
+  "theme": {
+    "style": "dynamique",
+    "palette": "turquoise"
+  },
+  "seo": {
+    "title": "Coach sportif à domicile et en extérieur à Bordeaux | {{company.name}}",
+    "description": "Séances de coaching sportif à domicile ou en plein air à {{company.city}}. Réservez et payez en ligne, à la séance ou en forfait de 10 séances."
+  },
+  "primaryCta": {
+    "label": "Réserver une séance",
+    "href": "#reservation"
+  },
+  "pages": [
+    {
+      "slug": "index",
+      "title": "Accueil",
+      "sections": [
+        {
+          "type": "hero",
+          "variant": "photo",
+          "eyebrow": "Coach sportif à {{company.city}}",
+          "title": "Votre coach sportif, chez vous ou en plein air",
+          "subtitle": "Des séances personnalisées à domicile ou dans les parcs de {{company.city}}. Réservez votre créneau et payez en ligne en quelques clics.",
+          "cta": {
+            "label": "Réserver une séance",
+            "href": "#reservation"
+          },
+          "secondaryCta": {
+            "label": "Voir les tarifs",
+            "href": "#tarifs"
+          },
+          "highlights": [
+            "À domicile ou en extérieur",
+            "Réservation en ligne 7j/7",
+            "Paiement sécurisé",
+            "Forfait de 10 séances"
+          ],
+          "image": {
+            "query": "personal trainer outdoor workout park",
+            "src": "https://images.unsplash.com/photo-1758875569399-99a7d80ace43",
+            "alt": "Coach sportif encadrant une séance d'entraînement dans un parc",
+            "credit": {
+              "name": "Vitaly Gariev",
+              "url": "https://unsplash.com/@silverkblack?utm_source=mihoji&utm_medium=referral"
+            }
+          }
+        },
+        {
+          "type": "about",
+          "variant": "image-right",
+          "eyebrow": "Votre coach",
+          "title": "Un entraînement qui s'adapte à vous, pas l'inverse",
+          "paragraphs": [
+            "Je suis Julien, coach sportif à {{company.city}}. Je me déplace chez vous ou je vous retrouve en extérieur, avec le matériel nécessaire.",
+            "Chaque programme part d'un bilan : votre objectif, votre niveau, vos contraintes. Ensuite, on avance séance après séance, avec des exercices adaptés et un suivi clair."
+          ],
+          "highlights": [
+            "Bilan initial personnalisé",
+            "Matériel fourni",
+            "Progression suivie séance après séance"
+          ],
+          "image": {
+            "query": "personal trainer coaching client home",
+            "src": "https://images.unsplash.com/photo-1776710669732-177e69dd582d",
+            "alt": "Coach sportif accompagnant un client lors d'une séance à domicile",
+            "credit": {
+              "name": "Gilson Gomes",
+              "url": "https://unsplash.com/@gilsongomes?utm_source=mihoji&utm_medium=referral"
+            }
+          }
+        },
+        {
+          "type": "services",
+          "variant": "icons",
+          "eyebrow": "Objectifs",
+          "title": "Une séance pour chaque objectif",
+          "intro": "Le contenu est construit selon ce que vous voulez accomplir.",
+          "items": [
+            {
+              "title": "Perte de poids",
+              "description": "Circuits dynamiques et conseils simples pour perdre du poids durablement, sans régime extrême.",
+              "icon": "flame"
+            },
+            {
+              "title": "Renforcement musculaire",
+              "description": "Travail au poids du corps, élastiques et haltères pour tonifier et gagner en force.",
+              "icon": "dumbbell"
+            },
+            {
+              "title": "Remise en forme",
+              "description": "Reprise en douceur après une pause : cardio, mobilité et renforcement progressifs.",
+              "icon": "heart"
+            },
+            {
+              "title": "Préparation physique",
+              "description": "Course à pied, trail ou sport de loisir : un programme pour être prêt le jour J.",
+              "icon": "bike"
+            },
+            {
+              "title": "Posture et mobilité",
+              "description": "Étirements, gainage et exercices ciblés pour soulager le dos et gagner en souplesse.",
+              "icon": "sparkles"
+            },
+            {
+              "title": "Séance duo",
+              "description": "Entraînez-vous à deux, entre amis ou en couple, pour vous motiver mutuellement.",
+              "icon": "users"
+            }
+          ]
+        },
+        {
+          "type": "gallery",
+          "variant": "masonry",
+          "eyebrow": "En séance",
+          "title": "À la maison, au parc, au bord de l'eau",
+          "images": [
+            {
+              "image": {
+                "query": "woman exercising living room trainer",
+                "src": "https://images.unsplash.com/photo-1758875570600-8daf8d2f05f3",
+                "alt": "Séance de renforcement dans un salon",
+                "credit": {
+                  "name": "Vitaly Gariev",
+                  "url": "https://unsplash.com/@silverkblack?utm_source=mihoji&utm_medium=referral"
+                }
+              },
+              "caption": "À domicile"
+            },
+            {
+              "image": {
+                "query": "outdoor bodyweight training park morning",
+                "src": "https://images.unsplash.com/photo-1775323005381-584af06d83d0",
+                "alt": "Entraînement au poids du corps dans un parc",
+                "credit": {
+                  "name": "Will Haddock",
+                  "url": "https://unsplash.com/@willhaddock?utm_source=mihoji&utm_medium=referral"
+                }
+              },
+              "caption": "En extérieur"
+            },
+            {
+              "image": {
+                "query": "resistance bands exercise coach",
+                "src": "https://images.unsplash.com/photo-1517438322307-e67111335449",
+                "alt": "Exercice avec élastiques de résistance",
+                "credit": {
+                  "name": "MARK ADRIANE",
+                  "url": "https://unsplash.com/@markadriane?utm_source=mihoji&utm_medium=referral"
+                }
+              },
+              "caption": "Matériel fourni"
+            },
+            {
+              "image": {
+                "query": "running training riverside coach",
+                "src": "https://images.unsplash.com/photo-1581889470536-467bdbe30cd0",
+                "alt": "Séance de course à pied en bord de rivière",
+                "credit": {
+                  "name": "Isaac Wendland",
+                  "url": "https://unsplash.com/@isaacwendland?utm_source=mihoji&utm_medium=referral"
+                }
+              },
+              "caption": "Cardio et endurance"
+            },
+            {
+              "image": {
+                "query": "kettlebell workout outdoors",
+                "src": "https://images.unsplash.com/photo-1786025065278-9dd52e4aff48",
+                "alt": "Exercice avec kettlebell en plein air",
+                "credit": {
+                  "name": "Alejandro Stuardo",
+                  "url": "https://unsplash.com/@astuardom?utm_source=mihoji&utm_medium=referral"
+                }
+              },
+              "caption": "Renforcement"
+            }
+          ]
+        },
+        {
+          "type": "module",
+          "variant": "split",
+          "module": "booking",
+          "eyebrow": "Réservation",
+          "title": "Choisissez votre séance et votre créneau",
+          "intro": "Sélectionnez le lieu, le jour et l'heure qui vous conviennent. Vous recevez une confirmation et un rappel avant la séance."
+        },
+        {
+          "type": "module",
+          "variant": "panel",
+          "module": "payment",
+          "eyebrow": "Tarifs",
+          "title": "À la séance ou en forfait de 10",
+          "intro": "Payez en ligne, en toute sécurité. Le forfait de 10 séances est valable 6 mois et revient à 52 € la séance."
+        },
+        {
+          "type": "area",
+          "variant": "chips",
+          "eyebrow": "Déplacements",
+          "title": "Je me déplace autour de {{company.city}}",
+          "intro": "Séances à domicile ou en extérieur dans toute la métropole bordelaise.",
+          "places": [
+            "Bordeaux",
+            "Mérignac",
+            "Pessac",
+            "Talence",
+            "Bègles",
+            "Villenave-d'Ornon",
+            "Le Bouscat",
+            "Bruges",
+            "Cenon",
+            "Floirac",
+            "Lormont",
+            "Gradignan"
+          ],
+          "note": "Votre commune n'est pas listée ? Contactez-moi."
+        },
+        {
+          "type": "faq",
+          "variant": "accordion",
+          "eyebrow": "Questions fréquentes",
+          "title": "Avant votre première séance",
+          "items": [
+            {
+              "question": "Dois-je avoir du matériel à la maison ?",
+              "answer": "Non. J'apporte l'essentiel : élastiques, haltères, tapis. Il vous faut seulement un espace de quelques mètres carrés et une tenue confortable."
+            },
+            {
+              "question": "Je n'ai jamais fait de sport, est-ce adapté ?",
+              "answer": "Oui. Chaque séance est adaptée à votre niveau. Nous commençons par un bilan pour définir un rythme réaliste et progresser sans vous blesser."
+            },
+            {
+              "question": "Que se passe-t-il s'il pleut pour une séance en extérieur ?",
+              "answer": "Nous décalons la séance ou la transformons en séance à domicile ou en visio, sans frais supplémentaires."
+            },
+            {
+              "question": "Comment fonctionne le forfait de 10 séances ?",
+              "answer": "Vous le réglez en ligne en une fois, puis vous réservez vos créneaux quand vous le souhaitez pendant 6 mois."
+            },
+            {
+              "question": "Puis-je annuler ou déplacer une séance ?",
+              "answer": "Oui, gratuitement jusqu'à 24 h avant l'heure prévue. Passé ce délai, la séance est due."
+            }
+          ]
+        },
+        {
+          "type": "contact",
+          "variant": "split",
+          "mode": "contact",
+          "eyebrow": "Contact",
+          "title": "Une question avant de réserver ?",
+          "intro": "Décrivez votre objectif et vos disponibilités, je vous réponds rapidement. Vous pouvez aussi m'appeler au {{company.phone}}.",
+          "services": [
+            "Perte de poids",
+            "Renforcement musculaire",
+            "Remise en forme",
+            "Préparation physique",
+            "Autre demande"
+          ],
+          "submitLabel": "Envoyer ma demande"
+        },
+        {
+          "type": "footer",
+          "variant": "simple",
+          "tagline": "{{company.name}} : coaching sportif à domicile et en extérieur à {{company.city}}.",
+          "links": [
+            {
+              "label": "Réserver",
+              "href": "#reservation"
+            },
+            {
+              "label": "Tarifs",
+              "href": "#tarifs"
+            },
+            {
+              "label": "Contact",
+              "href": "#contact"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "modules": {
+    "booking": {
+      "services": [
+        {
+          "name": "Séance découverte (bilan + 1re séance)",
+          "durationMinutes": 60,
+          "price": 35,
+          "location": "outdoor"
+        },
+        {
+          "name": "Séance à domicile",
+          "durationMinutes": 60,
+          "price": 60,
+          "location": "home"
+        },
+        {
+          "name": "Séance en extérieur",
+          "durationMinutes": 60,
+          "price": 50,
+          "location": "outdoor"
+        },
+        {
+          "name": "Séance duo à domicile",
+          "durationMinutes": 60,
+          "price": 80,
+          "location": "home"
+        },
+        {
+          "name": "Séance en visio",
+          "durationMinutes": 45,
+          "price": 35,
+          "location": "remote"
+        }
+      ],
+      "schedule": {
+        "days": [
+          "lundi",
+          "mardi",
+          "mercredi",
+          "jeudi",
+          "vendredi",
+          "samedi"
+        ],
+        "start": "07:00",
+        "end": "20:00"
+      },
+      "slotMinutes": 30,
+      "leadTimeHours": 12,
+      "cancellationPolicy": "Annulation gratuite jusqu'à 24 h avant la séance. Passé ce délai, la séance est due.",
+      "payment": "full",
+      "reminders": true
+    },
+    "payment": {
+      "offers": [
+        {
+          "name": "Séance à l'unité",
+          "description": "Une séance de 60 minutes, à domicile ou en extérieur à Bordeaux.",
+          "price": 60,
+          "kind": "one-off"
+        },
+        {
+          "name": "Forfait 10 séances",
+          "description": "Dix séances de 60 minutes à planifier à votre rythme, valables 6 mois. Tarif dégressif.",
+          "price": 520,
+          "kind": "pack",
+          "sessions": 10
+        }
+      ]
+    },
+    "widgets": [
+      {
+        "type": "whatsapp",
+        "message": "Bonjour, je souhaite des informations sur vos séances de coaching."
+      },
+      {
+        "type": "google-maps"
+      }
+    ],
+    "webhooks": {
+      "events": [
+        "booking.created",
+        "payment.succeeded",
+        "contact.created"
+      ]
+    }
+  }
+}

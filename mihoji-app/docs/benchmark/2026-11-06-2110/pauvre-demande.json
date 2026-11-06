@@ -1,0 +1,373 @@
+{
+  "version": 1,
+  "theme": {
+    "style": "artisan",
+    "palette": "foret"
+  },
+  "seo": {
+    "title": "{{company.name}} – Menuiserie bois et PVC à {{company.city}}",
+    "description": "Fenêtres, portes, volets, escaliers et agencements sur mesure en bois et PVC à {{company.city}} et alentours. Devis gratuit, pose soignée par {{company.name}}."
+  },
+  "primaryCta": {
+    "label": "Demander un devis gratuit",
+    "href": "#devis"
+  },
+  "pages": [
+    {
+      "slug": "index",
+      "title": "Accueil",
+      "sections": [
+        {
+          "type": "hero",
+          "variant": "photo",
+          "eyebrow": "Menuiserie bois et PVC à {{company.city}}",
+          "title": "Des menuiseries sur mesure, fabriquées et posées avec soin",
+          "subtitle": "{{company.name}} conçoit et installe vos fenêtres, portes, volets, escaliers et aménagements en bois ou en PVC, pour un intérieur plus beau et plus économe en énergie.",
+          "cta": {
+            "label": "Demander un devis gratuit",
+            "href": "#devis"
+          },
+          "secondaryCta": {
+            "label": "Appeler l'atelier",
+            "href": "tel:{{company.phone}}"
+          },
+          "highlights": [
+            "Devis gratuit",
+            "Mesures sur place",
+            "Pose soignée",
+            "Bois et PVC"
+          ],
+          "image": {
+            "query": "carpenter workshop wooden window frame",
+            "src": "https://images.unsplash.com/photo-1619759247130-4e7a70f2fe27",
+            "alt": "Menuisier travaillant sur un cadre de fenêtre en bois dans son atelier",
+            "credit": {
+              "name": "Pickawood",
+              "url": "https://unsplash.com/@pickawood?utm_source=mihoji&utm_medium=referral"
+            }
+          }
+        },
+        {
+          "id": "services",
+          "nav": "Prestations",
+          "type": "services",
+          "variant": "cards",
+          "eyebrow": "Nos prestations",
+          "title": "Tout pour vos ouvertures et vos aménagements",
+          "intro": "Neuf ou rénovation, nous choisissons avec vous le matériau le plus adapté à votre maison.",
+          "items": [
+            {
+              "title": "Fenêtres et baies vitrées",
+              "description": "Remplacement de fenêtres en bois ou en PVC, double vitrage isolant, pose en rénovation ou en neuf.",
+              "icon": "home",
+              "price": "dès 350 €"
+            },
+            {
+              "title": "Portes d'entrée et de garage",
+              "description": "Portes sécurisées, bois massif ou PVC, avec serrure multipoints et finitions au choix.",
+              "icon": "key",
+              "price": "dès 1 200 €"
+            },
+            {
+              "title": "Volets et fermetures",
+              "description": "Volets battants, persiennes ou volets roulants PVC, à la couleur de votre façade.",
+              "icon": "shield",
+              "price": "dès 280 €"
+            },
+            {
+              "title": "Escaliers sur mesure",
+              "description": "Fabrication et pose d'escaliers droits ou tournants en chêne, hêtre ou frêne.",
+              "icon": "ruler"
+            },
+            {
+              "title": "Placards et dressings",
+              "description": "Rangements dessinés pour vos combles, entrées et chambres, ajustés au centimètre.",
+              "icon": "hammer"
+            },
+            {
+              "title": "Terrasses et bardages bois",
+              "description": "Lames de terrasse, pergolas et bardages en bois traité pour résister au climat ligérien.",
+              "icon": "leaf"
+            }
+          ]
+        },
+        {
+          "id": "atelier",
+          "nav": "L'atelier",
+          "type": "about",
+          "variant": "image-right",
+          "eyebrow": "Notre atelier",
+          "title": "Le travail du bois, de la mesure à la pose",
+          "paragraphs": [
+            "Chez {{company.name}}, chaque chantier commence par une visite sur place. Nous prenons les cotes, regardons l'état du support et vous conseillons entre bois et PVC selon votre budget et l'entretien souhaité.",
+            "Les pièces sur mesure sont préparées à l'atelier, puis posées par nos soins. Nous laissons le chantier propre et vérifions l'étanchéité et le bon fonctionnement avant de partir."
+          ],
+          "highlights": [
+            "Bois ou PVC selon vos besoins",
+            "Fabrication sur mesure",
+            "Pose et finitions comprises"
+          ],
+          "image": {
+            "query": "carpenter measuring wooden door frame",
+            "src": "https://images.unsplash.com/photo-1588689653688-9b312cd6bc2b",
+            "alt": "Menuisier prenant les mesures d'un cadre de porte en bois",
+            "credit": {
+              "name": "Jornada Produtora",
+              "url": "https://unsplash.com/@jornadaprodutora?utm_source=mihoji&utm_medium=referral"
+            }
+          }
+        },
+        {
+          "id": "realisations",
+          "nav": "Réalisations",
+          "type": "gallery",
+          "variant": "masonry",
+          "eyebrow": "Réalisations",
+          "title": "Quelques exemples de nos travaux",
+          "images": [
+            {
+              "image": {
+                "query": "wooden staircase oak interior",
+                "alt": "Escalier en chêne sur mesure dans un intérieur"
+              },
+              "caption": "Escalier en chêne"
+            },
+            {
+              "image": {
+                "query": "white PVC windows house facade",
+                "src": "https://images.unsplash.com/photo-1759428679273-11d914866394",
+                "alt": "Façade de maison équipée de fenêtres PVC blanches",
+                "credit": {
+                  "name": "Jakub Żerdzicki",
+                  "url": "https://unsplash.com/@jakubzerdzicki?utm_source=mihoji&utm_medium=referral"
+                }
+              },
+              "caption": "Fenêtres PVC"
+            },
+            {
+              "image": {
+                "query": "wooden front door entrance",
+                "src": "https://images.unsplash.com/photo-1588475950972-c872dd2e730e",
+                "alt": "Porte d'entrée en bois massif",
+                "credit": {
+                  "name": "David Clode",
+                  "url": "https://unsplash.com/@davidclode?utm_source=mihoji&utm_medium=referral"
+                }
+              },
+              "caption": "Porte d'entrée en bois"
+            },
+            {
+              "image": {
+                "query": "built-in wardrobe wood bedroom",
+                "alt": "Placard sur mesure en bois dans une chambre"
+              },
+              "caption": "Placard sur mesure"
+            },
+            {
+              "image": {
+                "query": "wooden terrace decking garden",
+                "src": "https://images.unsplash.com/photo-1743327811352-8f9b286f9c12",
+                "alt": "Terrasse en bois dans un jardin",
+                "credit": {
+                  "name": "Ries Bosch",
+                  "url": "https://unsplash.com/@ries_bosch?utm_source=mihoji&utm_medium=referral"
+                }
+              },
+              "caption": "Terrasse bois"
+            },
+            {
+              "image": {
+                "query": "carpenter sanding wood plank tools",
+                "src": "https://images.unsplash.com/photo-1687422810663-c316494f725a",
+                "alt": "Menuisier ponçant une planche de bois",
+                "credit": {
+                  "name": "Ali Mkumbwa",
+                  "url": "https://unsplash.com/@mkumbwajr?utm_source=mihoji&utm_medium=referral"
+                }
+              },
+              "caption": "Travail à l'atelier"
+            }
+          ]
+        },
+        {
+          "id": "materiaux",
+          "nav": "Bois ou PVC",
+          "type": "products",
+          "variant": "menu",
+          "eyebrow": "Bien choisir",
+          "title": "Bois ou PVC : quelle différence ?",
+          "intro": "Deux matériaux, deux atouts. Nous vous aidons à trancher.",
+          "items": [
+            {
+              "name": "Le bois",
+              "description": "Chaleureux, réparable et personnalisable. Il demande une lasure ou une peinture tous les quelques ans.",
+              "tag": "Authentique"
+            },
+            {
+              "name": "Le PVC",
+              "description": "Très bon isolant, sans entretien et d'un excellent rapport qualité-prix. Idéal en rénovation.",
+              "tag": "Sans entretien"
+            },
+            {
+              "name": "Le mixte bois-alu",
+              "description": "Bois à l'intérieur, aluminium à l'extérieur : l'élégance du bois et la résistance aux intempéries.",
+              "tag": "Durable"
+            }
+          ]
+        },
+        {
+          "type": "module",
+          "variant": "split",
+          "module": "quote",
+          "eyebrow": "Devis gratuit",
+          "title": "Décrivez votre projet, nous revenons vers vous",
+          "intro": "Indiquez le type de travaux, joignez quelques photos si possible : nous vous répondons sous 48 h."
+        },
+        {
+          "id": "zone",
+          "nav": "Zone d'intervention",
+          "type": "area",
+          "variant": "chips",
+          "eyebrow": "Où intervenons-nous ?",
+          "title": "Autour de {{company.city}}",
+          "intro": "Nous nous déplaçons pour le devis et la pose dans toute l'agglomération tourangelle.",
+          "places": [
+            "Tours",
+            "Joué-lès-Tours",
+            "Saint-Cyr-sur-Loire",
+            "Saint-Pierre-des-Corps",
+            "La Riche",
+            "Chambray-lès-Tours",
+            "Fondettes",
+            "Saint-Avertin",
+            "Ballan-Miré",
+            "Montlouis-sur-Loire",
+            "Notre-Dame-d'Oé",
+            "Luynes"
+          ],
+          "note": "Une autre commune ? Contactez-nous, nous étudierons votre projet."
+        },
+        {
+          "id": "faq",
+          "nav": "Questions",
+          "type": "faq",
+          "variant": "accordion",
+          "eyebrow": "Questions fréquentes",
+          "title": "Avant de vous lancer",
+          "items": [
+            {
+              "question": "Le devis est-il vraiment gratuit ?",
+              "answer": "Oui. Nous nous déplaçons chez vous, prenons les mesures et vous remettons un devis détaillé, sans engagement."
+            },
+            {
+              "question": "Combien de temps faut-il entre la commande et la pose ?",
+              "answer": "Comptez en général quelques semaines pour des menuiseries sur mesure. Nous vous indiquons un délai précis sur le devis."
+            },
+            {
+              "question": "Peut-on remplacer des fenêtres sans refaire les murs ?",
+              "answer": "Oui, la pose en rénovation conserve le dormant existant. Elle limite les travaux de finition et la poussière."
+            },
+            {
+              "question": "Reprenez-vous les anciennes menuiseries ?",
+              "answer": "Oui, nous déposons vos anciennes fenêtres ou portes et les évacuons à la fin du chantier."
+            },
+            {
+              "question": "Quelles aides financières existent pour changer mes fenêtres ?",
+              "answer": "Selon votre logement et vos revenus, des aides à la rénovation énergétique peuvent s'appliquer. Renseignez-vous auprès de votre conseiller France Rénov'."
+            }
+          ]
+        },
+        {
+          "id": "contact",
+          "nav": "Contact",
+          "type": "contact",
+          "variant": "split",
+          "mode": "contact",
+          "eyebrow": "Contact",
+          "title": "Parlons de votre projet",
+          "intro": "Une question, un conseil ou une visite à organiser ? Écrivez-nous ou appelez l'atelier.",
+          "services": [
+            "Fenêtres",
+            "Portes",
+            "Volets",
+            "Escalier",
+            "Placard",
+            "Terrasse",
+            "Autre"
+          ],
+          "submitLabel": "Envoyer ma demande"
+        },
+        {
+          "type": "map",
+          "variant": "card",
+          "eyebrow": "Nous trouver",
+          "title": "L'atelier à {{company.city}}",
+          "intro": "{{company.address}}",
+          "access": [
+            "Visite de l'atelier sur rendez-vous",
+            "Stationnement possible devant l'atelier"
+          ]
+        },
+        {
+          "type": "footer",
+          "variant": "simple",
+          "tagline": "{{company.name}} – menuiserie bois et PVC à {{company.city}}.",
+          "links": [
+            {
+              "label": "Prestations",
+              "href": "#services"
+            },
+            {
+              "label": "Réalisations",
+              "href": "#realisations"
+            },
+            {
+              "label": "Devis",
+              "href": "#devis"
+            },
+            {
+              "label": "Contact",
+              "href": "#contact"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "modules": {
+    "quote": {
+      "services": [
+        "Fenêtres bois ou PVC",
+        "Porte d'entrée",
+        "Volets battants ou roulants",
+        "Escalier sur mesure",
+        "Placard et dressing",
+        "Terrasse bois",
+        "Autre travail de menuiserie"
+      ],
+      "fields": [
+        "address",
+        "date",
+        "photos",
+        "surface"
+      ],
+      "responseDelay": "Devis gratuit sous 48 h",
+      "emergency": false
+    },
+    "widgets": [
+      {
+        "type": "google-maps"
+      },
+      {
+        "type": "whatsapp",
+        "message": "Bonjour, je souhaite un devis de menuiserie."
+      }
+    ],
+    "webhooks": {
+      "events": [
+        "quote.created",
+        "contact.created"
+      ]
+    }
+  }
+}

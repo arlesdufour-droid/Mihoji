@@ -1,0 +1,280 @@
+{
+  "version": 1,
+  "theme": {
+    "style": "moderne",
+    "palette": "graphite"
+  },
+  "seo": {
+    "title": "{{company.name}} – Conseil en organisation pour PME, {{company.city}}",
+    "description": "Diagnostic, accompagnement et formation pour structurer votre PME. Consultant en organisation à {{company.city}} : une méthode claire et des résultats concrets."
+  },
+  "primaryCta": {
+    "label": "Échanger sur votre projet",
+    "href": "#contact"
+  },
+  "pages": [
+    {
+      "slug": "index",
+      "title": "Accueil",
+      "sections": [
+        {
+          "type": "hero",
+          "variant": "split",
+          "eyebrow": "Conseil en organisation pour PME",
+          "title": "Une PME mieux organisée, c'est un dirigeant qui respire",
+          "subtitle": "{{company.name}} vous aide à clarifier les rôles, fluidifier les process et retrouver du temps pour piloter votre entreprise.",
+          "cta": {
+            "label": "Échanger sur votre projet",
+            "href": "#contact"
+          },
+          "secondaryCta": {
+            "label": "Découvrir les offres",
+            "href": "#offres"
+          },
+          "highlights": [
+            "Premier échange offert",
+            "Méthode pas à pas",
+            "Outils simples, adoptés par vos équipes"
+          ],
+          "image": {
+            "query": "consultant meeting small business team",
+            "src": "https://images.unsplash.com/photo-1758518729685-f88df7890776",
+            "alt": "Consultant en réunion de travail avec l'équipe d'une petite entreprise",
+            "credit": {
+              "name": "Vitaly Gariev",
+              "url": "https://unsplash.com/@silverkblack?utm_source=mihoji&utm_medium=referral"
+            }
+          }
+        },
+        {
+          "id": "offres",
+          "nav": "Offres",
+          "type": "services",
+          "variant": "cards",
+          "eyebrow": "Mes offres",
+          "title": "Trois façons de travailler ensemble",
+          "intro": "Chaque mission démarre par votre réalité de terrain. Vous choisissez le niveau d'appui qui vous convient.",
+          "items": [
+            {
+              "title": "Diagnostic organisationnel",
+              "description": "Entretiens, observation des flux et analyse des irritants. Vous obtenez une cartographie claire et un plan d'actions priorisé.",
+              "icon": "ruler",
+              "price": "Sur devis"
+            },
+            {
+              "title": "Accompagnement au changement",
+              "description": "Je vous aide à déployer les actions retenues : process, répartition des rôles, rituels de pilotage et tableaux de bord.",
+              "icon": "briefcase",
+              "price": "Sur devis"
+            },
+            {
+              "title": "Formation de vos équipes",
+              "description": "Ateliers pratiques en intra : gestion des priorités, conduite de réunion, suivi de projet, délégation.",
+              "icon": "graduation",
+              "price": "Sur devis"
+            }
+          ]
+        },
+        {
+          "id": "methode",
+          "nav": "Méthode",
+          "type": "about",
+          "variant": "image-right",
+          "eyebrow": "Ma méthode",
+          "title": "Comprendre avant de recommander",
+          "paragraphs": [
+            "Je ne plaque pas de modèle tout fait. Je commence par écouter votre équipe, observer comment le travail circule réellement et repérer ce qui vous fait perdre du temps.",
+            "Les solutions sont ensuite construites avec vous : simples, documentées et assez légères pour être tenues une fois la mission terminée. L'objectif est votre autonomie."
+          ],
+          "highlights": [
+            "Écoute du terrain",
+            "Plan d'actions priorisé",
+            "Transfert de compétences"
+          ],
+          "image": {
+            "query": "consultant workshop whiteboard sticky notes",
+            "src": "https://images.unsplash.com/photo-1687422810663-c316494f725a",
+            "alt": "Atelier d'organisation avec tableau blanc et notes adhésives",
+            "credit": {
+              "name": "Ali Mkumbwa",
+              "url": "https://unsplash.com/@mkumbwajr?utm_source=mihoji&utm_medium=referral"
+            }
+          }
+        },
+        {
+          "id": "etapes",
+          "nav": false,
+          "type": "services",
+          "variant": "list",
+          "eyebrow": "Déroulé d'une mission",
+          "title": "Quatre étapes, sans zone d'ombre",
+          "items": [
+            {
+              "title": "1. Cadrage",
+              "description": "Nous échangeons sur vos enjeux, votre équipe et vos contraintes. Je vous remets une proposition claire, avec périmètre et calendrier.",
+              "icon": "phone"
+            },
+            {
+              "title": "2. Diagnostic",
+              "description": "Entretiens et observation sur le terrain pour identifier les blocages réels, pas seulement ceux que l'on perçoit.",
+              "icon": "ruler"
+            },
+            {
+              "title": "3. Mise en œuvre",
+              "description": "Nous déployons ensemble les changements prioritaires, par petites étapes, avec des points réguliers.",
+              "icon": "check"
+            },
+            {
+              "title": "4. Suivi",
+              "description": "Des indicateurs simples et un point de contrôle à distance pour vérifier que les nouvelles habitudes tiennent.",
+              "icon": "calendar"
+            }
+          ]
+        },
+        {
+          "type": "gallery",
+          "variant": "grid",
+          "eyebrow": "Sur le terrain",
+          "title": "Des outils concrets, utilisés au quotidien",
+          "images": [
+            {
+              "image": {
+                "query": "process mapping sticky notes wall",
+                "alt": "Cartographie de process sur un mur de notes adhésives"
+              },
+              "caption": "Cartographier les process"
+            },
+            {
+              "image": {
+                "query": "manager reviewing dashboard laptop",
+                "src": "https://images.unsplash.com/photo-1616587224026-668840f26916",
+                "alt": "Dirigeant consultant un tableau de bord sur ordinateur",
+                "credit": {
+                  "name": "LinkedIn Sales Solutions",
+                  "url": "https://unsplash.com/@linkedinsalesnavigator?utm_source=mihoji&utm_medium=referral"
+                }
+              },
+              "caption": "Piloter avec des indicateurs simples"
+            },
+            {
+              "image": {
+                "query": "training session small team room",
+                "src": "https://images.unsplash.com/photo-1758875569399-99a7d80ace43",
+                "alt": "Session de formation avec une petite équipe en salle",
+                "credit": {
+                  "name": "Vitaly Gariev",
+                  "url": "https://unsplash.com/@silverkblack?utm_source=mihoji&utm_medium=referral"
+                }
+              },
+              "caption": "Former les équipes"
+            }
+          ]
+        },
+        {
+          "id": "faq",
+          "nav": "Questions",
+          "type": "faq",
+          "variant": "accordion",
+          "eyebrow": "Questions fréquentes",
+          "title": "Avant de nous engager",
+          "items": [
+            {
+              "question": "Pour quelles entreprises intervenez-vous ?",
+              "answer": "J'accompagne des PME et TPE, quel que soit leur secteur, lorsque la croissance, les recrutements ou le quotidien rendent l'organisation actuelle difficile à tenir."
+            },
+            {
+              "question": "Combien de temps dure une mission ?",
+              "answer": "Un diagnostic prend généralement quelques semaines. Un accompagnement s'étale sur plusieurs mois, à un rythme adapté à votre disponibilité. La durée est fixée dès la proposition."
+            },
+            {
+              "question": "Comment sont fixés les tarifs ?",
+              "answer": "Après un premier échange gratuit, je vous remets un devis détaillé avec le périmètre, les livrables et le calendrier. Pas de surprise en cours de route."
+            },
+            {
+              "question": "Mes équipes devront-elles se rendre disponibles ?",
+              "answer": "Un peu, oui, surtout pendant le diagnostic. Je m'adapte à leur planning pour limiter l'impact sur l'activité."
+            },
+            {
+              "question": "Que se passe-t-il à la fin de la mission ?",
+              "answer": "Vous repartez avec des outils documentés et des équipes formées pour les faire vivre. Un point de suivi peut être prévu quelques semaines plus tard."
+            }
+          ]
+        },
+        {
+          "id": "newsletter",
+          "nav": "Lettre d'information",
+          "type": "module",
+          "variant": "panel",
+          "module": "newsletter",
+          "eyebrow": "Lettre d'information",
+          "title": "Un conseil d'organisation chaque mois",
+          "intro": "Une méthode, un outil ou un retour d'expérience, en cinq minutes de lecture. Désinscription à tout moment."
+        },
+        {
+          "type": "cta",
+          "variant": "banner",
+          "title": "Parlons de l'organisation de votre PME",
+          "text": "Un premier échange, sans engagement, pour faire le point sur vos priorités.",
+          "button": {
+            "label": "Prendre contact",
+            "href": "#contact"
+          },
+          "secondary": {
+            "label": "Appeler",
+            "href": "tel:{{company.phone}}"
+          }
+        },
+        {
+          "type": "contact",
+          "variant": "split",
+          "mode": "contact",
+          "eyebrow": "Contact",
+          "title": "Décrivez-moi votre situation",
+          "intro": "Quelques lignes suffisent. Je vous réponds rapidement pour fixer un premier échange.",
+          "services": [
+            "Diagnostic organisationnel",
+            "Accompagnement",
+            "Formation",
+            "Autre demande"
+          ],
+          "submitLabel": "Envoyer ma demande"
+        },
+        {
+          "type": "footer",
+          "variant": "simple",
+          "tagline": "{{company.name}} – Conseil en organisation pour PME, {{company.city}}.",
+          "links": [
+            {
+              "label": "Offres",
+              "href": "#offres"
+            },
+            {
+              "label": "Méthode",
+              "href": "#methode"
+            },
+            {
+              "label": "Questions",
+              "href": "#faq"
+            },
+            {
+              "label": "Contact",
+              "href": "#contact"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "modules": {
+    "newsletter": {
+      "incentive": "Recevez chaque mois une méthode concrète et un modèle prêt à l'emploi pour organiser votre PME.",
+      "frequency": "Une lettre par mois"
+    },
+    "webhooks": {
+      "events": [
+        "newsletter.subscribed",
+        "contact.created"
+      ]
+    }
+  }
+}

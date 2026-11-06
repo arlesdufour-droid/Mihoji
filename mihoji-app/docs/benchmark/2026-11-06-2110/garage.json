@@ -1,0 +1,330 @@
+{
+  "version": 1,
+  "theme": {
+    "style": "moderne",
+    "palette": "graphite"
+  },
+  "seo": {
+    "title": "Garage indépendant à Toulouse – {{company.name}}",
+    "description": "Entretien, freins, pneus, climatisation et préparation au contrôle technique à {{company.city}}. Demandez votre devis gratuit en ligne et consultez nos horaires."
+  },
+  "primaryCta": {
+    "label": "Demander un devis",
+    "href": "#devis"
+  },
+  "pages": [
+    {
+      "slug": "index",
+      "title": "Accueil",
+      "sections": [
+        {
+          "type": "hero",
+          "variant": "photo",
+          "eyebrow": "Garage indépendant à {{company.city}}",
+          "title": "Votre voiture entretenue avec soin, sans mauvaise surprise",
+          "subtitle": "{{company.name}} s'occupe de l'entretien, des freins, des pneus, de la climatisation et de la préparation au contrôle technique. Le prix est annoncé avant les travaux.",
+          "cta": {
+            "label": "Demander un devis",
+            "href": "#devis"
+          },
+          "secondaryCta": {
+            "label": "Voir les horaires",
+            "href": "#horaires"
+          },
+          "highlights": [
+            "Devis gratuit",
+            "Toutes marques",
+            "Pièces d'origine ou équivalentes"
+          ],
+          "image": {
+            "query": "car mechanic garage workshop lifting vehicle",
+            "src": "https://images.unsplash.com/photo-1792793178803-455e5a544867",
+            "alt": "Mécanicien au travail sous un véhicule dans l'atelier du garage",
+            "credit": {
+              "name": "Mustafa Sheikhmouss",
+              "url": "https://unsplash.com/@xalo_mustafa?utm_source=mihoji&utm_medium=referral"
+            }
+          }
+        },
+        {
+          "id": "services",
+          "nav": "Services",
+          "type": "services",
+          "variant": "cards",
+          "eyebrow": "Nos prestations",
+          "title": "Tout pour garder votre véhicule en bon état",
+          "intro": "Des interventions courantes réalisées dans l'atelier, avec un devis clair avant de commencer.",
+          "items": [
+            {
+              "title": "Entretien et vidange",
+              "description": "Vidange, filtres, niveaux et points de contrôle, selon le carnet d'entretien de votre constructeur.",
+              "icon": "wrench",
+              "price": "dès 89 €"
+            },
+            {
+              "title": "Freins",
+              "description": "Remplacement des plaquettes et des disques, contrôle du liquide de frein et essai sur route.",
+              "icon": "shield",
+              "price": "dès 119 €"
+            },
+            {
+              "title": "Pneus",
+              "description": "Montage, équilibrage et contrôle du parallélisme. Large choix de marques, du budget au premium.",
+              "icon": "car",
+              "price": "dès 59 € le pneu monté"
+            },
+            {
+              "title": "Climatisation",
+              "description": "Contrôle d'étanchéité, recharge de gaz et remplacement du filtre d'habitacle pour un air frais et sain.",
+              "icon": "snowflake",
+              "price": "dès 79 €"
+            },
+            {
+              "title": "Préparation au contrôle technique",
+              "description": "Nous vérifions les points contrôlés (freinage, éclairage, pollution, train roulant) et corrigeons les défauts avant le passage.",
+              "icon": "check",
+              "price": "dès 49 €"
+            },
+            {
+              "title": "Diagnostic électronique",
+              "description": "Voyant allumé ou comportement inhabituel : nous lisons les codes défaut et identifions la panne.",
+              "icon": "zap",
+              "price": "dès 45 €"
+            }
+          ]
+        },
+        {
+          "id": "garage",
+          "nav": "Le garage",
+          "type": "about",
+          "variant": "image-right",
+          "eyebrow": "Un garage de quartier",
+          "title": "Un mécanicien qui vous explique avant d'intervenir",
+          "paragraphs": [
+            "{{company.name}} est un garage indépendant à {{company.city}}. Nous entretenons et réparons les véhicules légers de toutes marques.",
+            "Avant chaque intervention, nous vous montrons ce qui doit être changé et pourquoi. Vous validez le devis, puis nous commençons. Les pièces remplacées vous sont rendues sur demande."
+          ],
+          "highlights": [
+            "Devis détaillé avant travaux",
+            "Pièces remplacées rendues sur demande",
+            "Véhicule rendu propre"
+          ],
+          "image": {
+            "query": "mechanic explaining repair to customer garage",
+            "src": "https://images.unsplash.com/photo-1792326103553-4e4e8964279e",
+            "alt": "Mécanicien expliquant une réparation à un client dans le garage",
+            "credit": {
+              "name": "Mustafa Sheikhmouss",
+              "url": "https://unsplash.com/@xalo_mustafa?utm_source=mihoji&utm_medium=referral"
+            }
+          }
+        },
+        {
+          "type": "module",
+          "variant": "split",
+          "module": "quote",
+          "eyebrow": "Devis en ligne",
+          "title": "Décrivez votre besoin, nous vous répondons sous 24 h",
+          "intro": "Indiquez votre véhicule et la prestation souhaitée. Vous pouvez joindre des photos, par exemple d'un voyant ou d'un pneu usé."
+        },
+        {
+          "id": "atelier",
+          "nav": "Atelier",
+          "type": "gallery",
+          "variant": "masonry",
+          "eyebrow": "L'atelier",
+          "title": "Du matériel adapté, un travail soigné",
+          "images": [
+            {
+              "image": {
+                "query": "mechanic changing brake pads wheel",
+                "src": "https://images.unsplash.com/photo-1792792999828-74b071329fdd",
+                "alt": "Remplacement de plaquettes de frein sur une roue",
+                "credit": {
+                  "name": "Mustafa Sheikhmouss",
+                  "url": "https://unsplash.com/@xalo_mustafa?utm_source=mihoji&utm_medium=referral"
+                }
+              },
+              "caption": "Freinage"
+            },
+            {
+              "image": {
+                "query": "tire fitting machine wheel balancing",
+                "alt": "Machine de montage et d'équilibrage de pneus"
+              },
+              "caption": "Pneus"
+            },
+            {
+              "image": {
+                "query": "car air conditioning recharge gauges",
+                "alt": "Manomètres de recharge de climatisation automobile"
+              },
+              "caption": "Climatisation"
+            },
+            {
+              "image": {
+                "query": "oil change engine car garage",
+                "alt": "Vidange moteur d'un véhicule en atelier"
+              },
+              "caption": "Entretien"
+            },
+            {
+              "image": {
+                "query": "mechanic diagnostic tool car dashboard",
+                "alt": "Outil de diagnostic électronique branché sur un véhicule"
+              },
+              "caption": "Diagnostic"
+            }
+          ]
+        },
+        {
+          "id": "horaires",
+          "nav": "Horaires",
+          "type": "hours",
+          "variant": "card",
+          "eyebrow": "Horaires d'ouverture",
+          "title": "Quand nous trouver à l'atelier",
+          "intro": "Déposez votre véhicule le matin, nous vous indiquons l'heure de retour prévue.",
+          "rows": [
+            {
+              "day": "Lundi",
+              "hours": "8 h – 12 h et 14 h – 18 h 30"
+            },
+            {
+              "day": "Mardi",
+              "hours": "8 h – 12 h et 14 h – 18 h 30"
+            },
+            {
+              "day": "Mercredi",
+              "hours": "8 h – 12 h et 14 h – 18 h 30"
+            },
+            {
+              "day": "Jeudi",
+              "hours": "8 h – 12 h et 14 h – 18 h 30"
+            },
+            {
+              "day": "Vendredi",
+              "hours": "8 h – 12 h et 14 h – 18 h"
+            },
+            {
+              "day": "Samedi",
+              "hours": "8 h 30 – 12 h"
+            },
+            {
+              "day": "Dimanche",
+              "hours": "Fermé"
+            }
+          ],
+          "note": "Pour une prise en charge rapide, appelez-nous au {{company.phone}}."
+        },
+        {
+          "id": "faq",
+          "nav": "Questions",
+          "type": "faq",
+          "variant": "accordion",
+          "eyebrow": "Questions fréquentes",
+          "title": "Avant de prendre rendez-vous",
+          "items": [
+            {
+              "question": "Le devis est-il vraiment gratuit ?",
+              "answer": "Oui. Le devis en ligne est gratuit et sans engagement. Pour un défaut difficile à identifier, un diagnostic en atelier peut être nécessaire. Nous vous en indiquons alors le tarif avant de le réaliser."
+            },
+            {
+              "question": "Faites-vous le contrôle technique ?",
+              "answer": "Nous préparons votre véhicule au contrôle technique : nous vérifions les points contrôlés et corrigeons les défauts. Le passage officiel se fait dans un centre agréé."
+            },
+            {
+              "question": "Puis-je garder ma garantie constructeur ?",
+              "answer": "Dans la plupart des cas, oui. L'entretien réalisé par un garage indépendant avec des pièces de qualité équivalente respecte votre garantie. Conservez la facture détaillée que nous vous remettons."
+            },
+            {
+              "question": "Combien de temps dure une vidange ?",
+              "answer": "Comptez environ une heure pour un entretien courant. Pour des freins ou une climatisation, prévoyez la demi-journée. Nous vous donnons un délai précis avec le devis."
+            },
+            {
+              "question": "Quelle quantité de gaz pour la climatisation ?",
+              "answer": "Elle dépend de votre véhicule. Nous contrôlons d'abord l'étanchéité du circuit, puis rechargeons avec la quantité exacte prévue par le constructeur."
+            }
+          ]
+        },
+        {
+          "id": "contact",
+          "nav": "Contact",
+          "type": "contact",
+          "variant": "split",
+          "mode": "contact",
+          "eyebrow": "Une question ?",
+          "title": "Écrivez-nous ou appelez le garage",
+          "intro": "Pour une demande rapide, appelez-nous au {{company.phone}} ou écrivez à {{company.email}}.",
+          "submitLabel": "Envoyer mon message"
+        },
+        {
+          "id": "acces",
+          "nav": "Accès",
+          "type": "map",
+          "variant": "split",
+          "eyebrow": "Nous trouver",
+          "title": "Le garage à {{company.city}}",
+          "intro": "Retrouvez-nous au {{company.address}}.",
+          "access": [
+            "Stationnement possible devant l'atelier pour déposer votre véhicule",
+            "Dépôt des clés possible aux heures d'ouverture"
+          ]
+        },
+        {
+          "type": "footer",
+          "variant": "simple",
+          "tagline": "{{company.name}} – entretien et réparation automobile à {{company.city}}.",
+          "links": [
+            {
+              "label": "Services",
+              "href": "#services"
+            },
+            {
+              "label": "Devis",
+              "href": "#devis"
+            },
+            {
+              "label": "Horaires",
+              "href": "#horaires"
+            },
+            {
+              "label": "Contact",
+              "href": "#contact"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "modules": {
+    "quote": {
+      "services": [
+        "Entretien et vidange",
+        "Freins (plaquettes, disques)",
+        "Pneus (montage, équilibrage, géométrie)",
+        "Recharge de climatisation",
+        "Préparation au contrôle technique",
+        "Diagnostic électronique",
+        "Autre demande"
+      ],
+      "fields": [
+        "date",
+        "photos"
+      ],
+      "responseDelay": "Devis gratuit sous 24 h ouvrées",
+      "emergency": false
+    },
+    "widgets": [
+      {
+        "type": "google-maps"
+      }
+    ],
+    "webhooks": {
+      "events": [
+        "quote.created",
+        "contact.created"
+      ]
+    }
+  }
+}

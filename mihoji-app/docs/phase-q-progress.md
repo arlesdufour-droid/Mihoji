@@ -178,3 +178,42 @@ Couvert par `e2e/phase-q-lot-5.spec.ts` (simulation : saisie manuelle, style cho
 ### Reste à faire
 - Suivre l'échec intermittent décrit plus haut (cause non établie).
 - Le serveur de développement du port 3000 est arrêté après les tests : à relancer avec `npm run dev`.
+
+
+## Lot 6 — banc d'essai et contrôle qualité — terminé
+
+### Fait
+- **Banc de 12 cas figés** (`src/lib/site/benchmark-cases.ts`, `BENCHMARK_VERSION = 1`) : plombier, boulangerie, restaurant, kinésithérapeute, coach, avocat, fleuriste, garage, photographe, consultant (les trois premiers cas reprennent `design-examples.ts`), plus deux cas « données pauvres » : `pauvre-naf` (activité = code NAF brut `47.78C`, sans libellé lisible) et `pauvre-demande` (« Je veux un site pour mon entreprise. »). Entreprises fictives, téléphones `01 99 00 xx xx`. Toute modification d'un cas incrémente la version : deux versions ne se comparent pas. Les entrées passent par la même fonction que l'onboarding (`designCompanyOf`), donc le banc mesure ce qu'un vrai utilisateur obtient.
+- **`npm run benchmark`** (`scripts/benchmark.ts`) : vraie IA (refuse de tourner si le fournisseur n'est pas Anthropic), base de développement uniquement, séquentiel. Options : `-- plombier coach` (sous-ensemble), `--photos=local` (**défaut**, bibliothèque locale seule, sans cache ni Unsplash : comparable d'une exécution à l'autre) ou `--photos=unsplash` (jugement visuel ponctuel, non comparable), `--no-judge`, `--no-lighthouse`. Sortie dans `docs/benchmark/<AAAA-MM-JJ-HHmm>/` : `results.json`, description, HTML et captures ordinateur/mobile de chaque site ; `docs/benchmark/latest.json` n'est mis à jour que par une exécution complète. La source des photos est enregistrée dans `results.json` (et par site : photos locales, cache, appels Unsplash, requêtes sans photo).
+- **Photos locales forcées** : option `local` de `resolveSitePhotos` (`photos/service.ts`) transmise par `runDesignGeneration` ; aucun changement du prompt, des styles ni des données envoyées au modèle.
+- **Juge IA** (`benchmark-judge.ts`, grille figée et versionnée dans `benchmark-rubric.ts`, `RUBRIC_VERSION = 1`) : après chaque site, `claude-sonnet-5-5` reçoit la capture ordinateur et la capture mobile et note de 1 à 5, avec une phrase de justification, cinq critères : pertinence du texte pour le métier, caractère distinctif, hiérarchie visuelle, qualité et pertinence des photos, crédibilité (« un client contacterait-il cette entreprise ? »). Notes, justifications, tokens et coût du juge sont dans `results.json`, séparés du coût de génération.
+- **Contrôles du rendu** (et non indicateurs de qualité) : contraste calculé, débordements (ordinateur et mobile), images sans `alt`, images cassées, texte de remplissage, **Lighthouse** (performance, accessibilité, SEO, bonnes pratiques, mobile et ordinateur) — Lighthouse vérifie que le rendu est correct, il ne dit rien de la qualité du site.
+- **Indicateur d'uniformité** : répartition des styles et palettes, et nombre de sites qui partagent exactement la même suite de types de section.
+- **Galerie `/admin/benchmark`** (administrateurs ; lien depuis `/admin/design`) : les 12 sites avec captures, notes et justifications du juge, contrôles, coût, uniformité, comparaison avec l'exécution précédente (si même version du banc, de la grille et même source de photos), et **un champ de note manuelle de 1 à 5 par site**, enregistré avec l'exécution (`manual.json`).
+
+### Exécution de référence (`docs/benchmark/2026-11-06-2110`, photos locales, `claude-sonnet-5-5`, effort medium)
+- 12 sites sur 12 créés, **coût total 0,562 €** : génération 0,440 € (moyenne **0,037 €** par site, de 0,026 à 0,069 €) + juge 0,122 € (≈ 0,010 € par site). Durée de génération totale ≈ 4 min 45 s. Deux sites ont eu besoin d'un 2ᵉ essai (consultant 0,056 €, `pauvre-demande` 0,069 €), ce qui double leur coût.
+- **Note moyenne du juge : 2,98/5.** Par critère : hiérarchie visuelle 4,0 · texte pour le métier 3,8 · distinctif 2,8 · crédibilité 2,5 · **photos 1,8**. Les sites vont de 2,4 (`pauvre-demande`) à 3,2.
+- **Contrôles du rendu** : aucun débordement, aucun contraste insuffisant, aucune image sans `alt` ni cassée, aucun texte de remplissage, sur les 12 sites. Lighthouse : 93 à 100 en performance mobile (100 sur ordinateur), accessibilité 96 à 100, SEO 100.
+- **Uniformité** : styles artisan 5, moderne 4, premium 2, dynamique 1 ; palette terracotta 4 sites sur 12 ; aucune suite de sections partagée (12 suites distinctes). La variété vient des sections, moins du style : un site sur trois a l'apparence « artisan/terracotta ».
+- **Constats** (à lire sur la planche `docs/screenshots/phase-q-lot6/planche-12-sites.jpg`) :
+  - Les photos sont le point le plus faible. En mode local, 1 à 9 requêtes de photos par site restent sans résultat (9 sur 12 pour `pauvre-naf`) et laissent des cadres vides (galerie du photographe, plombier) ; certaines photos sont hors sujet (une boucherie en bandeau de la boutique « Maison Aubry », des clés pour une pompe à chaleur).
+  - Les cas à données pauvres sont les moins bien notés (2,6 et 2,4) : avec un code NAF brut ou une demande d'une ligne, le modèle reste générique et le style retombe sur « artisan ».
+  - Le critère « distinctif » reste à 3 presque partout : les sites sont propres mais interchangeables.
+
+### Limites connues
+- **Une seule exécution** : la variabilité du juge et du générateur d'une exécution à l'autre n'est pas encore mesurée (la sortie du modèle de design n'est pas déterministe). Avant de conclure sur un écart avant/après, relancer le banc (≈ 0,56 €) et regarder l'amplitude entre deux exécutions identiques.
+- Le juge note à partir de captures (pas de navigation) ; les captures sont tronquées à 7 500 px de haut. Les éléments collants (en-tête) sont remis dans le flux pour la capture seulement.
+- La galerie lit le disque du serveur (`docs/benchmark/`) : développement et Codespaces, pas un déploiement sans disque persistant.
+- Chaque exécution complète pèse environ 11 Mo (captures, HTML, descriptions) : ne commiter que les exécutions de référence (celle du 2026-11-06 sert de base « avant »), pas chaque essai.
+- Les mesures Lighthouse tournent sur un site servi en local, avec les photos distantes : performance sensible au réseau.
+
+### Comment vérifier
+1. Dans un terminal : `npm run benchmark` (environ 20 minutes, ≈ 0,56 €) ; pour un essai rapide : `npm run benchmark -- plombier` (≈ 0,05 €, ne remplace pas `latest.json`).
+2. Connecté avec un compte administrateur, ouvrez `/admin/design` puis « Banc d'essai de qualité » (ou `/admin/benchmark`).
+3. Vérifiez en haut : version du banc et de la grille, source des photos, modèle, coût (génération, juge, total), note moyenne du juge, uniformité.
+4. Pour chaque site : captures ordinateur et mobile (cliquer la capture ouvre le site), notes et justifications du juge, contrôles du rendu et Lighthouse.
+5. Cliquez sur une note de 1 à 5 : « Votre note : n/5 » s'affiche, la moyenne de vos notes se met à jour, et la note est retrouvée au rechargement ; un second clic sur la même note l'efface.
+6. Après une seconde exécution, la section « Comparaison » montre l'écart de note et de coût ; elle indique « Non comparable » si la version du banc, celle de la grille ou la source des photos diffèrent.
+
+Couvert par `src/lib/site/benchmark.test.ts` (8 tests : cas, grille, totaux, uniformité, comparaison) et `e2e/phase-q-lot-6.spec.ts` (3 tests : accès réservé aux administrateurs, affichage et comparaison, note manuelle). L'exécution réelle du banc n'est pas un test automatisé (elle coûte de l'argent).

@@ -1,0 +1,325 @@
+{
+  "version": 1,
+  "theme": {
+    "style": "artisan",
+    "palette": "terracotta"
+  },
+  "seo": {
+    "title": "{{company.name}} – Cuisine de marché à {{company.city}}",
+    "description": "Restaurant de cuisine de marché à {{company.city}} : une carte courte qui change chaque semaine, des produits de saison. Réservez votre table en ligne."
+  },
+  "primaryCta": {
+    "label": "Réserver une table",
+    "href": "#reservation"
+  },
+  "pages": [
+    {
+      "slug": "index",
+      "title": "Accueil",
+      "sections": [
+        {
+          "type": "hero",
+          "variant": "photo",
+          "eyebrow": "Cuisine de marché · {{company.city}}",
+          "title": "Une carte courte, des produits de saison, renouvelée chaque semaine",
+          "subtitle": "Chez {{company.name}}, le chef compose sa carte au gré du marché : peu de plats, mais des produits frais et une cuisine généreuse.",
+          "cta": {
+            "label": "Réserver une table",
+            "href": "#reservation"
+          },
+          "secondaryCta": {
+            "label": "Voir la carte",
+            "href": "#carte"
+          },
+          "highlights": [
+            "Carte renouvelée chaque semaine",
+            "Produits de saison",
+            "Cuisine faite maison"
+          ],
+          "image": {
+            "query": "restaurant table seasonal dishes bistro",
+            "src": "https://images.unsplash.com/photo-1578425570232-bf51f753dd5e",
+            "alt": "Table dressée dans un bistrot avec des plats de saison",
+            "credit": {
+              "name": "Louis Hansel",
+              "url": "https://unsplash.com/@louishansel?utm_source=mihoji&utm_medium=referral"
+            }
+          }
+        },
+        {
+          "id": "histoire",
+          "type": "about",
+          "variant": "image-right",
+          "eyebrow": "Notre philosophie",
+          "title": "On cuisine ce que le marché nous offre",
+          "paragraphs": [
+            "Chaque semaine, nous faisons notre marché et la carte s'écrit à partir de ce que nous trouvons de meilleur : légumes du moment, poissons du jour, viandes bien choisies.",
+            "Une carte courte, c'est moins de gaspillage, des produits plus frais et une cuisine maîtrisée. Les plats changent, l'accueil reste le même."
+          ],
+          "highlights": [
+            "Entrée, plat, dessert : trois choix à chaque service",
+            "Fait maison, du fond de sauce au dessert"
+          ],
+          "image": {
+            "query": "chef choosing vegetables market stall",
+            "src": "https://images.unsplash.com/photo-1764408182167-043042cb086e",
+            "alt": "Chef choisissant des légumes frais sur un étal de marché",
+            "credit": {
+              "name": "Huy Phan",
+              "url": "https://unsplash.com/@huyphan2602?utm_source=mihoji&utm_medium=referral"
+            }
+          }
+        },
+        {
+          "id": "carte",
+          "type": "products",
+          "variant": "menu",
+          "eyebrow": "La carte de la semaine",
+          "title": "Notre carte du moment",
+          "intro": "Exemple de carte : elle change chaque semaine selon les arrivages. Demandez-nous les plats du jour au {{company.phone}}.",
+          "items": [
+            {
+              "name": "Velouté de potimarron, éclats de noisette",
+              "description": "Crème légère et huile de noisette.",
+              "price": "9 €",
+              "tag": "Entrée"
+            },
+            {
+              "name": "Œuf parfait, asperges vertes et parmesan",
+              "description": "Asperges croquantes, copeaux de parmesan.",
+              "price": "11 €",
+              "tag": "Entrée"
+            },
+            {
+              "name": "Quenelle de brochet, sauce Nantua",
+              "description": "Un classique lyonnais, gratinée au four.",
+              "price": "22 €",
+              "tag": "Plat"
+            },
+            {
+              "name": "Souris d'agneau confite, légumes rôtis",
+              "description": "Cuisson lente de sept heures, jus corsé.",
+              "price": "24 €",
+              "tag": "Plat"
+            },
+            {
+              "name": "Risotto aux champignons de saison",
+              "description": "Riz carnaroli, champignons poêlés, persil.",
+              "price": "19 €",
+              "tag": "Végétarien"
+            },
+            {
+              "name": "Tarte fine aux pommes, glace vanille",
+              "description": "Pâte feuilletée maison, servie tiède.",
+              "price": "9 €",
+              "tag": "Dessert"
+            },
+            {
+              "name": "Riz au lait vanillé, caramel beurre salé",
+              "description": "Préparé le matin même.",
+              "price": "8 €",
+              "tag": "Dessert"
+            }
+          ]
+        },
+        {
+          "type": "gallery",
+          "variant": "masonry",
+          "eyebrow": "En cuisine et en salle",
+          "title": "Un avant-goût",
+          "images": [
+            {
+              "image": {
+                "query": "plated seasonal dish restaurant fine",
+                "src": "https://images.unsplash.com/photo-1488992783499-418eb1f62d08",
+                "alt": "Assiette de saison dressée par le chef",
+                "credit": {
+                  "name": "Fabrizio Magoni",
+                  "url": "https://unsplash.com/@fabmag?utm_source=mihoji&utm_medium=referral"
+                }
+              },
+              "caption": "Le plat de la semaine"
+            },
+            {
+              "image": {
+                "query": "chef cooking pan restaurant kitchen",
+                "src": "https://images.unsplash.com/photo-1769596717694-dc2a0a55e5d3",
+                "alt": "Cuisinier en train de poêler dans la cuisine du restaurant",
+                "credit": {
+                  "name": "Kyle Hinkson",
+                  "url": "https://unsplash.com/@whereiskylenow?utm_source=mihoji&utm_medium=referral"
+                }
+              },
+              "caption": "Cuisine ouverte sur la salle"
+            },
+            {
+              "image": {
+                "query": "fresh vegetables wooden crate",
+                "alt": "Cagette de légumes frais"
+              },
+              "caption": "Les légumes du marché"
+            },
+            {
+              "image": {
+                "query": "dessert tart served restaurant",
+                "alt": "Tarte servie en dessert"
+              },
+              "caption": "Desserts maison"
+            }
+          ]
+        },
+        {
+          "id": "horaires",
+          "type": "hours",
+          "variant": "card",
+          "eyebrow": "Horaires",
+          "title": "Quand nous trouver",
+          "intro": "Service midi et soir, du mardi au samedi.",
+          "rows": [
+            {
+              "day": "Lundi",
+              "hours": "Fermé"
+            },
+            {
+              "day": "Mardi – Vendredi midi",
+              "hours": "12h00 – 14h00"
+            },
+            {
+              "day": "Mardi – Samedi soir",
+              "hours": "19h00 – 21h30"
+            },
+            {
+              "day": "Samedi midi",
+              "hours": "12h00 – 14h00"
+            },
+            {
+              "day": "Dimanche",
+              "hours": "Fermé"
+            }
+          ],
+          "note": "Horaires indicatifs : en cas de doute, appelez-nous au {{company.phone}}."
+        },
+        {
+          "type": "module",
+          "variant": "split",
+          "module": "booking",
+          "eyebrow": "Réservation en ligne",
+          "title": "Réservez votre table",
+          "intro": "Choisissez le service, le jour et l'heure : votre table est confirmée par email."
+        },
+        {
+          "type": "faq",
+          "variant": "accordion",
+          "eyebrow": "Questions fréquentes",
+          "title": "Avant de venir",
+          "items": [
+            {
+              "question": "La carte change-t-elle vraiment chaque semaine ?",
+              "answer": "Oui. Nous composons la carte à partir des arrivages du marché. Certains plats peuvent changer en cours de semaine selon les stocks."
+            },
+            {
+              "question": "Proposez-vous des plats végétariens ?",
+              "answer": "Nous proposons toujours au moins un plat végétarien. Pour un régime particulier ou une allergie, signalez-le à la réservation ou à votre arrivée."
+            },
+            {
+              "question": "Peut-on réserver pour un groupe ?",
+              "answer": "Pour une grande tablée, appelez-nous au {{company.phone}} ou écrivez à {{company.email}} : nous vous proposons la meilleure organisation."
+            },
+            {
+              "question": "Que faire si je suis en retard ?",
+              "answer": "Prévenez-nous par téléphone. Nous gardons votre table un court moment, au-delà elle peut être attribuée."
+            }
+          ]
+        },
+        {
+          "type": "map",
+          "variant": "split",
+          "eyebrow": "Venir nous voir",
+          "title": "Au cœur de {{company.city}}",
+          "intro": "Retrouvez-nous à l'adresse {{company.address}}.",
+          "access": [
+            "Transports en commun à proximité",
+            "Parkings publics à quelques minutes à pied"
+          ]
+        },
+        {
+          "type": "contact",
+          "variant": "details",
+          "mode": "contact",
+          "eyebrow": "Une question ?",
+          "title": "Contactez-nous",
+          "intro": "Allergie, événement privé, demande particulière : écrivez-nous, nous répondons rapidement.",
+          "submitLabel": "Envoyer le message"
+        },
+        {
+          "type": "footer",
+          "variant": "simple",
+          "tagline": "{{company.name}} · Cuisine de marché à {{company.city}}",
+          "links": [
+            {
+              "label": "La carte",
+              "href": "#carte"
+            },
+            {
+              "label": "Horaires",
+              "href": "#horaires"
+            },
+            {
+              "label": "Réserver",
+              "href": "#reservation"
+            },
+            {
+              "label": "Contact",
+              "href": "#contact"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "modules": {
+    "booking": {
+      "services": [
+        {
+          "name": "Déjeuner",
+          "durationMinutes": 90,
+          "price": 0,
+          "location": "onsite"
+        },
+        {
+          "name": "Dîner",
+          "durationMinutes": 120,
+          "price": 0,
+          "location": "onsite"
+        }
+      ],
+      "schedule": {
+        "days": [
+          "mardi",
+          "mercredi",
+          "jeudi",
+          "vendredi",
+          "samedi"
+        ],
+        "start": "12:00",
+        "end": "21:30"
+      },
+      "slotMinutes": 30,
+      "leadTimeHours": 2,
+      "cancellationPolicy": "Annulation gratuite jusqu'à 3 heures avant votre venue. Prévenez-nous par téléphone au-delà.",
+      "payment": "none",
+      "reminders": true
+    },
+    "widgets": [
+      {
+        "type": "google-maps"
+      }
+    ],
+    "webhooks": {
+      "events": [
+        "booking.created",
+        "contact.created"
+      ]
+    }
+  }
+}

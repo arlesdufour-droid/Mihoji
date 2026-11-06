@@ -1,0 +1,361 @@
+{
+  "version": 1,
+  "theme": {
+    "style": "premium",
+    "palette": "noir-or"
+  },
+  "seo": {
+    "title": "Photographe mariage et portrait à Annecy | {{company.name}}",
+    "description": "{{company.name}}, photographe de mariage et de portrait à {{company.city}} : reportages naturels, forfaits clairs et demande de disponibilités pour votre date."
+  },
+  "primaryCta": {
+    "label": "Demander mes disponibilités",
+    "href": "#contact"
+  },
+  "pages": [
+    {
+      "slug": "index",
+      "title": "Accueil",
+      "sections": [
+        {
+          "type": "hero",
+          "variant": "photo",
+          "eyebrow": "Photographe de mariage et de portrait · {{company.city}}",
+          "title": "Des images sincères pour les jours que l'on veut garder",
+          "subtitle": "{{company.name}} raconte votre mariage ou votre portrait avec lumière naturelle, discrétion et attention aux émotions vraies.",
+          "cta": {
+            "label": "Demander mes disponibilités",
+            "href": "#contact"
+          },
+          "secondaryCta": {
+            "label": "Voir les forfaits",
+            "href": "#forfaits"
+          },
+          "highlights": [
+            "Reportages naturels",
+            "Mariages et portraits",
+            "Galerie privée en ligne"
+          ],
+          "image": {
+            "query": "wedding photographer couple golden light",
+            "src": "https://images.unsplash.com/photo-1758613655724-233871324ba6",
+            "alt": "Couple de mariés photographiés dans la lumière dorée de fin de journée",
+            "credit": {
+              "name": "Vitaly Gariev",
+              "url": "https://unsplash.com/@silverkblack?utm_source=mihoji&utm_medium=referral"
+            }
+          }
+        },
+        {
+          "id": "portfolio",
+          "nav": "Portfolio",
+          "type": "gallery",
+          "variant": "masonry",
+          "eyebrow": "Portfolio",
+          "title": "Quelques instants choisis",
+          "intro": "Cérémonies, regards, éclats de rire et portraits : un aperçu du travail du studio.",
+          "images": [
+            {
+              "image": {
+                "query": "bride groom exchanging rings ceremony",
+                "alt": "Échange des alliances pendant une cérémonie de mariage"
+              },
+              "caption": "La cérémonie"
+            },
+            {
+              "image": {
+                "query": "bride holding bouquet portrait outdoors",
+                "src": "https://images.unsplash.com/photo-1758613656365-5195c3b96ba3",
+                "alt": "Portrait d'une mariée tenant son bouquet en extérieur",
+                "credit": {
+                  "name": "Vitaly Gariev",
+                  "url": "https://unsplash.com/@silverkblack?utm_source=mihoji&utm_medium=referral"
+                }
+              },
+              "caption": "Les préparatifs"
+            },
+            {
+              "image": {
+                "query": "couple dancing wedding reception evening",
+                "alt": "Couple dansant lors de la soirée de mariage"
+              },
+              "caption": "La soirée"
+            },
+            {
+              "image": {
+                "query": "woman portrait natural light studio",
+                "src": "https://images.unsplash.com/photo-1758613654584-86714842a2d5",
+                "alt": "Portrait de femme en lumière naturelle",
+                "credit": {
+                  "name": "Vitaly Gariev",
+                  "url": "https://unsplash.com/@silverkblack?utm_source=mihoji&utm_medium=referral"
+                }
+              },
+              "caption": "Portrait"
+            },
+            {
+              "image": {
+                "query": "family portrait park autumn photographer",
+                "alt": "Portrait de famille dans un parc en automne"
+              },
+              "caption": "En famille"
+            },
+            {
+              "image": {
+                "query": "wedding rings flowers detail macro",
+                "src": "https://images.unsplash.com/photo-1678394535834-c2bdb4fa2566",
+                "alt": "Détail d'alliances posées sur des fleurs",
+                "credit": {
+                  "name": "Maxim Tolchinskiy",
+                  "url": "https://unsplash.com/@shaikhulud?utm_source=mihoji&utm_medium=referral"
+                }
+              },
+              "caption": "Les détails"
+            }
+          ]
+        },
+        {
+          "id": "studio",
+          "nav": "Le studio",
+          "type": "about",
+          "variant": "image-right",
+          "eyebrow": "À propos",
+          "title": "Un regard discret, une présence rassurante",
+          "paragraphs": [
+            "Chez {{company.name}}, la photo commence par une rencontre. Nous échangeons sur votre histoire, vos proches, vos envies, pour que vous soyez à l'aise devant l'objectif.",
+            "Le jour J, je me fais discrète et je privilégie les scènes spontanées : un regard, une main serrée, un fou rire. Les poses sont limitées au strict nécessaire.",
+            "Je me déplace à {{company.city}}, autour du lac et dans toute la région pour vos mariages, séances de couple et portraits."
+          ],
+          "highlights": [
+            "Lumière naturelle",
+            "Direction douce et simple",
+            "Déplacement dans la région"
+          ],
+          "image": {
+            "query": "photographer holding camera wedding",
+            "alt": "Photographe tenant son appareil pendant un mariage"
+          }
+        },
+        {
+          "id": "forfaits",
+          "nav": "Forfaits",
+          "type": "services",
+          "variant": "cards",
+          "eyebrow": "Forfaits",
+          "title": "Des formules claires, adaptables à votre journée",
+          "intro": "Prix indicatifs. Chaque forfait peut être ajusté après un échange sur votre projet.",
+          "items": [
+            {
+              "title": "Mariage · Cérémonie",
+              "description": "Couverture de la cérémonie et de la séance couple, environ 4 h. Une sélection retouchée de photos en galerie privée.",
+              "icon": "heart",
+              "price": "dès 890 €"
+            },
+            {
+              "title": "Mariage · Journée",
+              "description": "Des préparatifs à l'ouverture de bal, environ 10 h. Reportage complet, photos de groupe et galerie privée.",
+              "icon": "camera",
+              "price": "dès 1 790 €"
+            },
+            {
+              "title": "Séance couple ou engagement",
+              "description": "Une heure et demie en extérieur autour d'Annecy, pour se retrouver avant le mariage ou fêter une étape.",
+              "icon": "users",
+              "price": "dès 220 €"
+            },
+            {
+              "title": "Portrait individuel",
+              "description": "Séance en lumière naturelle, idéale pour un portrait personnel ou professionnel. Photos retouchées livrées en ligne.",
+              "icon": "smile",
+              "price": "dès 150 €"
+            },
+            {
+              "title": "Séance famille",
+              "description": "Une séance détendue de 1 h, en extérieur ou chez vous, pour des souvenirs naturels avec petits et grands.",
+              "icon": "home",
+              "price": "dès 190 €"
+            }
+          ]
+        },
+        {
+          "id": "deroulement",
+          "nav": false,
+          "type": "services",
+          "variant": "list",
+          "eyebrow": "Déroulement",
+          "title": "Comment se passe notre collaboration",
+          "items": [
+            {
+              "title": "1. Vous indiquez votre date",
+              "description": "Remplissez le formulaire : je vous réponds avec mes disponibilités et mes forfaits adaptés.",
+              "icon": "calendar"
+            },
+            {
+              "title": "2. Nous faisons connaissance",
+              "description": "Un appel ou un café pour parler de votre journée, du lieu et de vos envies.",
+              "icon": "phone"
+            },
+            {
+              "title": "3. Le jour J",
+              "description": "Je photographie en toute discrétion et vous profitez de chaque moment.",
+              "icon": "camera"
+            },
+            {
+              "title": "4. Vous recevez vos photos",
+              "description": "Une galerie privée en ligne, à télécharger et à partager avec vos proches.",
+              "icon": "check"
+            }
+          ]
+        },
+        {
+          "id": "portraits",
+          "nav": false,
+          "type": "gallery",
+          "variant": "scroll",
+          "eyebrow": "Portraits",
+          "title": "Séances en extérieur et en intimité",
+          "images": [
+            {
+              "image": {
+                "query": "couple engagement session lake mountains",
+                "alt": "Séance de couple au bord d'un lac avec des montagnes"
+              },
+              "caption": "Séance couple"
+            },
+            {
+              "image": {
+                "query": "man portrait outdoors natural light",
+                "src": "https://images.unsplash.com/photo-1775323005381-584af06d83d0",
+                "alt": "Portrait d'homme en extérieur en lumière naturelle",
+                "credit": {
+                  "name": "Will Haddock",
+                  "url": "https://unsplash.com/@willhaddock?utm_source=mihoji&utm_medium=referral"
+                }
+              },
+              "caption": "Portrait"
+            },
+            {
+              "image": {
+                "query": "mother child portrait garden",
+                "src": "https://images.unsplash.com/photo-1743327811352-8f9b286f9c12",
+                "alt": "Mère et enfant dans un jardin",
+                "credit": {
+                  "name": "Ries Bosch",
+                  "url": "https://unsplash.com/@ries_bosch?utm_source=mihoji&utm_medium=referral"
+                }
+              },
+              "caption": "Famille"
+            },
+            {
+              "image": {
+                "query": "bridal veil wind meadow",
+                "alt": "Voile de mariée dans le vent sur une prairie"
+              },
+              "caption": "Mariage"
+            }
+          ]
+        },
+        {
+          "id": "faq",
+          "nav": "Questions",
+          "type": "faq",
+          "variant": "accordion",
+          "eyebrow": "Questions fréquentes",
+          "title": "Avant de réserver votre date",
+          "items": [
+            {
+              "question": "Combien de temps à l'avance faut-il me contacter ?",
+              "answer": "Pour un mariage, idéalement 9 à 12 mois à l'avance, surtout en été. Pour un portrait ou une séance couple, quelques semaines suffisent souvent."
+            },
+            {
+              "question": "Comment la date est-elle réservée ?",
+              "answer": "Après votre demande, je confirme ma disponibilité et nous échangeons sur votre projet. La date est bloquée à la signature du contrat et au versement d'un acompte."
+            },
+            {
+              "question": "Quand reçoit-on les photos ?",
+              "answer": "Les portraits sont livrés sous 2 à 3 semaines. Pour un mariage, comptez en général 6 à 8 semaines, avec un aperçu de quelques images dans les jours qui suivent."
+            },
+            {
+              "question": "Vous déplacez-vous en dehors d'Annecy ?",
+              "answer": "Oui, dans toute la Haute-Savoie et au-delà. Les frais de déplacement sont précisés dans le devis selon la distance."
+            },
+            {
+              "question": "Peut-on choisir un lieu de séance ?",
+              "answer": "Bien sûr. Je peux aussi vous suggérer des lieux autour du lac d'Annecy, de la vieille ville ou des montagnes selon l'ambiance souhaitée."
+            }
+          ]
+        },
+        {
+          "id": "disponibilites",
+          "nav": false,
+          "type": "cta",
+          "variant": "banner",
+          "title": "Votre date est-elle encore libre ?",
+          "text": "Indiquez-moi le jour et le lieu de votre événement : je vous réponds avec mes disponibilités.",
+          "button": {
+            "label": "Vérifier ma date",
+            "href": "#contact"
+          }
+        },
+        {
+          "id": "contact",
+          "nav": "Disponibilités",
+          "type": "contact",
+          "variant": "split",
+          "mode": "quote",
+          "eyebrow": "Contact",
+          "title": "Demandez mes disponibilités",
+          "intro": "Précisez la date, le lieu et le type de séance. Vous recevez une réponse personnalisée.",
+          "services": [
+            "Mariage · Cérémonie",
+            "Mariage · Journée",
+            "Séance couple ou engagement",
+            "Portrait individuel",
+            "Séance famille",
+            "Autre projet"
+          ],
+          "submitLabel": "Envoyer ma demande"
+        },
+        {
+          "type": "footer",
+          "variant": "simple",
+          "tagline": "{{company.name}} · Photographe de mariage et de portrait à {{company.city}}",
+          "links": [
+            {
+              "label": "Portfolio",
+              "href": "#portfolio"
+            },
+            {
+              "label": "Forfaits",
+              "href": "#forfaits"
+            },
+            {
+              "label": "Questions",
+              "href": "#faq"
+            },
+            {
+              "label": "Contact",
+              "href": "#contact"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "modules": {
+    "widgets": [
+      {
+        "type": "instagram"
+      },
+      {
+        "type": "whatsapp",
+        "message": "Bonjour, je souhaite connaître vos disponibilités pour une date."
+      }
+    ],
+    "webhooks": {
+      "events": [
+        "contact.created"
+      ]
+    }
+  }
+}

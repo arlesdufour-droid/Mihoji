@@ -1,0 +1,438 @@
+{
+  "version": 1,
+  "theme": {
+    "style": "artisan",
+    "palette": "terracotta"
+  },
+  "seo": {
+    "title": "{{company.name}} – Fleuriste à {{company.city}} | Bouquets de saison",
+    "description": "Fleuriste à {{company.city}} : bouquets de saison, abonnement floral, commande en ligne avec retrait en boutique ou livraison locale."
+  },
+  "primaryCta": {
+    "label": "Commander un bouquet",
+    "href": "#commande"
+  },
+  "pages": [
+    {
+      "slug": "index",
+      "title": "Accueil",
+      "sections": [
+        {
+          "type": "hero",
+          "variant": "photo",
+          "eyebrow": "Fleuriste à {{company.city}}",
+          "title": "Des bouquets de saison, composés à la main",
+          "subtitle": "{{company.name}} vous propose des fleurs fraîches, un abonnement floral et la commande en ligne, avec retrait en boutique ou livraison locale.",
+          "cta": {
+            "label": "Commander un bouquet",
+            "href": "#commande"
+          },
+          "secondaryCta": {
+            "label": "Découvrir l'abonnement",
+            "href": "#tarifs"
+          },
+          "highlights": [
+            "Fleurs fraîches chaque semaine",
+            "Retrait en boutique dès 4 h",
+            "Livraison locale à {{company.city}}"
+          ],
+          "image": {
+            "query": "florist arranging seasonal bouquet shop",
+            "src": "https://images.unsplash.com/photo-1678394535834-c2bdb4fa2566",
+            "alt": "Fleuriste composant un bouquet de saison dans sa boutique",
+            "credit": {
+              "name": "Maxim Tolchinskiy",
+              "url": "https://unsplash.com/@shaikhulud?utm_source=mihoji&utm_medium=referral"
+            }
+          }
+        },
+        {
+          "id": "atelier",
+          "nav": "L'atelier",
+          "type": "about",
+          "variant": "image-right",
+          "eyebrow": "Notre atelier",
+          "title": "Le goût des fleurs de saison",
+          "paragraphs": [
+            "Chez {{company.name}}, chaque bouquet est noué à la main, selon l'arrivage du moment. Pivoines au printemps, dahlias en fin d'été, branches et baies en hiver : nous suivons le rythme des saisons.",
+            "Pour un anniversaire, un remerciement ou simplement pour vous faire plaisir, nous composons le bouquet qui vous ressemble. Dites-nous votre budget et vos couleurs préférées, nous faisons le reste."
+          ],
+          "highlights": [
+            "Compositions sur mesure",
+            "Emballage soigné",
+            "Conseils d'entretien offerts"
+          ],
+          "image": {
+            "query": "florist hands tying flower bouquet",
+            "src": "https://images.unsplash.com/photo-1760117020523-e13e613ced1c",
+            "alt": "Mains de fleuriste nouant un bouquet de fleurs fraîches",
+            "credit": {
+              "name": "Ritupon Baishya",
+              "url": "https://unsplash.com/@clynt?utm_source=mihoji&utm_medium=referral"
+            }
+          }
+        },
+        {
+          "id": "bouquets",
+          "nav": "Bouquets",
+          "type": "products",
+          "variant": "featured",
+          "eyebrow": "Bouquets de saison",
+          "title": "Nos bouquets du moment",
+          "intro": "Une sélection qui change au fil des arrivages. Commandez en ligne, nous préparons tout pour vous.",
+          "items": [
+            {
+              "name": "Bouquet champêtre",
+              "description": "Fleurs des champs, graminées et verdure, style cueilli du jardin.",
+              "price": "35 €",
+              "tag": "Coup de cœur",
+              "image": {
+                "query": "wildflower country bouquet kraft paper",
+                "alt": "Bouquet champêtre de fleurs des champs"
+              }
+            },
+            {
+              "name": "Bouquet rond pastel",
+              "description": "Roses, renoncules et feuillage délicat dans des teintes poudrées.",
+              "price": "45 €",
+              "tag": "Romantique",
+              "image": {
+                "query": "pastel rose round bouquet",
+                "alt": "Bouquet rond de roses aux teintes pastel"
+              }
+            },
+            {
+              "name": "Bouquet de saison moyen",
+              "description": "Fleurs coupées et feuillages variés, dans des tons harmonieux.",
+              "price": "38 €",
+              "tag": "Du moment",
+              "image": {
+                "query": "seasonal mixed flower bouquet vase",
+                "src": "https://images.unsplash.com/photo-1740602985572-65481ae087b2",
+                "alt": "Bouquet de fleurs de saison dans un vase",
+                "credit": {
+                  "name": "Createasea",
+                  "url": "https://unsplash.com/@createasea?utm_source=mihoji&utm_medium=referral"
+                }
+              }
+            },
+            {
+              "name": "Composition en coupe",
+              "description": "Composition basse de fleurs fraîches, idéale pour une table.",
+              "price": "48 €",
+              "image": {
+                "query": "low flower arrangement bowl table",
+                "alt": "Composition florale basse en coupe"
+              }
+            }
+          ]
+        },
+        {
+          "type": "module",
+          "variant": "panel",
+          "module": "shop",
+          "eyebrow": "Commande en ligne",
+          "title": "Commandez, nous préparons",
+          "intro": "Choisissez votre bouquet, puis votre mode de réception : retrait en boutique du mardi au samedi ou livraison locale."
+        },
+        {
+          "type": "module",
+          "variant": "split",
+          "module": "payment",
+          "eyebrow": "Abonnement floral",
+          "title": "Des fleurs fraîches, toute l'année",
+          "intro": "Un bouquet de saison à intervalle régulier, pour votre intérieur, votre commerce ou pour offrir. Sans engagement de durée."
+        },
+        {
+          "id": "galerie",
+          "nav": "Galerie",
+          "type": "gallery",
+          "variant": "masonry",
+          "eyebrow": "En images",
+          "title": "Quelques créations",
+          "images": [
+            {
+              "image": {
+                "query": "flower shop display buckets fresh",
+                "src": "https://images.unsplash.com/photo-1777799095908-978e9f70a872",
+                "alt": "Seaux de fleurs fraîches à l'étal de la boutique",
+                "credit": {
+                  "name": "Otto Freijser",
+                  "url": "https://unsplash.com/@ottofreijser?utm_source=mihoji&utm_medium=referral"
+                }
+              },
+              "caption": "L'étal de la boutique"
+            },
+            {
+              "image": {
+                "query": "peony bouquet spring table",
+                "alt": "Bouquet de pivoines sur une table"
+              },
+              "caption": "Pivoines de printemps"
+            },
+            {
+              "image": {
+                "query": "dried flowers wreath autumn",
+                "alt": "Couronne de fleurs séchées"
+              },
+              "caption": "Fleurs séchées d'automne"
+            },
+            {
+              "image": {
+                "query": "florist wrapping bouquet paper ribbon",
+                "alt": "Fleuriste emballant un bouquet avec un ruban"
+              },
+              "caption": "L'emballage, fait main"
+            },
+            {
+              "image": {
+                "query": "tulips bunch colorful market",
+                "alt": "Botte de tulipes colorées"
+              },
+              "caption": "Tulipes de saison"
+            },
+            {
+              "image": {
+                "query": "flower delivery bouquet bicycle",
+                "alt": "Bouquet prêt pour une livraison locale"
+              },
+              "caption": "Prêt à partir en livraison"
+            }
+          ]
+        },
+        {
+          "id": "faq",
+          "nav": "Questions",
+          "type": "faq",
+          "variant": "accordion",
+          "eyebrow": "Bon à savoir",
+          "title": "Vos questions sur la commande et l'abonnement",
+          "items": [
+            {
+              "question": "Comment fonctionne le retrait en boutique ?",
+              "answer": "Passez commande en ligne, choisissez le retrait et un créneau. Votre bouquet est prêt au minimum 4 heures plus tard, du mardi au samedi. Les compositions demandent 24 heures."
+            },
+            {
+              "question": "Livrez-vous partout à {{company.city}} ?",
+              "answer": "Nous livrons à {{company.city}} et dans les communes voisines. Les frais et les créneaux disponibles s'affichent au moment de la commande."
+            },
+            {
+              "question": "Puis-je choisir les fleurs de mon bouquet de saison ?",
+              "answer": "Le bouquet de saison est composé selon l'arrivage. Vous pouvez nous indiquer vos couleurs préférées ou vos allergies dans le champ de commentaire, nous en tiendrons compte."
+            },
+            {
+              "question": "Comment suspendre ou arrêter mon abonnement ?",
+              "answer": "L'abonnement est sans engagement de durée. Vous pouvez le suspendre ou l'arrêter à tout moment, en nous prévenant avant le prochain renouvellement."
+            },
+            {
+              "question": "Comment entretenir mes fleurs plus longtemps ?",
+              "answer": "Recoupez les tiges en biais, changez l'eau tous les deux jours et éloignez le bouquet du soleil et des fruits mûrs. Une fiche d'entretien accompagne chaque commande."
+            }
+          ]
+        },
+        {
+          "type": "module",
+          "variant": "panel",
+          "module": "newsletter",
+          "eyebrow": "La lettre de l'atelier",
+          "title": "Les fleurs du mois dans votre boîte mail",
+          "intro": "Arrivages, idées de bouquets et rendez-vous de la boutique, une fois par mois."
+        },
+        {
+          "id": "contact",
+          "nav": "Contact",
+          "type": "contact",
+          "variant": "split",
+          "mode": "contact",
+          "eyebrow": "Un projet particulier ?",
+          "title": "Mariage, deuil, événement : parlons-en",
+          "intro": "Pour une composition sur mesure ou une commande importante, écrivez-nous. Nous vous répondons rapidement.",
+          "services": [
+            "Bouquet sur mesure",
+            "Mariage",
+            "Deuil",
+            "Décoration d'événement",
+            "Fleurissement d'entreprise"
+          ],
+          "submitLabel": "Envoyer ma demande"
+        },
+        {
+          "id": "acces",
+          "nav": "Accès",
+          "type": "map",
+          "variant": "split",
+          "eyebrow": "La boutique",
+          "title": "Venez nous voir à {{company.city}}",
+          "intro": "Retrouvez {{company.name}} au {{company.address}}. Un appel au {{company.phone}} et nous préparons votre commande.",
+          "access": [
+            "Retrait du mardi au samedi",
+            "Stationnement possible à proximité",
+            "Accessible en transports en commun"
+          ]
+        },
+        {
+          "type": "footer",
+          "variant": "columns",
+          "tagline": "{{company.name}}, fleuriste à {{company.city}} : bouquets de saison, abonnement et livraison locale.",
+          "links": [
+            {
+              "label": "Bouquets",
+              "href": "#bouquets"
+            },
+            {
+              "label": "Commander",
+              "href": "#commande"
+            },
+            {
+              "label": "Abonnement",
+              "href": "#tarifs"
+            },
+            {
+              "label": "Contact",
+              "href": "#contact"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "modules": {
+    "shop": {
+      "mode": "both",
+      "products": [
+        {
+          "name": "Bouquet de saison – petit",
+          "description": "Un assortiment de fleurs fraîches du moment, noué à la main.",
+          "price": 24,
+          "unit": "bouquet",
+          "category": "Bouquets",
+          "preorderHours": 4
+        },
+        {
+          "name": "Bouquet de saison – moyen",
+          "description": "Fleurs coupées et feuillages variés, dans des tons harmonieux.",
+          "price": 38,
+          "unit": "bouquet",
+          "category": "Bouquets",
+          "preorderHours": 4
+        },
+        {
+          "name": "Bouquet de saison – grand",
+          "description": "Un généreux bouquet pour recevoir ou faire plaisir.",
+          "price": 55,
+          "unit": "bouquet",
+          "category": "Bouquets",
+          "preorderHours": 6
+        },
+        {
+          "name": "Bouquet rond pastel",
+          "description": "Roses, renoncules et feuillage délicat dans des teintes poudrées.",
+          "price": 45,
+          "unit": "bouquet",
+          "category": "Bouquets",
+          "preorderHours": 6
+        },
+        {
+          "name": "Bouquet champêtre",
+          "description": "Fleurs des champs, graminées et verdure, style cueilli du jardin.",
+          "price": 35,
+          "unit": "bouquet",
+          "category": "Bouquets",
+          "preorderHours": 4
+        },
+        {
+          "name": "Rose rouge à l'unité",
+          "description": "Une rose à longue tige, emballée avec soin.",
+          "price": 4.5,
+          "unit": "tige",
+          "category": "Fleurs à la tige",
+          "preorderHours": 4
+        },
+        {
+          "name": "Orchidée Phalaenopsis",
+          "description": "Plante en pot, floraison longue durée, cache-pot inclus.",
+          "price": 32,
+          "unit": "plante",
+          "category": "Plantes",
+          "preorderHours": 4
+        },
+        {
+          "name": "Composition en coupe",
+          "description": "Composition basse de fleurs fraîches, idéale pour une table.",
+          "price": 48,
+          "unit": "composition",
+          "category": "Compositions",
+          "preorderHours": 24
+        }
+      ],
+      "pickup": {
+        "schedule": {
+          "days": [
+            "mardi",
+            "mercredi",
+            "jeudi",
+            "vendredi",
+            "samedi"
+          ],
+          "start": "09:00",
+          "end": "18:30"
+        },
+        "leadTimeHours": 4
+      },
+      "payment": "both",
+      "minimumOrder": 20
+    },
+    "payment": {
+      "offers": [
+        {
+          "name": "Abonnement mensuel – Petit bouquet",
+          "description": "Un petit bouquet de saison par mois, à retirer en boutique ou livré à {{company.city}}.",
+          "price": 24,
+          "kind": "subscription",
+          "period": "month"
+        },
+        {
+          "name": "Abonnement mensuel – Bouquet moyen",
+          "description": "Un bouquet de saison composé par nos soins chaque mois.",
+          "price": 38,
+          "kind": "subscription",
+          "period": "month"
+        },
+        {
+          "name": "Abonnement hebdomadaire",
+          "description": "Un bouquet frais chaque semaine pour votre maison ou votre bureau.",
+          "price": 120,
+          "kind": "subscription",
+          "period": "month"
+        },
+        {
+          "name": "Pack 3 bouquets cadeau",
+          "description": "Trois bouquets moyens à offrir quand vous le souhaitez.",
+          "price": 105,
+          "kind": "pack",
+          "sessions": 3
+        }
+      ]
+    },
+    "newsletter": {
+      "incentive": "Recevez en avant-première les fleurs de la saison et nos idées de bouquets.",
+      "frequency": "Une lettre par mois"
+    },
+    "widgets": [
+      {
+        "type": "instagram"
+      },
+      {
+        "type": "google-maps"
+      }
+    ],
+    "webhooks": {
+      "events": [
+        "order.created",
+        "payment.succeeded",
+        "newsletter.subscribed",
+        "contact.created"
+      ]
+    }
+  }
+}

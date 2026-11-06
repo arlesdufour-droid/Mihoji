@@ -1,0 +1,1299 @@
+{
+  "benchmarkVersion": 1,
+  "rubricVersion": 1,
+  "runId": "2026-11-06-2110",
+  "startedAt": "2026-11-06T21:20:56.609Z",
+  "photos": "local",
+  "provider": "anthropic",
+  "model": "claude-sonnet-5-5",
+  "effort": "medium",
+  "promptHash": "b82279c8038d",
+  "totals": {
+    "sites": 12,
+    "succeeded": 12,
+    "generationCostEur": 0.439634,
+    "judgeCostEur": 0.1222,
+    "totalCostEur": 0.561834,
+    "averageGenerationCostEur": 0.036636,
+    "durationMs": 285226,
+    "judgeMean": 2.98
+  },
+  "uniformity": {
+    "styles": {
+      "moderne": 4,
+      "artisan": 5,
+      "dynamique": 1,
+      "premium": 2
+    },
+    "palettes": {
+      "moderne/bleu": 1,
+      "artisan/terracotta": 4,
+      "moderne/emeraude": 1,
+      "dynamique/turquoise": 1,
+      "premium/marine": 1,
+      "moderne/graphite": 2,
+      "premium/noir-or": 1,
+      "artisan/foret": 1
+    },
+    "sameSequenceGroups": [],
+    "sitesInSameSequenceGroup": 0,
+    "distinctSequences": 12
+  },
+  "sites": [
+    {
+      "id": "plombier",
+      "label": "Plombier (demande de devis)",
+      "request": "Site pour mon entreprise de plomberie-chauffage : dépannage, rénovation de salle de bain, chaudières et pompes à chaleur. Je veux recevoir des demandes de devis avec photos, et un numéro pour les urgences.",
+      "status": "succeeded",
+      "generation": {
+        "id": "515a4782-6af7-4462-9381-32424d6de785",
+        "costEur": 0.036863,
+        "attempts": 1,
+        "durationMs": 20081,
+        "promptTokens": 277,
+        "completionTokens": 3201,
+        "cacheReadTokens": 0,
+        "cacheWriteTokens": 3923,
+        "model": "claude-sonnet-5-5"
+      },
+      "photos": {
+        "requested": 7,
+        "fromCache": 0,
+        "unsplashCalls": 0,
+        "fromLocal": 3,
+        "unresolved": [
+          "plumber fixing sink pipe",
+          "gas boiler technician maintenance",
+          "copper pipes soldering plumber tools",
+          "radiator thermostat valve closeup"
+        ]
+      },
+      "style": "moderne",
+      "palette": "bleu",
+      "sections": [
+        "hero",
+        "services",
+        "module:quote",
+        "about",
+        "gallery",
+        "area",
+        "faq",
+        "cta",
+        "contact",
+        "footer"
+      ],
+      "modules": [
+        "quote",
+        "widgets",
+        "webhooks"
+      ],
+      "checks": {
+        "desktop": {
+          "overflow": 0,
+          "contrastFailures": 0,
+          "imagesWithoutAlt": 0,
+          "h1Count": 1
+        },
+        "mobile": {
+          "overflow": 0,
+          "contrastFailures": 0,
+          "imagesWithoutAlt": 0,
+          "h1Count": 1
+        },
+        "filler": [],
+        "brokenImages": 0
+      },
+      "lighthouse": {
+        "mobile": {
+          "performance": 93,
+          "accessibility": 96,
+          "seo": 100,
+          "bestPractices": 96
+        },
+        "desktop": {
+          "performance": 100,
+          "accessibility": 96,
+          "seo": 100,
+          "bestPractices": 100
+        }
+      },
+      "judge": {
+        "scores": {
+          "texte": {
+            "note": 4,
+            "raison": "Les prestations sont propres au métier (« Fuite, canalisation bouchée, chasse d'eau défaillante, robinetterie », « dépose de l'existant… WC suspendu et radiateur sèche-serviettes »), avec un « dès 89 € » et une FAQ concrète (fuite d'eau, pompe à chaleur, entretien annuel de la chaudière)."
+          },
+          "distinctif": {
+            "note": 3,
+            "raison": "La mise en page est propre mais standard : bandeau marine, cartes de services en grille de trois, badges bleus, accordéon de FAQ ; rien ne distingue ce site d'un autre modèle de plombier."
+          },
+          "hierarchie": {
+            "note": 4,
+            "raison": "Le grand titre blanc sur fond marine est lisible, le bouton « Demander un devis gratuit » ressort en bleu, et le formulaire est clair ; l'ensemble reste aéré sur ordinateur comme sur mobile, mais la section images est désordonnée."
+          },
+          "photos": {
+            "note": 2,
+            "raison": "Trois des cinq emplacements de la galerie « Nos domaines d'intervention en images » sont des rectangles bleus avec une icône d'appareil photo, et la photo de « Pompe à chaleur air-eau » montre un homme musclé qui s'entraîne, hors sujet."
+          },
+          "credibilite": {
+            "note": 3,
+            "raison": "Le numéro d'urgence (02 40 12 34 56), la zone d'intervention détaillée et la promesse de devis sous 48 h rassurent, mais les cases photo vides, la photo de sport et l'absence d'avis clients, de certifications ou d'adresse minent la confiance."
+          }
+        },
+        "mean": 3.2,
+        "costEur": 0.010181,
+        "promptTokens": 2951,
+        "completionTokens": 580
+      }
+    },
+    {
+      "id": "boulangerie",
+      "label": "Boulangerie (click & collect)",
+      "request": "Je veux un site pour ma boulangerie artisanale : pain au levain, viennoiseries et gâteaux sur commande. Mes clients doivent pouvoir commander en ligne et retirer en boutique (click & collect).",
+      "status": "succeeded",
+      "generation": {
+        "id": "a6e73856-3dc9-4a25-8a99-f57a243851d7",
+        "costEur": 0.039166,
+        "attempts": 1,
+        "durationMs": 27505,
+        "promptTokens": 262,
+        "completionTokens": 4371,
+        "cacheReadTokens": 3923,
+        "cacheWriteTokens": 0,
+        "model": "claude-sonnet-5-5"
+      },
+      "photos": {
+        "requested": 11,
+        "fromCache": 0,
+        "unsplashCalls": 0,
+        "fromLocal": 10,
+        "unresolved": [
+          "layered cake strawberries pastry"
+        ]
+      },
+      "style": "artisan",
+      "palette": "terracotta",
+      "sections": [
+        "hero",
+        "about",
+        "products",
+        "module:shop",
+        "services",
+        "gallery",
+        "hours",
+        "faq",
+        "module:newsletter",
+        "contact",
+        "map",
+        "footer"
+      ],
+      "modules": [
+        "shop",
+        "newsletter",
+        "widgets",
+        "webhooks"
+      ],
+      "checks": {
+        "desktop": {
+          "overflow": 0,
+          "contrastFailures": 0,
+          "imagesWithoutAlt": 0,
+          "h1Count": 1
+        },
+        "mobile": {
+          "overflow": 0,
+          "contrastFailures": 0,
+          "imagesWithoutAlt": 0,
+          "h1Count": 1
+        },
+        "filler": [],
+        "brokenImages": 0
+      },
+      "lighthouse": {
+        "mobile": {
+          "performance": 99,
+          "accessibility": 100,
+          "seo": 100,
+          "bestPractices": 100
+        },
+        "desktop": {
+          "performance": 100,
+          "accessibility": 100,
+          "seo": 100,
+          "bestPractices": 100
+        }
+      },
+      "judge": {
+        "scores": {
+          "texte": {
+            "note": 4,
+            "raison": "Les textes sont propres au métier : « Pain au levain nature 4,80 € », « Gâteau d'anniversaire chocolat 54 € / 8 parts », délais « à commander 72 h à l'avance » et horaires de retrait, soit un vrai click & collect, sans généralités."
+          },
+          "distinctif": {
+            "note": 3,
+            "raison": "La palette crème et terracotta avec titres en serif est chaleureuse et cohérente, mais l'enchaînement hero, présentation, cartes produits, liste de prix puis horaires reste une structure de modèle assez courante."
+          },
+          "hierarchie": {
+            "note": 4,
+            "raison": "Le bouton « Commander en ligne » est mis en avant dans l'en-tête et le hero, et les titres de section sont bien lisibles. La carte de commande est claire, avec le bloc de retrait à côté sur ordinateur, mais la grille de quatre pains laisse une carte seule en bas."
+          },
+          "photos": {
+            "note": 2,
+            "raison": "Les photos de pain et du boulanger devant le four sont belles et pertinentes, mais plusieurs vignettes sont des aplats terracotta avec une icône vide (baguette de tradition, « Le comptoir du matin », « Fraisier maison »). La photo du boulanger est aussi répétée, et la galerie paraît inachevée."
+          },
+          "credibilite": {
+            "note": 3,
+            "raison": "Prix, horaires, téléphone et e-mail sont visibles, et la mention « Bientôt disponible » sur le bouton de commande en ligne affaiblit la promesse centrale. Les images manquantes donnent un aspect inabouti, et l'adresse précise de la boutique n'est pas visible."
+          }
+        },
+        "mean": 3.2,
+        "costEur": 0.010202,
+        "promptTokens": 2938,
+        "completionTokens": 585
+      }
+    },
+    {
+      "id": "restaurant",
+      "label": "Restaurant (réservation de table)",
+      "request": "Je tiens un restaurant de cuisine de marché, avec une carte courte qui change chaque semaine. Je veux présenter la carte et mes horaires, et que mes clients puissent réserver une table en ligne.",
+      "status": "succeeded",
+      "generation": {
+        "id": "c2dee3c5-6d05-4cce-9c9b-5e1b2d3a4df3",
+        "costEur": 0.025678,
+        "attempts": 1,
+        "durationMs": 19258,
+        "promptTokens": 240,
+        "completionTokens": 2825,
+        "cacheReadTokens": 3923,
+        "cacheWriteTokens": 0,
+        "model": "claude-sonnet-5-5"
+      },
+      "photos": {
+        "requested": 6,
+        "fromCache": 0,
+        "unsplashCalls": 0,
+        "fromLocal": 5,
+        "unresolved": [
+          "fresh vegetables wooden crate"
+        ]
+      },
+      "style": "artisan",
+      "palette": "terracotta",
+      "sections": [
+        "hero",
+        "about",
+        "products",
+        "gallery",
+        "hours",
+        "module:booking",
+        "faq",
+        "map",
+        "contact",
+        "footer"
+      ],
+      "modules": [
+        "booking",
+        "widgets",
+        "webhooks"
+      ],
+      "checks": {
+        "desktop": {
+          "overflow": 0,
+          "contrastFailures": 0,
+          "imagesWithoutAlt": 0,
+          "h1Count": 1
+        },
+        "mobile": {
+          "overflow": 0,
+          "contrastFailures": 0,
+          "imagesWithoutAlt": 0,
+          "h1Count": 1
+        },
+        "filler": [],
+        "brokenImages": 0
+      },
+      "lighthouse": {
+        "mobile": {
+          "performance": 99,
+          "accessibility": 100,
+          "seo": 100,
+          "bestPractices": 100
+        },
+        "desktop": {
+          "performance": 100,
+          "accessibility": 100,
+          "seo": 100,
+          "bestPractices": 100
+        }
+      },
+      "judge": {
+        "scores": {
+          "texte": {
+            "note": 4,
+            "raison": "Les textes collent à la demande : « Une carte courte, des produits de saison, renouvelée chaque semaine », plats précis avec prix (Velouté de potimarron 9 €, Quenelle de brochet sauce Nantua 22 €) et FAQ pertinente (plat végétarien, groupe, retard) ; seuls les « Offert » et « Bientôt disponible » sonnent bizarrement."
+          },
+          "distinctif": {
+            "note": 3,
+            "raison": "Palette crème, terracotta et ocre avec titres en serif chaleureux, ce qui donne une ambiance de bistrot, mais la structure en sections centrées (horaires, FAQ, contact) reste un modèle assez standard."
+          },
+          "hierarchie": {
+            "note": 4,
+            "raison": "Le titre serif du hero est très lisible, le bouton ocre « Réserver une table » est évident sur ordinateur comme sur mobile, et les sections sont aérées avec des petits intitulés ordonnés ; le bloc réservation, avec ses « Offert » ambigus, brouille un peu la lecture."
+          },
+          "photos": {
+            "note": 2,
+            "raison": "Deux emplacements de la galerie « Un avant-goût » sont de simples aplats terracotta avec une icône d'appareil photo (Desserts maison, Les légumes du marché), et les photos de cuisine en noir et blanc ou de brigade sont génériques, sans aucun plat appétissant ni image de salle."
+          },
+          "credibilite": {
+            "note": 2,
+            "raison": "Les placeholders de photos, le bouton « Réserver en ligne » marqué « Bientôt disponible » alors que la réservation en ligne est la demande centrale, les mentions « Offert » sous Déjeuner et Dîner, la carte « Exemple de carte » et le numéro 01 99 00 00 01 manifestement fictif nuisent à la confiance."
+          }
+        },
+        "mean": 3,
+        "costEur": 0.010713,
+        "promptTokens": 2927,
+        "completionTokens": 646
+      }
+    },
+    {
+      "id": "kine",
+      "label": "Kinésithérapeute (rendez-vous)",
+      "request": "Je suis kinésithérapeute, spécialisée en rééducation sportive et en douleurs de dos. Je veux que mes patients puissent prendre rendez-vous en ligne et trouver facilement les informations pratiques et les remboursements.",
+      "status": "succeeded",
+      "generation": {
+        "id": "ebd828d3-b831-4fea-9cdf-2d241039ff2f",
+        "costEur": 0.026757,
+        "attempts": 1,
+        "durationMs": 18194,
+        "promptTokens": 280,
+        "completionTokens": 2941,
+        "cacheReadTokens": 3923,
+        "cacheWriteTokens": 0,
+        "model": "claude-sonnet-5-5"
+      },
+      "photos": {
+        "requested": 6,
+        "fromCache": 0,
+        "unsplashCalls": 0,
+        "fromLocal": 4,
+        "unresolved": [
+          "back massage manual therapy",
+          "rehabilitation resistance band exercise"
+        ]
+      },
+      "style": "moderne",
+      "palette": "emeraude",
+      "sections": [
+        "hero",
+        "about",
+        "services",
+        "gallery",
+        "module:booking",
+        "faq",
+        "hours",
+        "map",
+        "contact",
+        "footer"
+      ],
+      "modules": [
+        "booking",
+        "widgets",
+        "webhooks"
+      ],
+      "checks": {
+        "desktop": {
+          "overflow": 0,
+          "contrastFailures": 0,
+          "imagesWithoutAlt": 0,
+          "h1Count": 1
+        },
+        "mobile": {
+          "overflow": 0,
+          "contrastFailures": 0,
+          "imagesWithoutAlt": 0,
+          "h1Count": 1
+        },
+        "filler": [],
+        "brokenImages": 0
+      },
+      "lighthouse": {
+        "mobile": {
+          "performance": 100,
+          "accessibility": 100,
+          "seo": 100,
+          "bestPractices": 100
+        },
+        "desktop": {
+          "performance": 100,
+          "accessibility": 100,
+          "seo": 100,
+          "bestPractices": 100
+        }
+      },
+      "judge": {
+        "scores": {
+          "texte": {
+            "note": 4,
+            "raison": "Les textes sont propres à la kinésithérapie et à la demande : « Rééducation sportive », « Douleurs de dos » (lombalgie, sciatique, cervicalgie), une FAQ sur l'ordonnance, le remboursement à 60 % et l'accident du travail, ce qui répond bien au besoin des patients."
+          },
+          "distinctif": {
+            "note": 3,
+            "raison": "Le vert sauge, le titre accrocheur « Retrouvez votre mobilité, soulagez votre dos, reprenez le sport » et l'alternance image/texte donnent une certaine cohérence, mais la structure reste celle d'un modèle de site de santé très courant (cartes, FAQ, bloc horaires)."
+          },
+          "hierarchie": {
+            "note": 4,
+            "raison": "Le titre en gros caractères et le bouton vert « Prendre rendez-vous » dominent le haut de page, et les sections sont bien aérées et ordonnées ; la section « Au cabinet » avec ses cases vides et le bloc de réservation un peu étroit nuisent toutefois à la lecture."
+          },
+          "photos": {
+            "note": 2,
+            "raison": "Trois des quatre vignettes de la galerie « Au cabinet » sont des carrés verts avec une icône d'appareil photo (Rééducation du genou, Thérapie manuelle, Renforcement), et la photo du héros, un gros plan de pieds en chaussettes avec un badge, est peu parlante, même si la photo de la salle de soins est correcte."
+          },
+          "credibilite": {
+            "note": 3,
+            "raison": "L'adresse à Rennes, les horaires détaillés, le téléphone « 01 99 00 00 02 » (numéro factice) et la mention « Bientôt disponible » sous le bouton « Réserver en ligne » (alors que c'est la demande principale) entament la confiance, et les galeries vides donnent un aspect inachevé."
+          }
+        },
+        "mean": 3.2,
+        "costEur": 0.010832,
+        "promptTokens": 2955,
+        "completionTokens": 654
+      }
+    },
+    {
+      "id": "coach",
+      "label": "Coach sportif (rendez-vous et paiement)",
+      "request": "Je suis coach sportif à domicile et en extérieur. Je veux que mes clients puissent réserver une séance en ligne et payer en ligne, à la séance ou par forfait de 10 séances.",
+      "status": "succeeded",
+      "generation": {
+        "id": "b967f481-cc3f-4b3c-b441-89e6fd6d5e82",
+        "costEur": 0.029135,
+        "attempts": 1,
+        "durationMs": 19870,
+        "promptTokens": 262,
+        "completionTokens": 3218,
+        "cacheReadTokens": 3923,
+        "cacheWriteTokens": 0,
+        "model": "claude-sonnet-5-5"
+      },
+      "photos": {
+        "requested": 7,
+        "fromCache": 0,
+        "unsplashCalls": 0,
+        "fromLocal": 7,
+        "unresolved": []
+      },
+      "style": "dynamique",
+      "palette": "turquoise",
+      "sections": [
+        "hero",
+        "about",
+        "services",
+        "gallery",
+        "module:booking",
+        "module:payment",
+        "area",
+        "faq",
+        "contact",
+        "footer"
+      ],
+      "modules": [
+        "booking",
+        "payment",
+        "widgets",
+        "webhooks"
+      ],
+      "checks": {
+        "desktop": {
+          "overflow": 0,
+          "contrastFailures": 0,
+          "imagesWithoutAlt": 0,
+          "h1Count": 1
+        },
+        "mobile": {
+          "overflow": 0,
+          "contrastFailures": 0,
+          "imagesWithoutAlt": 0,
+          "h1Count": 1
+        },
+        "filler": [],
+        "brokenImages": 0
+      },
+      "lighthouse": {
+        "mobile": {
+          "performance": 99,
+          "accessibility": 100,
+          "seo": 100,
+          "bestPractices": 100
+        },
+        "desktop": {
+          "performance": 100,
+          "accessibility": 100,
+          "seo": 100,
+          "bestPractices": 100
+        }
+      },
+      "judge": {
+        "scores": {
+          "texte": {
+            "note": 4,
+            "raison": "Les textes sont propres au coaching à domicile et en extérieur : « Un entraînement qui s'adapte à vous, pas l'inverse », six objectifs précis (perte de poids, posture et mobilité, séance duo), liste de séances avec prix, forfait de 10 à 520 € valable 6 mois, communes de Bordeaux et FAQ pertinente."
+          },
+          "distinctif": {
+            "note": 3,
+            "raison": "La palette orange et vert sarcelle, les pastilles de section et les titres en gras donnent une cohérence, mais la structure (héro, objectifs en icônes, galerie, tarifs, FAQ) reste celle d'un modèle de site vitrine classique."
+          },
+          "hierarchie": {
+            "note": 4,
+            "raison": "Le titre du héro est très lisible sur la photo sombre, le bouton orange « Réserver une séance » ressort nettement et les sections alternent fond blanc et fond clair, avec des titres centrés ; en revanche les boutons de réservation en ligne en pointillés, « BIENTÔT DISPONIBLE », sont peu visibles."
+          },
+          "photos": {
+            "note": 3,
+            "raison": "Les photos Unsplash de sport sont globalement liées au thème (coach avec cliente, planche, boxe, course), mais elles montrent des personnes et des salles de sport différentes, rien ne représente Julien à domicile ou à Bordeaux, et la galerie a des formats inégaux."
+          },
+          "credibilite": {
+            "note": 2,
+            "raison": "Le numéro « 06 12 34 56 78 » est manifestement fictif et la réservation et le paiement en ligne affichent « BIENTÔT DISPONIBLE » alors que c'était la demande centrale ; les crédits photo Unsplash visibles et l'absence d'avis ou de diplômes affaiblissent aussi la confiance."
+          }
+        },
+        "mean": 3.2,
+        "costEur": 0.010656,
+        "promptTokens": 2934,
+        "completionTokens": 638
+      }
+    },
+    {
+      "id": "avocat",
+      "label": "Avocat (site sobre, droit de la famille)",
+      "request": "Je suis avocat en droit de la famille (divorce, garde d’enfants, succession). Je veux un site sobre et rassurant qui présente mes domaines d’intervention, le déroulé d’un premier rendez-vous et comment me contacter. Aucune promesse de résultat.",
+      "status": "succeeded",
+      "generation": {
+        "id": "6f24526e-ffac-4bc6-8e0e-404af98bf596",
+        "costEur": 0.028303,
+        "attempts": 1,
+        "durationMs": 21034,
+        "promptTokens": 259,
+        "completionTokens": 3123,
+        "cacheReadTokens": 3923,
+        "cacheWriteTokens": 0,
+        "model": "claude-sonnet-5-5"
+      },
+      "photos": {
+        "requested": 5,
+        "fromCache": 0,
+        "unsplashCalls": 0,
+        "fromLocal": 3,
+        "unresolved": [
+          "lawyer listening to client",
+          "lawyer signing legal documents"
+        ]
+      },
+      "style": "premium",
+      "palette": "marine",
+      "sections": [
+        "hero",
+        "about",
+        "services",
+        "about",
+        "gallery",
+        "faq",
+        "area",
+        "contact",
+        "map",
+        "footer"
+      ],
+      "modules": [
+        "widgets",
+        "webhooks"
+      ],
+      "checks": {
+        "desktop": {
+          "overflow": 0,
+          "contrastFailures": 0,
+          "imagesWithoutAlt": 0,
+          "h1Count": 1
+        },
+        "mobile": {
+          "overflow": 0,
+          "contrastFailures": 0,
+          "imagesWithoutAlt": 0,
+          "h1Count": 1
+        },
+        "filler": [],
+        "brokenImages": 0
+      },
+      "lighthouse": {
+        "mobile": {
+          "performance": 100,
+          "accessibility": 100,
+          "seo": 100,
+          "bestPractices": 100
+        },
+        "desktop": {
+          "performance": 100,
+          "accessibility": 100,
+          "seo": 100,
+          "bestPractices": 100
+        }
+      },
+      "judge": {
+        "scores": {
+          "texte": {
+            "note": 4,
+            "raison": "Les textes sont propres au droit de la famille (divorce par consentement mutuel, résidence alternée, pension alimentaire, PACS, indivision) et respectent la consigne « aucune promesse de résultat » avec la phrase « je ne peux garantir aucun résultat »."
+          },
+          "distinctif": {
+            "note": 3,
+            "raison": "L'ambiance sobre (serif élégant, fond beige, accents dorés, bouton marine) convient à un cabinet, mais la structure en cartes à icônes, FAQ et listes de villes reste très modèle standard."
+          },
+          "hierarchie": {
+            "note": 4,
+            "raison": "Le titre serif du hero est très lisible, le bouton doré « Demander un rendez-vous » ressort nettement, et les sections sont aérées et bien ordonnées sur ordinateur comme sur mobile."
+          },
+          "photos": {
+            "note": 2,
+            "raison": "Deux images sont de grands aplats bleu marine vides avec une icône cœur ou appareil photo (section Le cabinet et galerie centrale), ce qui donne un aspect cassé ; les photos de livres juridiques sont en outre en anglais (« EU Law »), peu liées à un cabinet lillois de droit de la famille."
+          },
+          "credibilite": {
+            "note": 3,
+            "raison": "Les honoraires expliqués, la confidentialité et le ton mesuré inspirent confiance, mais les images manquantes font paraître le site inachevé, et on ne voit ni portrait de l'avocat, ni adresse, ni numéro de barreau dans les captures."
+          }
+        },
+        "mean": 3.2,
+        "costEur": 0.009796,
+        "promptTokens": 2950,
+        "completionTokens": 536
+      }
+    },
+    {
+      "id": "fleuriste",
+      "label": "Fleuriste (commande et retrait)",
+      "request": "Je suis fleuriste. Je veux montrer mes bouquets de saison, proposer un abonnement floral et permettre de commander en ligne pour un retrait en boutique ou une livraison locale.",
+      "status": "succeeded",
+      "generation": {
+        "id": "5993e76a-162e-4fb7-8281-42e66b406f56",
+        "costEur": 0.037765,
+        "attempts": 1,
+        "durationMs": 25933,
+        "promptTokens": 242,
+        "completionTokens": 4214,
+        "cacheReadTokens": 3923,
+        "cacheWriteTokens": 0,
+        "model": "claude-sonnet-5-5"
+      },
+      "photos": {
+        "requested": 12,
+        "fromCache": 0,
+        "unsplashCalls": 0,
+        "fromLocal": 11,
+        "unresolved": [
+          "tulips bunch colorful market"
+        ]
+      },
+      "style": "artisan",
+      "palette": "terracotta",
+      "sections": [
+        "hero",
+        "about",
+        "products",
+        "module:shop",
+        "module:payment",
+        "gallery",
+        "faq",
+        "module:newsletter",
+        "contact",
+        "map",
+        "footer"
+      ],
+      "modules": [
+        "shop",
+        "payment",
+        "newsletter",
+        "widgets",
+        "webhooks"
+      ],
+      "checks": {
+        "desktop": {
+          "overflow": 0,
+          "contrastFailures": 0,
+          "imagesWithoutAlt": 0,
+          "h1Count": 1
+        },
+        "mobile": {
+          "overflow": 0,
+          "contrastFailures": 0,
+          "imagesWithoutAlt": 0,
+          "h1Count": 1
+        },
+        "filler": [],
+        "brokenImages": 0
+      },
+      "lighthouse": {
+        "mobile": {
+          "performance": 99,
+          "accessibility": 100,
+          "seo": 100,
+          "bestPractices": 100
+        },
+        "desktop": {
+          "performance": 100,
+          "accessibility": 100,
+          "seo": 100,
+          "bestPractices": 100
+        }
+      },
+      "judge": {
+        "scores": {
+          "texte": {
+            "note": 4,
+            "raison": "Les textes parlent vraiment de fleuristerie : « Bouquet rond pastel » (roses, renoncules, feuillage délicat), « Rose rouge à l'unité 4,50 € », « Orchidée Phalaenopsis », délais de commande (4 h, 6 h, 24 h) et abonnement mensuel ou hebdomadaire avec prix."
+          },
+          "distinctif": {
+            "note": 3,
+            "raison": "La palette crème, terracotta et ocre avec un titre en serif donne une ambiance chaleureuse et cohérente, mais la structure (hero, à propos, liste de prix, cartes d'abonnement, FAQ) reste celle d'un modèle courant."
+          },
+          "hierarchie": {
+            "note": 4,
+            "raison": "Le titre du hero est très lisible, le bouton ocre « Commander un bouquet » ressort, et les sections sont bien espacées ; en revanche la section commande est une longue liste dense, et l'orphelin « Pack 3 bouquets cadeau » casse la grille des abonnements."
+          },
+          "photos": {
+            "note": 1,
+            "raison": "Presque toutes les images sont des cadres bruns vides avec une icône d'appareil photo (bouquet champêtre, galerie « Quelques créations »), et la seule photo de la galerie montre un étal de boucherie avec de la viande, hors sujet pour « L'étal de la boutique »."
+          },
+          "credibilite": {
+            "note": 2,
+            "raison": "Les horaires, l'e-mail et le téléphone sont affichés, mais les placeholders photo, la photo de viande, les mentions « Bientôt disponible » à la place du paiement en ligne et le numéro « 01 99 00 00 04 » à l'air factice font douter du sérieux de la boutique."
+          }
+        },
+        "mean": 2.8,
+        "costEur": 0.010362,
+        "promptTokens": 2925,
+        "completionTokens": 606
+      }
+    },
+    {
+      "id": "garage",
+      "label": "Garage automobile (devis)",
+      "request": "Nous sommes un garage indépendant : entretien, freins, pneus, climatisation et préparation au contrôle technique. Je veux que les clients puissent demander un devis en ligne et voir nos horaires d’ouverture.",
+      "status": "succeeded",
+      "generation": {
+        "id": "15486215-ad15-4b24-ae72-d874a00c6648",
+        "costEur": 0.02993,
+        "attempts": 1,
+        "durationMs": 20247,
+        "promptTokens": 264,
+        "completionTokens": 3309,
+        "cacheReadTokens": 3923,
+        "cacheWriteTokens": 0,
+        "model": "claude-sonnet-5-5"
+      },
+      "photos": {
+        "requested": 7,
+        "fromCache": 0,
+        "unsplashCalls": 0,
+        "fromLocal": 6,
+        "unresolved": [
+          "tire fitting machine wheel balancing"
+        ]
+      },
+      "style": "moderne",
+      "palette": "graphite",
+      "sections": [
+        "hero",
+        "services",
+        "about",
+        "module:quote",
+        "gallery",
+        "hours",
+        "faq",
+        "contact",
+        "map",
+        "footer"
+      ],
+      "modules": [
+        "quote",
+        "widgets",
+        "webhooks"
+      ],
+      "checks": {
+        "desktop": {
+          "overflow": 0,
+          "contrastFailures": 0,
+          "imagesWithoutAlt": 0,
+          "h1Count": 1
+        },
+        "mobile": {
+          "overflow": 0,
+          "contrastFailures": 0,
+          "imagesWithoutAlt": 0,
+          "h1Count": 1
+        },
+        "filler": [],
+        "brokenImages": 0
+      },
+      "lighthouse": {
+        "mobile": {
+          "performance": 98,
+          "accessibility": 97,
+          "seo": 100,
+          "bestPractices": 100
+        },
+        "desktop": {
+          "performance": 100,
+          "accessibility": 97,
+          "seo": 100,
+          "bestPractices": 100
+        }
+      },
+      "judge": {
+        "scores": {
+          "texte": {
+            "note": 4,
+            "raison": "Les prestations sont propres au garage, avec des prix « dès » concrets (vidange dès 89 €, freins dès 119 €, pneu monté dès 59 €). La FAQ sur la garantie constructeur et le passage officiel du contrôle technique en centre agréé est réaliste et utile."
+          },
+          "distinctif": {
+            "note": 3,
+            "raison": "La structure est propre mais classique (héro sombre, grille de 6 cartes, formulaire, FAQ), avec l'orange comme seul accent ; le garage n'a pas de personnalité propre et le gabarit paraît interchangeable."
+          },
+          "hierarchie": {
+            "note": 4,
+            "raison": "Le titre est fort, le bouton orange « Demander un devis » ressort nettement et les sections sont bien espacées et ordonnées. Sur mobile, le parcours reste lisible, avec des cartes empilées et un formulaire clair."
+          },
+          "photos": {
+            "note": 2,
+            "raison": "Dans la galerie « L'atelier », quatre vignettes sur cinq sont des cadres gris vides avec une icône d'appareil photo, ce qui fait inachevé. Les deux photos d'atelier réelles (mécanicien, voiture capot ouvert) sont pertinentes, mais le héro est très sombre."
+          },
+          "credibilite": {
+            "note": 3,
+            "raison": "Les horaires détaillés, le formulaire de devis et les prix donnent confiance. Mais le numéro « 01 99 00 00 05 » est manifestement factice, aucune adresse précise n'apparaît et la galerie reste vide, ce qui affaiblit le sérieux."
+          }
+        },
+        "mean": 3.2,
+        "costEur": 0.009989,
+        "promptTokens": 2941,
+        "completionTokens": 560
+      }
+    },
+    {
+      "id": "photographe",
+      "label": "Photographe de mariage (portfolio)",
+      "request": "Je suis photographe de mariage et de portrait. Je veux un site qui met mes photos en valeur, présente mes forfaits et permet de me demander mes disponibilités pour une date.",
+      "status": "succeeded",
+      "generation": {
+        "id": "2cc3bb18-f628-4015-8e7b-14f71ffacddf",
+        "costEur": 0.03013,
+        "attempts": 1,
+        "durationMs": 21852,
+        "promptTokens": 224,
+        "completionTokens": 3340,
+        "cacheReadTokens": 3923,
+        "cacheWriteTokens": 0,
+        "model": "claude-sonnet-5-5"
+      },
+      "photos": {
+        "requested": 12,
+        "fromCache": 0,
+        "unsplashCalls": 0,
+        "fromLocal": 8,
+        "unresolved": [
+          "bride groom exchanging rings ceremony",
+          "couple dancing wedding reception evening",
+          "couple engagement session lake mountains",
+          "bridal veil wind meadow"
+        ]
+      },
+      "style": "premium",
+      "palette": "noir-or",
+      "sections": [
+        "hero",
+        "gallery",
+        "about",
+        "services",
+        "services",
+        "gallery",
+        "faq",
+        "cta",
+        "contact",
+        "footer"
+      ],
+      "modules": [
+        "widgets",
+        "webhooks"
+      ],
+      "checks": {
+        "desktop": {
+          "overflow": 0,
+          "contrastFailures": 0,
+          "imagesWithoutAlt": 0,
+          "h1Count": 1
+        },
+        "mobile": {
+          "overflow": 0,
+          "contrastFailures": 0,
+          "imagesWithoutAlt": 0,
+          "h1Count": 1
+        },
+        "filler": [],
+        "brokenImages": 0
+      },
+      "lighthouse": {
+        "mobile": {
+          "performance": 99,
+          "accessibility": 100,
+          "seo": 100,
+          "bestPractices": 100
+        },
+        "desktop": {
+          "performance": 100,
+          "accessibility": 100,
+          "seo": 100,
+          "bestPractices": 100
+        }
+      },
+      "judge": {
+        "scores": {
+          "texte": {
+            "note": 4,
+            "raison": "Les textes sont propres à un photographe de mariage : forfaits « Mariage · Cérémonie » dès 890 €, « Mariage · Journée » dès 1 790 €, déroulement en 4 étapes, FAQ sur le délai de réservation et la livraison des photos sous 2 à 3 semaines."
+          },
+          "distinctif": {
+            "note": 3,
+            "raison": "L'ambiance sombre et dorée avec un titre en serif élégant a du caractère, mais la structure (portfolio, à propos, cartes de forfaits, FAQ) reste celle d'un modèle classique."
+          },
+          "hierarchie": {
+            "note": 4,
+            "raison": "Le titre serif est très lisible, le bouton doré « Demander mes disponibilités » ressort dans l'en-tête et le hero, et les sections sont aérées et bien séparées, sur ordinateur comme sur mobile."
+          },
+          "photos": {
+            "note": 1,
+            "raison": "La plupart des vignettes du portfolio sont des aplats dorés avec une icône d'appareil photo, sans image, et la section À propos est vide ; les rares photos sont hors sujet (homme avec reflex en studio, joueur de sport, tournage) et aucune ne montre un mariage."
+          },
+          "credibilite": {
+            "note": 2,
+            "raison": "Les forfaits et les informations pratiques sont clairs, mais un portfolio rempli de cadres vides et de photos de stock crédités Unsplash qui n'ont rien à voir avec des mariages empêche de juger le travail de la photographe."
+          }
+        },
+        "mean": 2.8,
+        "costEur": 0.009673,
+        "promptTokens": 2914,
+        "completionTokens": 529
+      }
+    },
+    {
+      "id": "consultant",
+      "label": "Consultant en organisation (B2B)",
+      "request": "Je suis consultant en organisation pour les PME. Je veux présenter mes offres (diagnostic, accompagnement, formation), rassurer sur ma méthode et proposer une lettre d’information mensuelle.",
+      "status": "succeeded",
+      "generation": {
+        "id": "c775a544-e0a7-41f2-8e79-594efb257e0c",
+        "costEur": 0.056499,
+        "attempts": 2,
+        "durationMs": 31066,
+        "promptTokens": 3701,
+        "completionTokens": 5597,
+        "cacheReadTokens": 7846,
+        "cacheWriteTokens": 0,
+        "model": "claude-sonnet-5-5"
+      },
+      "photos": {
+        "requested": 5,
+        "fromCache": 0,
+        "unsplashCalls": 0,
+        "fromLocal": 4,
+        "unresolved": [
+          "process mapping sticky notes wall"
+        ]
+      },
+      "style": "moderne",
+      "palette": "graphite",
+      "sections": [
+        "hero",
+        "services",
+        "about",
+        "services",
+        "gallery",
+        "faq",
+        "module:newsletter",
+        "cta",
+        "contact",
+        "footer"
+      ],
+      "modules": [
+        "newsletter",
+        "webhooks"
+      ],
+      "checks": {
+        "desktop": {
+          "overflow": 0,
+          "contrastFailures": 0,
+          "imagesWithoutAlt": 0,
+          "h1Count": 1
+        },
+        "mobile": {
+          "overflow": 0,
+          "contrastFailures": 0,
+          "imagesWithoutAlt": 0,
+          "h1Count": 1
+        },
+        "filler": [],
+        "brokenImages": 0
+      },
+      "lighthouse": {
+        "mobile": {
+          "performance": 100,
+          "accessibility": 100,
+          "seo": 100,
+          "bestPractices": 100
+        },
+        "desktop": {
+          "performance": 100,
+          "accessibility": 100,
+          "seo": 100,
+          "bestPractices": 100
+        }
+      },
+      "judge": {
+        "scores": {
+          "texte": {
+            "note": 4,
+            "raison": "Les textes sont propres à un consultant en organisation de PME : « Une PME mieux organisée, c'est un dirigeant qui respire », trois offres détaillées, parcours en quatre étapes et FAQ sur la durée, les tarifs et la disponibilité des équipes."
+          },
+          "distinctif": {
+            "note": 2,
+            "raison": "La mise en page est celle d'un modèle SaaS standard (pastilles, cartes à icônes, accordéon, bandeau sombre) ; seul le bouton orange rompt un peu avec la sobriété générale, et rien n'évoque la personnalité de Perrin."
+          },
+          "hierarchie": {
+            "note": 4,
+            "raison": "Le grand titre du hero et le bouton sombre « Échanger sur votre projet » s'imposent, les sections sont aérées et numérotées, et le bandeau sombre avec bouton orange marque bien l'appel à l'action ; le menu mobile ouvert masque toutefois une partie du titre sur la capture."
+          },
+          "photos": {
+            "note": 2,
+            "raison": "Les photos de stock sont peu cohérentes : un ouvrier qui scie du bois illustre la « méthode » d'un consultant, la grille « Sur le terrain » affiche un cadre noir vide avec une icône d'appareil photo, et les crédits Unsplash sont visibles sur les images."
+          },
+          "credibilite": {
+            "note": 3,
+            "raison": "Les coordonnées complètes (téléphone, e-mail, adresse rue de Rivoli) et le formulaire rassurent, mais le numéro « 01 99 00 00 07 » semble factice, il n'y a ni témoignage ni référence client, et la lettre d'information est « Bientôt disponible » avec un bouton inactif."
+          }
+        },
+        "mean": 3,
+        "costEur": 0.010325,
+        "promptTokens": 2934,
+        "completionTokens": 600
+      }
+    },
+    {
+      "id": "pauvre-naf",
+      "label": "Données pauvres : code NAF brut",
+      "request": "Je veux un site simple et accueillant pour présenter ma boutique, mes produits, mes horaires et comment venir.",
+      "status": "succeeded",
+      "poorData": "naf-brut",
+      "generation": {
+        "id": "6ff5ad8a-11fc-4890-8535-3bcda7dff6b6",
+        "costEur": 0.03019,
+        "attempts": 1,
+        "durationMs": 22470,
+        "promptTokens": 193,
+        "completionTokens": 3353,
+        "cacheReadTokens": 3923,
+        "cacheWriteTokens": 0,
+        "model": "claude-sonnet-5-5"
+      },
+      "photos": {
+        "requested": 12,
+        "fromCache": 0,
+        "unsplashCalls": 0,
+        "fromLocal": 3,
+        "unresolved": [
+          "scented candles on wooden shelf",
+          "handmade ceramic mugs bowls table",
+          "artisan soap bars gift basket",
+          "wall decor frames living room",
+          "folded linen towels cushions",
+          "stationery notebooks greeting cards",
+          "hands wrapping gift paper ribbon",
+          "ceramic vases wooden table decor",
+          "customer browsing boutique shelves"
+        ]
+      },
+      "style": "artisan",
+      "palette": "terracotta",
+      "sections": [
+        "hero",
+        "about",
+        "products",
+        "hours",
+        "faq",
+        "gallery",
+        "map",
+        "contact",
+        "footer"
+      ],
+      "modules": [
+        "widgets"
+      ],
+      "checks": {
+        "desktop": {
+          "overflow": 0,
+          "contrastFailures": 0,
+          "imagesWithoutAlt": 0,
+          "h1Count": 1
+        },
+        "mobile": {
+          "overflow": 0,
+          "contrastFailures": 0,
+          "imagesWithoutAlt": 0,
+          "h1Count": 1
+        },
+        "filler": [],
+        "brokenImages": 0
+      },
+      "lighthouse": {
+        "mobile": {
+          "performance": 98,
+          "accessibility": 100,
+          "seo": 100,
+          "bestPractices": 100
+        },
+        "desktop": {
+          "performance": 100,
+          "accessibility": 100,
+          "seo": 100,
+          "bestPractices": 100
+        }
+      },
+      "judge": {
+        "scores": {
+          "texte": {
+            "note": 3,
+            "raison": "Les textes sont cohérents avec une boutique de cadeaux (« Paquet cadeau sur demande », FAQ sur le choix d'un cadeau, prix « dès 16 € »), mais restent assez génériques et sans nom de produit ni artisan précis."
+          },
+          "distinctif": {
+            "note": 3,
+            "raison": "La palette terracotta et crème avec titres en serif donne une ambiance chaleureuse, mais la structure (héros, cartes produits, FAQ, formulaire) est celle d'un modèle interchangeable."
+          },
+          "hierarchie": {
+            "note": 4,
+            "raison": "Le titre du héros est large et lisible, le bouton jaune « Venir à la boutique » ressort nettement, et les sections sont aérées et bien ordonnées sur ordinateur comme sur mobile."
+          },
+          "photos": {
+            "note": 1,
+            "raison": "Le héros montre de la viande suspendue dans une boucherie, la photo de la boutique une personne qui manipule des fleurs, la galerie un étal de boucherie, alors que les six cartes produits et plusieurs vignettes de la galerie ne sont que des dégradés bruns avec une icône vide."
+          },
+          "credibilite": {
+            "note": 2,
+            "raison": "Le téléphone « 01 99 00 00 00 » est manifestement fictif, la carte est un faux plan sans vraie localisation, et les photos de boucherie contredisent l'offre de cadeaux, ce qui sème le doute sur le sérieux de la boutique."
+          }
+        },
+        "mean": 2.6,
+        "costEur": 0.00952,
+        "promptTokens": 2886,
+        "completionTokens": 517
+      }
+    },
+    {
+      "id": "pauvre-demande",
+      "label": "Données pauvres : demande d’une ligne",
+      "request": "Je veux un site pour mon entreprise.",
+      "status": "succeeded",
+      "poorData": "demande-courte",
+      "generation": {
+        "id": "302cba4a-4b69-4f6c-bf82-194504b01dfd",
+        "costEur": 0.069218,
+        "attempts": 2,
+        "durationMs": 37716,
+        "promptTokens": 3981,
+        "completionTokens": 7003,
+        "cacheReadTokens": 7846,
+        "cacheWriteTokens": 0,
+        "model": "claude-sonnet-5-5"
+      },
+      "photos": {
+        "requested": 8,
+        "fromCache": 0,
+        "unsplashCalls": 0,
+        "fromLocal": 6,
+        "unresolved": [
+          "wooden staircase oak interior",
+          "built-in wardrobe wood bedroom"
+        ]
+      },
+      "style": "artisan",
+      "palette": "foret",
+      "sections": [
+        "hero",
+        "services",
+        "about",
+        "gallery",
+        "products",
+        "module:quote",
+        "area",
+        "faq",
+        "contact",
+        "map",
+        "footer"
+      ],
+      "modules": [
+        "quote",
+        "widgets",
+        "webhooks"
+      ],
+      "checks": {
+        "desktop": {
+          "overflow": 0,
+          "contrastFailures": 0,
+          "imagesWithoutAlt": 0,
+          "h1Count": 1
+        },
+        "mobile": {
+          "overflow": 0,
+          "contrastFailures": 0,
+          "imagesWithoutAlt": 0,
+          "h1Count": 1
+        },
+        "filler": [],
+        "brokenImages": 0
+      },
+      "lighthouse": {
+        "mobile": {
+          "performance": 99,
+          "accessibility": 100,
+          "seo": 100,
+          "bestPractices": 100
+        },
+        "desktop": {
+          "performance": 100,
+          "accessibility": 100,
+          "seo": 100,
+          "bestPractices": 100
+        }
+      },
+      "judge": {
+        "scores": {
+          "texte": {
+            "note": 3,
+            "raison": "Les prestations sont propres au métier (fenêtres et baies vitrées « dès 350 € », portes de garage « dès 1 200 € », escaliers sur mesure, bardages bois) et la section « Bois ou PVC » est utile, mais le reste reste assez générique, avec des formules du type « Pose soignée »."
+          },
+          "distinctif": {
+            "note": 2,
+            "raison": "Mise en page très standard : badges de section, grille de six cartes, bandeau vert pâle en alternance, FAQ accordéon, sans élément propre à une menuiserie ni ton particulier, donc interchangeable avec n'importe quel modèle de site vitrine."
+          },
+          "hierarchie": {
+            "note": 4,
+            "raison": "Le titre serif du hero est très lisible, le bouton ocre « Demander un devis gratuit » ressort clairement et le formulaire est bien mis en avant, avec des sections aérées sur ordinateur comme sur mobile."
+          },
+          "photos": {
+            "note": 1,
+            "raison": "Deux emplacements de la galerie « Réalisations » affichent un carré vert avec une icône d'appareil photo, et les autres images sont hors sujet : cadenas bleu pour l'atelier, clés et maisons colorées pour « Fenêtres PVC », vieille porte rustique pour « Porte d'entrée en bois »."
+          },
+          "credibilite": {
+            "note": 2,
+            "raison": "Les images manquantes et incohérentes, l'absence de téléphone ou d'adresse visibles et de témoignages ou vraies réalisations nuisent à la confiance, malgré des prix « dès » et une zone d'intervention autour de Tours précise."
+          }
+        },
+        "mean": 2.4,
+        "costEur": 0.009951,
+        "promptTokens": 2874,
+        "completionTokens": 569
+      }
+    }
+  ]
+}

@@ -1,0 +1,308 @@
+{
+  "version": 1,
+  "theme": {
+    "style": "moderne",
+    "palette": "emeraude"
+  },
+  "seo": {
+    "title": "Kinésithérapeute à Rennes : rééducation sportive et dos",
+    "description": "{{company.name}} à {{company.city}} : rééducation sportive, douleurs de dos. Prenez rendez-vous en ligne et retrouvez toutes les infos sur les remboursements."
+  },
+  "primaryCta": {
+    "label": "Prendre rendez-vous",
+    "href": "#reservation"
+  },
+  "pages": [
+    {
+      "slug": "index",
+      "title": "Accueil",
+      "sections": [
+        {
+          "type": "hero",
+          "variant": "split",
+          "eyebrow": "Kinésithérapie à {{company.city}}",
+          "title": "Retrouvez votre mobilité, soulagez votre dos, reprenez le sport",
+          "subtitle": "{{company.name}} vous accompagne en rééducation sportive et pour les douleurs de dos, avec un suivi personnalisé et des exercices adaptés.",
+          "cta": {
+            "label": "Prendre rendez-vous",
+            "href": "#reservation"
+          },
+          "secondaryCta": {
+            "label": "Remboursements",
+            "href": "#remboursements"
+          },
+          "highlights": [
+            "Rendez-vous en ligne 24 h/24",
+            "Rééducation sportive",
+            "Douleurs de dos",
+            "Carte Vitale acceptée"
+          ],
+          "image": {
+            "query": "physiotherapist treating patient back",
+            "src": "https://images.unsplash.com/photo-1746806942505-7215c07810ae",
+            "alt": "Kinésithérapeute prenant en charge le dos d'un patient en cabinet",
+            "credit": {
+              "name": "Judy Beth Morris",
+              "url": "https://unsplash.com/@judy_beth_morris_idaho?utm_source=mihoji&utm_medium=referral"
+            }
+          }
+        },
+        {
+          "id": "cabinet",
+          "type": "about",
+          "variant": "image-right",
+          "eyebrow": "Le cabinet",
+          "title": "Une prise en charge à votre mesure",
+          "paragraphs": [
+            "Chaque séance commence par l'écoute de votre histoire : douleur, blessure, reprise d'activité. Le bilan permet de fixer des objectifs clairs, que nous suivons ensemble.",
+            "Thérapie manuelle, renforcement, exercices à refaire chez vous : le traitement s'adapte à votre rythme, que vous soyez sportif régulier ou simplement gêné au quotidien."
+          ],
+          "highlights": [
+            "Bilan à chaque début de prise en charge",
+            "Exercices à faire à domicile",
+            "Conseils de prévention"
+          ],
+          "image": {
+            "query": "physiotherapy clinic treatment room",
+            "src": "https://images.unsplash.com/photo-1630226040750-d934f017f0e4",
+            "alt": "Salle de soins lumineuse du cabinet de kinésithérapie",
+            "credit": {
+              "name": "Nightingale Home nurse",
+              "url": "https://unsplash.com/@nightingaledxb?utm_source=mihoji&utm_medium=referral"
+            }
+          }
+        },
+        {
+          "id": "soins",
+          "type": "services",
+          "variant": "cards",
+          "eyebrow": "Les soins",
+          "title": "Mes domaines d'intervention",
+          "intro": "Deux spécialités principales, pour un accompagnement précis.",
+          "items": [
+            {
+              "title": "Rééducation sportive",
+              "description": "Entorses, tendinites, déchirures musculaires, rééducation après chirurgie du genou ou de l'épaule, reprise progressive du sport.",
+              "icon": "dumbbell"
+            },
+            {
+              "title": "Douleurs de dos",
+              "description": "Lombalgie, sciatique, cervicalgie, torticolis : thérapie manuelle, mobilisations et exercices pour soulager et prévenir les récidives.",
+              "icon": "heart"
+            },
+            {
+              "title": "Renforcement et prévention",
+              "description": "Travail du gainage, de la posture et de la proprioception pour limiter le risque de blessure.",
+              "icon": "shield"
+            },
+            {
+              "title": "Rééducation post-opératoire",
+              "description": "Suivi après intervention orthopédique, en lien avec votre chirurgien et selon le protocole prescrit.",
+              "icon": "stethoscope"
+            }
+          ]
+        },
+        {
+          "type": "gallery",
+          "variant": "grid",
+          "title": "Au cabinet",
+          "images": [
+            {
+              "image": {
+                "query": "physiotherapist knee rehabilitation exercise",
+                "alt": "Exercice de rééducation du genou avec la kinésithérapeute"
+              },
+              "caption": "Rééducation du genou"
+            },
+            {
+              "image": {
+                "query": "back massage manual therapy",
+                "alt": "Séance de thérapie manuelle pour le dos"
+              },
+              "caption": "Thérapie manuelle"
+            },
+            {
+              "image": {
+                "query": "athlete stretching physiotherapy session",
+                "src": "https://images.unsplash.com/photo-1709880754445-8ffbd7e6ab3a",
+                "alt": "Sportif en séance d'étirements guidés",
+                "credit": {
+                  "name": "Ortopediatri Çocuk Ortopedi Akademisi",
+                  "url": "https://unsplash.com/@ortopediatri?utm_source=mihoji&utm_medium=referral"
+                }
+              },
+              "caption": "Reprise du sport"
+            },
+            {
+              "image": {
+                "query": "rehabilitation resistance band exercise",
+                "alt": "Exercice de renforcement avec élastique"
+              },
+              "caption": "Renforcement"
+            }
+          ]
+        },
+        {
+          "type": "module",
+          "variant": "panel",
+          "module": "booking",
+          "eyebrow": "Rendez-vous en ligne",
+          "title": "Réservez votre séance",
+          "intro": "Choisissez votre soin et un créneau disponible. Vous recevez une confirmation et un rappel."
+        },
+        {
+          "id": "remboursements",
+          "type": "faq",
+          "variant": "accordion",
+          "eyebrow": "Remboursements",
+          "title": "Prise en charge et remboursements",
+          "intro": "L'essentiel à savoir avant votre première séance.",
+          "items": [
+            {
+              "question": "Faut-il une ordonnance ?",
+              "answer": "Pour être remboursé, une prescription médicale de masso-kinésithérapie est en général nécessaire. Elle précise le nombre de séances. Apportez-la dès le premier rendez-vous."
+            },
+            {
+              "question": "Comment sont remboursées les séances ?",
+              "answer": "L'Assurance Maladie rembourse en général 60 % du tarif conventionnel. Le reste peut être pris en charge par votre mutuelle selon votre contrat. Renseignez-vous auprès d'elle."
+            },
+            {
+              "question": "Le tiers payant est-il possible ?",
+              "answer": "Selon votre situation, le tiers payant peut s'appliquer. Présentez votre carte Vitale et votre attestation de mutuelle à jour. Contactez le cabinet pour confirmer."
+            },
+            {
+              "question": "Et en cas d'accident du travail ou d'affection de longue durée ?",
+              "answer": "La prise en charge peut être plus élevée. Merci de présenter votre feuille d'accident du travail ou votre protocole de soins lors de la séance."
+            },
+            {
+              "question": "Que dois-je apporter à mon premier rendez-vous ?",
+              "answer": "Votre ordonnance, votre carte Vitale, votre attestation de mutuelle, vos éventuels examens (radios, IRM) et une tenue confortable. Pour le sport, prévoyez short et chaussures propres."
+            }
+          ]
+        },
+        {
+          "id": "horaires",
+          "type": "hours",
+          "variant": "card",
+          "eyebrow": "Informations pratiques",
+          "title": "Horaires du cabinet",
+          "rows": [
+            {
+              "day": "Lundi - Vendredi",
+              "hours": "8 h 30 - 18 h 30"
+            },
+            {
+              "day": "Samedi",
+              "hours": "Fermé"
+            },
+            {
+              "day": "Dimanche",
+              "hours": "Fermé"
+            }
+          ],
+          "note": "Les créneaux disponibles s'affichent en temps réel dans la réservation en ligne."
+        },
+        {
+          "type": "map",
+          "variant": "split",
+          "eyebrow": "Accès",
+          "title": "Venir au cabinet à {{company.city}}",
+          "intro": "{{company.address}}",
+          "access": [
+            "Accessible en transports en commun depuis le centre de Rennes",
+            "Stationnement à proximité",
+            "Merci d'arriver 5 minutes avant votre séance"
+          ]
+        },
+        {
+          "type": "contact",
+          "variant": "details",
+          "mode": "contact",
+          "title": "Une question avant de réserver ?",
+          "intro": "Écrivez-moi ou appelez le cabinet au {{company.phone}}. Je vous réponds dès que possible.",
+          "submitLabel": "Envoyer mon message"
+        },
+        {
+          "type": "footer",
+          "variant": "simple",
+          "tagline": "{{company.name}} · Rééducation sportive et douleurs de dos à {{company.city}}",
+          "links": [
+            {
+              "label": "Soins",
+              "href": "#soins"
+            },
+            {
+              "label": "Rendez-vous",
+              "href": "#reservation"
+            },
+            {
+              "label": "Remboursements",
+              "href": "#remboursements"
+            },
+            {
+              "label": "Horaires",
+              "href": "#horaires"
+            },
+            {
+              "label": "Contact",
+              "href": "#contact"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "modules": {
+    "booking": {
+      "services": [
+        {
+          "name": "Bilan et séance de kinésithérapie",
+          "durationMinutes": 30,
+          "location": "onsite"
+        },
+        {
+          "name": "Rééducation sportive",
+          "durationMinutes": 45,
+          "location": "onsite"
+        },
+        {
+          "name": "Séance douleurs de dos",
+          "durationMinutes": 30,
+          "location": "onsite"
+        },
+        {
+          "name": "Première consultation : bilan complet",
+          "durationMinutes": 60,
+          "location": "onsite"
+        }
+      ],
+      "schedule": {
+        "days": [
+          "lundi",
+          "mardi",
+          "mercredi",
+          "jeudi",
+          "vendredi"
+        ],
+        "start": "08:30",
+        "end": "18:30"
+      },
+      "slotMinutes": 30,
+      "leadTimeHours": 12,
+      "cancellationPolicy": "Merci de prévenir au moins 24 h à l'avance pour toute annulation ou modification.",
+      "payment": "none",
+      "reminders": true
+    },
+    "widgets": [
+      {
+        "type": "google-maps"
+      }
+    ],
+    "webhooks": {
+      "events": [
+        "booking.created",
+        "contact.created"
+      ]
+    }
+  }
+}

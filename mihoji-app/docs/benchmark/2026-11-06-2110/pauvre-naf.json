@@ -1,0 +1,283 @@
+{
+  "version": 1,
+  "theme": {
+    "style": "artisan",
+    "palette": "terracotta"
+  },
+  "seo": {
+    "title": "{{company.name}} – Boutique de cadeaux et créations à {{company.city}}",
+    "description": "Découvrez {{company.name}}, boutique à {{company.city}} : objets de décoration, bougies, céramiques et idées cadeaux. Horaires, produits et plan d'accès."
+  },
+  "primaryCta": {
+    "label": "Venir à la boutique",
+    "href": "#map"
+  },
+  "pages": [
+    {
+      "slug": "index",
+      "title": "Accueil",
+      "sections": [
+        {
+          "type": "hero",
+          "variant": "photo",
+          "eyebrow": "Boutique à {{company.city}}",
+          "title": "Des objets choisis avec soin, à offrir ou à garder pour soi",
+          "subtitle": "Bienvenue chez {{company.name}} : une boutique chaleureuse où l'on flâne, où l'on touche et où l'on repart toujours avec une petite trouvaille.",
+          "cta": {
+            "label": "Venir à la boutique",
+            "href": "#map"
+          },
+          "secondaryCta": {
+            "label": "Voir les produits",
+            "href": "#products"
+          },
+          "highlights": [
+            "Idées cadeaux pour tous les budgets",
+            "Paquet cadeau sur demande",
+            "Conseils en boutique"
+          ],
+          "image": {
+            "query": "cozy gift shop interior shelves",
+            "src": "https://images.unsplash.com/photo-1763140446057-9becaa30b868",
+            "alt": "Intérieur chaleureux de la boutique avec ses étagères d'objets de décoration et de cadeaux",
+            "credit": {
+              "name": "Eric Prouzet",
+              "url": "https://unsplash.com/@eprouzet?utm_source=mihoji&utm_medium=referral"
+            }
+          }
+        },
+        {
+          "type": "about",
+          "variant": "image-right",
+          "eyebrow": "La boutique",
+          "title": "Un lieu pour prendre son temps",
+          "paragraphs": [
+            "{{company.name}} réunit à {{company.city}} une sélection d'objets de décoration, de créations d'artisans et de petits cadeaux qui font plaisir.",
+            "Ici, chaque article est choisi pour sa beauté et son utilité. Vous cherchez un cadeau précis ou simplement de l'inspiration ? Nous vous conseillons volontiers et emballons votre achat avec soin."
+          ],
+          "highlights": [
+            "Sélection renouvelée régulièrement",
+            "Paquet cadeau offert sur demande"
+          ],
+          "image": {
+            "query": "shop owner arranging handmade gifts",
+            "src": "https://images.unsplash.com/photo-1678394535834-c2bdb4fa2566",
+            "alt": "Commerçante qui dispose des objets artisanaux en boutique",
+            "credit": {
+              "name": "Maxim Tolchinskiy",
+              "url": "https://unsplash.com/@shaikhulud?utm_source=mihoji&utm_medium=referral"
+            }
+          }
+        },
+        {
+          "id": "products",
+          "type": "products",
+          "variant": "grid",
+          "eyebrow": "Nos produits",
+          "title": "Un aperçu de la boutique",
+          "intro": "Les références évoluent au fil des saisons. Prix indicatifs : passez nous voir pour découvrir toute la sélection.",
+          "items": [
+            {
+              "name": "Bougies parfumées",
+              "description": "Cire végétale, parfums doux pour la maison.",
+              "price": "dès 16 €",
+              "tag": "Idée cadeau",
+              "image": {
+                "query": "scented candles on wooden shelf",
+                "alt": "Bougies parfumées présentées sur une étagère en bois"
+              }
+            },
+            {
+              "name": "Céramiques et vaisselle",
+              "description": "Tasses, bols et assiettes émaillés, pièces à l'unité.",
+              "price": "dès 12 €",
+              "image": {
+                "query": "handmade ceramic mugs bowls table",
+                "alt": "Tasses et bols en céramique faits main"
+              }
+            },
+            {
+              "name": "Savons et soins du corps",
+              "description": "Savons, bougies de massage et coffrets bien-être.",
+              "price": "dès 6 €",
+              "image": {
+                "query": "artisan soap bars gift basket",
+                "alt": "Savons artisanaux et coffret de soins"
+              }
+            },
+            {
+              "name": "Décoration murale",
+              "description": "Cadres, affiches, miroirs et petits objets à poser.",
+              "price": "dès 9 €",
+              "image": {
+                "query": "wall decor frames living room",
+                "alt": "Cadres et objets de décoration murale"
+              }
+            },
+            {
+              "name": "Linge de maison",
+              "description": "Torchons, plaids et coussins en matières naturelles.",
+              "price": "dès 8 €",
+              "image": {
+                "query": "folded linen towels cushions",
+                "alt": "Torchons en lin et coussins soigneusement pliés"
+              }
+            },
+            {
+              "name": "Cartes et papeterie",
+              "description": "Cartes postales, carnets et papiers cadeaux.",
+              "price": "dès 2,50 €",
+              "image": {
+                "query": "stationery notebooks greeting cards",
+                "alt": "Carnets et cartes de voeux en papeterie"
+              }
+            }
+          ]
+        },
+        {
+          "id": "horaires",
+          "type": "hours",
+          "variant": "table",
+          "eyebrow": "Horaires",
+          "title": "Quand nous rendre visite",
+          "intro": "La boutique vous accueille du mardi au samedi.",
+          "rows": [
+            {
+              "day": "Lundi",
+              "hours": "Fermé"
+            },
+            {
+              "day": "Mardi – Vendredi",
+              "hours": "10 h – 12 h 30 / 14 h 30 – 19 h"
+            },
+            {
+              "day": "Samedi",
+              "hours": "10 h – 19 h"
+            },
+            {
+              "day": "Dimanche",
+              "hours": "Fermé"
+            }
+          ],
+          "note": "Horaires susceptibles d'évoluer en période de fêtes : appelez-nous au besoin."
+        },
+        {
+          "type": "faq",
+          "variant": "accordion",
+          "eyebrow": "Questions pratiques",
+          "title": "Avant de passer nous voir",
+          "items": [
+            {
+              "question": "Proposez-vous des paquets cadeaux ?",
+              "answer": "Oui, nous emballons vos achats en boutique, sur simple demande et avec plaisir. Précisez-le simplement à la caisse."
+            },
+            {
+              "question": "Puis-je réserver un article par téléphone ?",
+              "answer": "Oui. Appelez-nous ou écrivez-nous, nous mettons l'article de côté quelques jours pour que vous puissiez passer le chercher."
+            },
+            {
+              "question": "Comment choisir un cadeau si je ne sais pas quoi offrir ?",
+              "answer": "Indiquez-nous le budget, la personne et l'occasion : nous vous proposons plusieurs idées et vous laissons le temps de comparer."
+            },
+            {
+              "question": "Les produits en vitrine sont-ils tous disponibles ?",
+              "answer": "La plupart le sont. Certaines pièces d'artisans sont uniques ; contactez-nous pour vérifier la disponibilité d'un article."
+            }
+          ]
+        },
+        {
+          "type": "gallery",
+          "variant": "masonry",
+          "eyebrow": "En images",
+          "title": "Ambiance en boutique",
+          "images": [
+            {
+              "image": {
+                "query": "gift shop window display",
+                "src": "https://images.unsplash.com/photo-1777799095908-978e9f70a872",
+                "alt": "Vitrine de la boutique joliment décorée",
+                "credit": {
+                  "name": "Otto Freijser",
+                  "url": "https://unsplash.com/@ottofreijser?utm_source=mihoji&utm_medium=referral"
+                }
+              },
+              "caption": "La vitrine"
+            },
+            {
+              "image": {
+                "query": "hands wrapping gift paper ribbon",
+                "alt": "Mains en train d'emballer un cadeau avec un ruban"
+              },
+              "caption": "Le paquet cadeau"
+            },
+            {
+              "image": {
+                "query": "ceramic vases wooden table decor",
+                "alt": "Vases en céramique sur une table en bois"
+              },
+              "caption": "Les céramiques"
+            },
+            {
+              "image": {
+                "query": "customer browsing boutique shelves",
+                "alt": "Cliente qui parcourt les rayons de la boutique"
+              },
+              "caption": "Le plaisir de flâner"
+            }
+          ]
+        },
+        {
+          "type": "map",
+          "variant": "split",
+          "eyebrow": "Nous trouver",
+          "title": "Rendez-vous à {{company.city}}",
+          "intro": "Retrouvez {{company.name}} au {{company.address}}.",
+          "access": [
+            "Stationnement possible à proximité de la boutique",
+            "Accessible en bus depuis le centre de {{company.city}}",
+            "Une question pour venir ? Appelez-nous au {{company.phone}}"
+          ]
+        },
+        {
+          "type": "contact",
+          "variant": "split",
+          "mode": "contact",
+          "eyebrow": "Contact",
+          "title": "Une question, une recherche particulière ?",
+          "intro": "Écrivez-nous ou appelez-nous : nous vous répondons rapidement.",
+          "submitLabel": "Envoyer mon message"
+        },
+        {
+          "type": "footer",
+          "variant": "simple",
+          "tagline": "{{company.name}} – boutique de cadeaux et de décoration à {{company.city}}.",
+          "links": [
+            {
+              "label": "Produits",
+              "href": "#products"
+            },
+            {
+              "label": "Horaires",
+              "href": "#horaires"
+            },
+            {
+              "label": "Venir",
+              "href": "#map"
+            },
+            {
+              "label": "Contact",
+              "href": "#contact"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "modules": {
+    "widgets": [
+      {
+        "type": "google-maps"
+      }
+    ]
+  }
+}
