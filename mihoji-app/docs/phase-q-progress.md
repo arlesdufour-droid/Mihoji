@@ -155,7 +155,22 @@ Couvert par `e2e/phase-q-lot-4.spec.ts` (simulation) et `e2e/phase-q-lot-4-real.
 - `npm run lint` OK, `npx vitest run` : 144 tests OK, `tsc` OK.
 - e2e simulé `e2e/phase-q-lot-5.spec.ts` (Q5.1 saisie manuelle → demande → Studio, Q5.2) : 2 tests OK.
 
+### Comment vérifier
+1. Connecté avec un compte sans entreprise, ouvrez `/onboarding/siret`. Deux chemins possibles :
+   - SIRET : saisissez 91285838800024, cliquez sur « Rechercher mon entreprise », puis « Confirmer et continuer » ;
+   - saisie manuelle : ouvrez `/onboarding/manual`, remplissez nom, métier et adresse (par exemple « 12 rue des Lilas, 17000 La Rochelle »), cliquez sur « Continuer ».
+2. Renseignez les coordonnées (téléphone, email) quand elles sont demandées.
+3. L'écran « Décrivez le site que vous voulez » s'affiche. Le bouton « Créer mon site » est grisé tant que la demande fait moins de 8 caractères.
+4. Cliquez sur l'un des trois exemples : le champ « Votre demande » se remplit. Choisissez éventuellement un style (par exemple « Élégant premium »), ou laissez « Mihoji choisit ».
+5. Cliquez sur « Créer mon site » : le message « Nous créons votre site » apparaît, le bouton passe à « Création en cours… », puis le Studio s'ouvre sur l'aperçu.
+6. Dans l'aperçu, le nom de l'entreprise figure dans l'en-tête, le style correspond au choix (s'il y en a un), et aucun texte de remplissage n'apparaît.
+7. Dans le chat, les deux premiers messages sont votre demande puis « Votre site est prêt ». L'historique des versions contient « Création initiale du site ».
+8. Si l'IA est réelle (clé Anthropic présente), le solde de crédits baisse ; en simulation il ne bouge pas.
+9. Rouvrez `/onboarding/request` sans entreprise enregistrée : vous êtes renvoyé vers `/onboarding/siret`.
+
+Couvert par `e2e/phase-q-lot-5.spec.ts` (simulation : saisie manuelle, style choisi, base de données, redirection) et `e2e/phase-q-lot-5-real.spec.ts` (vraie IA, parcours SIRET 91285838800024 + « Je veux un site chaleureux avec prise de commande en ligne »).
+
 ### Reste à faire
-- Lancer l'e2e réel `e2e/phase-q-lot-5-real.spec.ts` (SIRET 91285838800024 → « Je veux un site chaleureux avec prise de commande en ligne » → Studio). Premier essai échoué uniquement par délai (compilation à froid, 5 s) : ajouter `expect: { timeout: 30_000 }` dans `playwright.real.config.ts` (non fait), puis `npm run test:e2e:real -- phase-q-lot-5-real`.
-- `npm run build`, suite e2e complète, captures `docs/screenshots/phase-q-lot5/`, section « Comment vérifier » et résumé final.
+- Lancer l'e2e réel `npm run test:e2e:real -- phase-q-lot-5-real` (pas encore exécuté ; le délai d'attente `expect: { timeout: 30_000 }` est déjà dans `playwright.real.config.ts`, le premier essai avait échoué uniquement pour cette raison).
+- `npm run build`, suite e2e complète, captures `docs/screenshots/phase-q-lot5/` et résumé final du lot.
 - Le serveur de développement du port 3000 a été arrêté pour les tests : à relancer avec `npm run dev`.
