@@ -17,6 +17,7 @@
     "test:e2e:real": "playwright test --config playwright.real.config.ts",
     "design:screenshots": "playwright test --config playwright.design.config.ts design-screenshots",
     "design:generate": "tsx scripts/design-generate.ts",
+    "benchmark": "tsx scripts/benchmark.ts",
     "sites:migrate": "tsx scripts/migrate-sites.ts"
   },
   "dependencies": {
@@ -47,8 +48,10 @@
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "chrome-launcher": "^1.2.3",
     "eslint": "^9",
     "eslint-config-next": "16.4.3",
+    "lighthouse": "^13.6.0",
     "tailwindcss": "^4",
     "tsx": "^4.23.15",
     "typescript": "^5",

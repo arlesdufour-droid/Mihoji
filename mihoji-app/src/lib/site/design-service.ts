@@ -9,7 +9,7 @@ import { MockProvider } from '@/lib/ai/providers/mock';
 import { LlmProviderError, type LlmProvider } from '@/lib/ai/providers/types';
 import { designRoute, type DesignTask } from '@/lib/ai/routing';
 import { createSiteDesign, restyleSiteDesign, type Complete, type CreateInput, type DesignResult } from './design';
-import { resolveSitePhotos } from '@/lib/photos/service';
+import { resolveSitePhotos, type PhotoReport } from '@/lib/photos/service';
 import { siteSchema, type SiteDescription } from './schema';
 
 export type DesignProvider = { provider: 'anthropic' | 'groq' | 'mock'; model: string; complete: Complete };
@@ -24,7 +24,7 @@ export function designProvider(): DesignProvider {
 
 export type GenerationRecord = typeof siteGenerations.$inferSelect;
 
-type RunInput = { workspaceId: string | null; userId?: string | null; projectId?: string | null; company: CreateInput['company'] & Record<string, unknown> }
+type RunInput = { workspaceId: string | null; userId?: string | null; projectId?: string | null; photos?: 'auto' | 'local'; onPhotos?: (report: PhotoReport) => void; company: CreateInput['company'] & Record<string, unknown> }
   & ({ task: 'create'; request: string; trade?: string; style?: CreateInput['style'] } | { task: 'restyle'; request: string; site: SiteDescription });
 
 // Lance une génération et l'enregistre (réussie ou non) avec son coût réel en euros.
@@ -44,9 +44,10 @@ export async function runDesignGeneration(input: RunInput, signal?: AbortSignal)
   // Photos : meilleure photo par requête (cache, Unsplash, bibliothèque locale). Une panne ne fait jamais échouer la création.
   if (result.ok) {
     try {
-      const { site, report } = await resolveSitePhotos(result.value, { offline: provider === 'mock' });
+      const { site, report } = await resolveSitePhotos(result.value, { offline: provider === 'mock', local: input.photos === 'local' });
       result = { ...result, value: siteSchema.parse(site) };
       console.info('Photos resolved.', report);
+      input.onPhotos?.(report);
     } catch (error) {
       console.error('Photo resolution failed.', error);
     }

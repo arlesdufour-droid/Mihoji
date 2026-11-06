@@ -42,18 +42,19 @@ async function store(key: string, source: 'unsplash' | 'local', candidates: Phot
 export type PhotoReport = { requested: number; fromCache: number; unsplashCalls: number; fromLocal: number; unresolved: string[] };
 
 // Remplit les emplacements d'images d'un site (requête, sans src) avec la meilleure photo de chaque requête.
-export async function resolveSitePhotos(site: SiteDescription, options: { offline?: boolean } = {}): Promise<{ site: SiteDescription; report: PhotoReport }> {
+// local : bibliothèque locale uniquement, sans cache ni Unsplash (banc d'essai : photos identiques d'une exécution à l'autre).
+export async function resolveSitePhotos(site: SiteDescription, options: { offline?: boolean; local?: boolean } = {}): Promise<{ site: SiteDescription; report: PhotoReport }> {
   const queries = [...new Set(imageSlots(site).filter((slot) => slot.query && !slot.src).map((slot) => slot.query as string))];
   const report: PhotoReport = { requested: queries.length, fromCache: 0, unsplashCalls: 0, fromLocal: 0, unresolved: [] };
-  const key = options.offline ? undefined : process.env.UNSPLASH_ACCESS_KEY; // offline : simulation et tests, aucun appel Unsplash
+  const key = options.offline || options.local ? undefined : process.env.UNSPLASH_ACCESS_KEY; // offline : simulation et tests, aucun appel Unsplash
   const unsplash = key ? new UnsplashProvider(key) : null;
   const local = new LocalLibraryProvider();
   let budget = unsplash ? HOURLY_BUDGET - await callsLastHour() : 0;
-  if (!unsplash && !options.offline && queries.length) console.warn('UNSPLASH_ACCESS_KEY absente : photos de la bibliothèque locale uniquement.');
+  if (!unsplash && !options.offline && !options.local && queries.length) console.warn('UNSPLASH_ACCESS_KEY absente : photos de la bibliothèque locale uniquement.');
   const library = new Map<string, PhotoCandidate[]>();
   for (const query of queries) {
     const normalized = normalizeQuery(query);
-    const hit = await cached(normalized);
+    const hit = options.local ? null : await cached(normalized);
     if (hit?.length) {
       library.set(normalized, hit);
       report.fromCache += 1;
