@@ -9,6 +9,7 @@ import { createOnboardingUser, fillMissingFields, previewFrame, previewSrcdoc, w
 const SIRET = '91285838800024'; // TOUZALIN BOULANGERIE, La Rochelle (entreprise réelle, base Sirene)
 const REQUEST = 'Je veux un site chaleureux avec prise de commande en ligne';
 const REAL_TIMEOUT = 240_000;
+const SHOTS = 'docs/screenshots/phase-q-lot5';
 
 test('Q5.R SIRET → demande → Studio : un site structuré, avec photos et modules adaptés au métier, créé par la vraie IA', async ({ page, context }) => {
   test.setTimeout(REAL_TIMEOUT + 120_000);
@@ -28,6 +29,7 @@ test('Q5.R SIRET → demande → Studio : un site structuré, avec photos et mod
   await expect(page.getByRole('heading', { name: 'Décrivez le site que vous voulez' })).toBeVisible();
   await page.getByRole('button', { name: REQUEST }).click();
   await expect(page.getByLabel('Votre demande')).toHaveValue(REQUEST);
+  await page.screenshot({ path: `${SHOTS}/ecran-demande.jpg`, type: 'jpeg', quality: 75, fullPage: true });
   await page.getByRole('button', { name: 'Créer mon site' }).click();
   await expect(page.getByRole('status')).toContainText('Nous créons votre site');
   await expect(page.getByRole('button', { name: 'Création en cours…' })).toBeDisabled();
@@ -86,5 +88,11 @@ test('Q5.R SIRET → demande → Studio : un site structuré, avec photos et mod
     expect(result.overflow, `débordement ${viewport.width}px`).toBe(0);
     expect(result.h1Count).toBe(1);
   }
-  await page.screenshot({ path: 'docs/screenshots/phase-q-lot5/studio.png' });
+  // Captures du Studio une fois le site, les photos et le chat chargés.
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.waitForTimeout(800);
+  await page.screenshot({ path: `${SHOTS}/studio-ordinateur.jpg`, type: 'jpeg', quality: 75 });
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.waitForTimeout(800);
+  await page.screenshot({ path: `${SHOTS}/studio-mobile.jpg`, type: 'jpeg', quality: 75 });
 });

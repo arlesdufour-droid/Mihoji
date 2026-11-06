@@ -143,7 +143,7 @@ Couvert par `e2e/phase-q-lot-3.spec.ts`.
 Couvert par `e2e/phase-q-lot-4.spec.ts` (simulation) et `e2e/phase-q-lot-4-real.spec.ts` (vraie IA).
 
 
-## Lot 5 — la demande au cœur de l'onboarding — EN COURS (WIP)
+## Lot 5 — la demande au cœur de l'onboarding — terminé
 
 ### Fait (code écrit)
 - Nouvelle étape 4 « Décrivez le site que vous voulez » (`src/app/onboarding/request/page.tsx`) : grand champ, 3 exemples cliquables, choix facultatif de l'un des 4 styles (vignettes) ou « Mihoji choisit ».
@@ -152,8 +152,13 @@ Couvert par `e2e/phase-q-lot-4.spec.ts` (simulation) et `e2e/phase-q-lot-4-real.
 - Logique pure testée : `src/lib/site/onboarding-request.ts` (+ test, 4 tests).
 
 ### Vérifié
-- `npm run lint` OK, `npx vitest run` : 144 tests OK, `tsc` OK.
-- e2e simulé `e2e/phase-q-lot-5.spec.ts` (Q5.1 saisie manuelle → demande → Studio, Q5.2) : 2 tests OK.
+- `npm run build`, `npx tsc --noEmit`, `npm run lint` et `npx vitest run` (144 tests) : OK.
+- e2e simulé : suite complète `npm run test:e2e` 51 tests OK, dont `e2e/phase-q-lot-5.spec.ts` (Q5.1 saisie manuelle → demande → Studio, Q5.2 redirection sans entreprise).
+- **e2e avec la vraie IA** (`npm run test:e2e:real -- phase-q-lot-5-real`, SIRET 91285838800024 → « Je veux un site chaleureux avec prise de commande en ligne » → Studio) : OK. Anthropic `claude-sonnet-5-5`, 1 essai, **0,036 à 0,043 € par création** (3 créations mesurées), style Artisan chaleureux, module boutique (click & collect) avec la section correspondante, photos réelles, aucun contraste ni débordement à 390 et 1280 px, `site.json` enregistré, une seule génération journalisée.
+- Captures : `docs/screenshots/phase-q-lot5/` (`ecran-demande.jpg`, `studio-ordinateur.jpg`, `studio-mobile.jpg`). La capture mobile a été prise en mode développement (badge « Compiling » visible, photo du bandeau pas encore chargée).
+
+### Point d'attention : échec intermittent avant la création
+Sur 7 lancements de l'e2e réel, 3 ont échoué avant tout appel à l'IA (donc sans coût) : l'étape « Décrivez le site que vous voulez » n'apparaît pas dans les 30 s et l'utilisateur est renvoyé à `/onboarding/siret` (la page `request` renvoie à la première étape quand `GET /api/onboarding/company` ne renvoie pas de fiche). Un des échecs journalisait une erreur de doublon sur `companies_siret_key` ; les deux suivants n'ont laissé aucune trace côté serveur. Avec un journal des réponses `/api/onboarding/*` branché, 2 lancements de suite ont réussi : cause non établie (compilation à froid du serveur de développement, ou course entre l'enregistrement de la fiche et la lecture suivante). À surveiller ; aucune correction n'a été faite. Pour une exécution fiable : relancer la spec, un échec avant la création ne coûte rien.
 
 ### Comment vérifier
 1. Connecté avec un compte sans entreprise, ouvrez `/onboarding/siret`. Deux chemins possibles :
@@ -171,6 +176,5 @@ Couvert par `e2e/phase-q-lot-4.spec.ts` (simulation) et `e2e/phase-q-lot-4-real.
 Couvert par `e2e/phase-q-lot-5.spec.ts` (simulation : saisie manuelle, style choisi, base de données, redirection) et `e2e/phase-q-lot-5-real.spec.ts` (vraie IA, parcours SIRET 91285838800024 + « Je veux un site chaleureux avec prise de commande en ligne »).
 
 ### Reste à faire
-- Lancer l'e2e réel `npm run test:e2e:real -- phase-q-lot-5-real` (pas encore exécuté ; le délai d'attente `expect: { timeout: 30_000 }` est déjà dans `playwright.real.config.ts`, le premier essai avait échoué uniquement pour cette raison).
-- `npm run build`, suite e2e complète, captures `docs/screenshots/phase-q-lot5/` et résumé final du lot.
-- Le serveur de développement du port 3000 a été arrêté pour les tests : à relancer avec `npm run dev`.
+- Suivre l'échec intermittent décrit plus haut (cause non établie).
+- Le serveur de développement du port 3000 est arrêté après les tests : à relancer avec `npm run dev`.
