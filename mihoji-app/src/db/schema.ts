@@ -1,4 +1,6 @@
-import { pgTable, text, timestamp, uuid, integer, primaryKey, jsonb, numeric } from 'drizzle-orm/pg-core';
+import { pgTable, text, timestamp, uuid, integer, primaryKey, jsonb, numeric, customType } from 'drizzle-orm/pg-core';
+
+const bytea = customType<{ data: Buffer; driverData: Buffer }>({ dataType: () => 'bytea' });
 
 export const users = pgTable('users', {
   id: uuid('id').primaryKey(),
@@ -59,6 +61,8 @@ export const companies = pgTable('companies', {
   vatNumber: text('vat_number').notNull(),
   status: text('status', { enum: ['active', 'closed'] }).notNull(),
   missingFields: jsonb('missing_fields').notNull().default({}),
+  // Réponses de l'onboarding : spécialités, ce qui distingue l'entreprise, horaires (voir lib/site/facts.ts).
+  profile: jsonb('profile').notNull().default({}),
 });
 
 export const companyLookupCache = pgTable('company_lookup_cache', {
@@ -198,4 +202,17 @@ export const photoCache = pgTable('photo_cache', {
   source: text('source', { enum: ['unsplash', 'local'] }).notNull(),
   candidates: jsonb('candidates').notNull().default([]),
   fetchedAt: timestamp('fetched_at', { withTimezone: true }).defaultNow().notNull(),
+});
+
+// Photos envoyées par l'utilisateur (phase Q, lot Q2) : logo, boutique, réalisations ; prioritaires sur Unsplash.
+export const sitePhotos = pgTable('site_photos', {
+  id: uuid('id').defaultRandom().primaryKey(),
+  workspaceId: uuid('workspace_id').notNull().references(() => workspaces.id),
+  kind: text('kind', { enum: ['logo', 'shop', 'work', 'other'] }).notNull(),
+  alt: text('alt').notNull().default(''),
+  mime: text('mime').notNull(),
+  data: bytea('data').notNull(),
+  width: integer('width').notNull(),
+  height: integer('height').notNull(),
+  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
 });

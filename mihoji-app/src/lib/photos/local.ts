@@ -19,6 +19,9 @@ export class LocalLibraryProvider implements PhotoProvider {
       })
       .filter((entry) => entry.score > 0)
       .sort((a, b) => b.score - a.score);
-    return { candidates: ranked.slice(0, 3).flatMap((entry) => entry.photos.map((photo) => ({ ...photo, downloadLocation: undefined }))) };
+    // La requête sous laquelle une photo a été trouvée décrit son sujet (le texte de la photo ne cite pas toujours le métier) :
+    // elle est ajoutée à ses mots-clés, et le contrôle visuel écarte ensuite les photos qui ne conviennent pas.
+    const keyOf = new Map(Object.entries(entries).flatMap(([key, photos]) => photos.map((photo) => [photo.src, key] as const)));
+    return { candidates: ranked.slice(0, 6).flatMap((entry) => entry.photos.map((photo) => ({ ...photo, tags: [...photo.tags, keyOf.get(photo.src) ?? ''].filter(Boolean), downloadLocation: undefined }))) };
   }
 }

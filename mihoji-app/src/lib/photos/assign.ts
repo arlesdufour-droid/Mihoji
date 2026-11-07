@@ -5,7 +5,7 @@ import type { PhotoCandidate } from './types';
 // Chaque emplacement avec une requête et sans image reçoit la meilleure photo de sa requête ;
 // une même photo n'est jamais utilisée deux fois dans un site (galeries : on prend la suivante du classement).
 
-type Slot = { query?: string; src?: string; alt: string; credit?: { name: string; url: string } };
+type Slot = { query?: string; alternatives?: string[]; src?: string; alt: string; credit?: { name: string; url: string } };
 
 export function imageSlots(site: SiteDescription): Slot[] {
   const slots: Slot[] = [];
@@ -40,4 +40,26 @@ export function assignPhotos(site: SiteDescription, library: Map<string, PhotoCa
     slot.credit = photo.credit;
   }
   return { site: next, used, missing: [...missing] };
+}
+
+// Emplacements à remplir (requête, pas encore d'image), dans l'ordre de la page ; les objets sont ceux du site passé en argument.
+export function pendingSlots(site: SiteDescription): Slot[] {
+  return imageSlots(site).filter((slot) => slot.query && !slot.src);
+}
+
+// Attribue à chaque emplacement la première photo acceptable qui n'est pas déjà prise (choices[i] : candidates acceptables de l'emplacement i, meilleure d'abord).
+export function assignSlots(site: SiteDescription, choices: PhotoCandidate[][]): { site: SiteDescription; used: PhotoCandidate[]; missing: string[] } {
+  const next = structuredClone(site);
+  const taken = new Set(imageSlots(next).map((slot) => slot.src).filter(Boolean) as string[]);
+  const used: PhotoCandidate[] = [];
+  const missing: string[] = [];
+  pendingSlots(next).forEach((slot, index) => {
+    const photo = (choices[index] ?? []).find((candidate) => !taken.has(candidate.src));
+    if (!photo) { missing.push(slot.query as string); return; }
+    taken.add(photo.src);
+    used.push(photo);
+    slot.src = photo.src;
+    slot.credit = photo.credit;
+  });
+  return { site: next, used, missing };
 }

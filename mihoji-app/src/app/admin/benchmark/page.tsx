@@ -68,7 +68,7 @@ export default async function BenchmarkPage({ searchParams }: { searchParams: Pr
 
       <section aria-label="Uniformité" className="mt-4 rounded-xl border border-slate-700 bg-slate-900 p-5 text-sm" data-testid="benchmark-uniformity">
         <h2 className="text-lg font-semibold">Uniformité</h2>
-        <p className="mt-2">Styles : {Object.entries(uniformity.styles).map(([style, n]) => `${style} ${n}`).join(' · ') || '—'}</p>
+        <p className="mt-2">Styles : {Object.entries(uniformity.styles).map(([style, n]) => `${style} ${n}`).join(' · ') || '—'}{uniformity.maxStyleShare !== undefined && uniformity.dominantStyle ? ` — le plus fréquent : ${uniformity.dominantStyle}, ${Math.round(uniformity.maxStyleShare * 100)} % des sites (objectif : 30 % au plus)` : ''}</p>
         <p className="mt-1 text-slate-400">Palettes : {Object.entries(uniformity.palettes).map(([palette, n]) => `${palette} ${n}`).join(' · ') || '—'}</p>
         <p className="mt-1">{uniformity.sitesInSameSequenceGroup} site{uniformity.sitesInSameSequenceGroup > 1 ? 's' : ''} sur {totals.succeeded} partage{uniformity.sitesInSameSequenceGroup > 1 ? 'nt' : ''} exactement la même suite de sections qu’un autre ({uniformity.distinctSequences} suite{uniformity.distinctSequences > 1 ? 's' : ''} distincte{uniformity.distinctSequences > 1 ? 's' : ''}).</p>
         {uniformity.sameSequenceGroups.map((group) => <p key={group.ids.join('-')} className="mt-1 text-xs text-slate-400">{group.ids.join(', ')} : {group.sequence.join(' › ')}</p>)}
@@ -117,7 +117,8 @@ export default async function BenchmarkPage({ searchParams }: { searchParams: Pr
                       <Lighthouse label="Lighthouse mobile" scores={site.lighthouse?.mobile} />
                       <Lighthouse label="Lighthouse ordinateur" scores={site.lighthouse?.desktop} />
                       {site.lighthouse?.error ? <p className="text-xs text-amber-300">Lighthouse : {site.lighthouse.error}</p> : null}
-                      {site.photos ? <p className="text-xs text-slate-400">Photos : {site.photos.fromLocal} de la bibliothèque locale, {site.photos.fromCache} du cache, {site.photos.unsplashCalls} appel{site.photos.unsplashCalls > 1 ? 's' : ''} Unsplash{site.photos.unresolved.length ? ` · sans photo : ${site.photos.unresolved.length} requête${site.photos.unresolved.length > 1 ? 's' : ''}` : ''}.</p> : null}
+                      {site.reason ? <p className="text-xs text-slate-400">Style choisi : {site.style}{site.palette ? ` / ${site.palette}` : ''}{site.header ? ` / en-tête ${site.header}` : ''} — {site.reason}</p> : null}
+                      {site.photos ? <p className="text-xs text-slate-400">Photos : {site.photos.verified ? `${site.photos.verified} emplacements contrôlés visuellement, ${site.photos.rejected ?? 0} photo(s) refusée(s), ` : ''}{site.photos.hiddenGalleries ? `${site.photos.hiddenGalleries} galerie(s) masquée(s), ` : ''}{site.photos.fromLocal} de la bibliothèque locale, {site.photos.fromCache} du cache, {site.photos.unsplashCalls} appel{site.photos.unsplashCalls > 1 ? 's' : ''} Unsplash{site.photos.unresolved.length ? ` · sans photo : ${site.photos.unresolved.length} requête${site.photos.unresolved.length > 1 ? 's' : ''}` : ''}.</p> : null}
                     </div>
                   ) : null}
                 </>

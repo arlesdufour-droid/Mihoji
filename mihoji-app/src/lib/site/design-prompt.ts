@@ -1,6 +1,7 @@
 import { iconNames } from './icons';
 import { displayModules, webhookEvents } from './modules';
-import { sectionTypes, sectionVariants } from './schema';
+import { factsLines, type SiteFacts } from './facts';
+import { headerIds, sectionTypes, sectionVariants } from './schema';
 import { styles } from './themes';
 
 // Consignes du modèle de design. Le prompt système est identique pour toutes les créations (mis en cache côté fournisseur) :
@@ -49,15 +50,26 @@ export const designSystemPrompt = `${DESIGN_PROMPT_MARKER}, un service français
 Réponds UNIQUEMENT par un objet JSON valide, sans texte avant ni après, sans bloc de code.
 
 ## Format
-{"version":1,"theme":{"style":"…","palette":"…"},"seo":{"title":"≤70","description":"≤170"},"primaryCta":{"label":"≤40","href":"…"},"modules":{…},"pages":[{"slug":"index","title":"Accueil","sections":[…]}]}
+{"version":1,"theme":{"style":"…","palette":"…","header":"…","reason":"≤260"},"seo":{"title":"≤70","description":"≤170"},"primaryCta":{"label":"≤40","href":"…"},"modules":{…},"pages":[{"slug":"index","title":"Accueil","sections":[…]}]}
 - Une seule page "index" de 7 à 11 sections : "hero" en premier, "footer" en dernier, une seule section "hero", "footer", "contact" et "map".
 - Liens (href) : "#ancre" d'une section de la page, "tel:{{company.phone}}", "mailto:{{company.email}}" ou "https://…". L'ancre d'une section est son "id", sinon son type ("#contact", "#services"…), sinon pour un module l'ancre indiquée plus bas.
 - primaryCta : l'unique action principale du site, reprise dans l'en-tête et le bandeau d'accueil. Elle mène au module principal (réserver, commander, demander un devis) ou à "#contact".
-- Images : {"query": "…", "alt": "description en français de la photo"}. Jamais de "src". La requête est TOUJOURS EN ANGLAIS (la recherche de photos y est bien plus pertinente), de 3 à 6 mots : le métier précis + l'objet ou le geste visible (ex. \\"artisan baker sourdough bread oven\\", \\"plumber fixing sink pipe\\", \\"lawyer reviewing contract desk\\"). Pas de pays, ville, drapeau, nom propre ni mot abstrait (\\"success\\", \\"quality\\"). Chaque image d'une galerie a une requête différente (angles variés : le lieu, le geste, le produit fini, les outils).
+- Images : {"query": "…", "alternatives": ["…","…"], "alt": "description en français de la photo"}. Jamais de "src". La requête est TOUJOURS EN ANGLAIS (la recherche de photos y est bien plus pertinente), de 3 à 6 mots : le métier précis + l'objet ou le geste visible (ex. \\"artisan baker sourdough bread oven\\", \\"plumber fixing sink pipe\\", \\"lawyer reviewing contract desk\\"). "alternatives" : 2 autres formulations précises du MÊME sujet (autre angle ou autres mots-clés : \\"plumber tightening copper pipe wrench\\"), pour que Mihoji compare plusieurs séries de photos et garde la plus pertinente. Pas de pays, ville, drapeau, nom propre ni mot abstrait (\\"success\\", \\"quality\\"). Chaque image d'une galerie a une requête différente (angles variés : le lieu, le geste, le produit fini, les outils). Une photo hors sujet est pire que pas de photo : reste concret et visuel (un objet ou un geste, jamais une idée).
 
 ## Styles
 ${styleGuide}
-Choisis le style et la palette qui conviennent au métier et au ton de la demande (si la demande impose un style, respecte-le).
+En-têtes ("theme.header") : ${headerIds.map((id) => `"${id}"`).join(', ')} — "bar" : logo à gauche, menu à droite ; "split" : menu à gauche, nom au centre, bouton à droite (plus éditorial) ; "solid" : barre pleine couleur (plus affirmé).
+
+Choix du style — il n'y a AUCUN style par défaut. Raisonne à partir de la personnalité de la marque (métier, clientèle, ton de la demande), pas de l'habitude :
+- "artisan" : seulement pour un commerce de bouche ou un artisan de quartier au ton familial (boulangerie, pâtisserie, charcuterie, atelier). Ne le choisis PAS par réflexe pour un autre métier.
+- "moderne" : services techniques et dépannage, informatique, immobilier, B2B clair et rapide (plombier, électricien, garage, comptable).
+- "premium" : clientèle exigeante, prestation de conseil ou d'expertise à forte valeur (avocat, notaire, architecte d'intérieur, cabinet).
+- "dynamique" : sport, enfants, événementiel, loisirs, énergie et couleur (coach sportif, salle de sport, animation).
+- "minimal" : métiers de l'image et du design, travail visuel qui doit parler seul (photographe, architecte, graphiste, consultant indépendant).
+- "naturel" : bien-être, santé douce, bio, jardin, fleurs, produits de la terre (fleuriste, kinésithérapeute, naturopathe, yoga, paysagiste).
+- "retro" : lieux à histoire et à caractère (bar, bistrot, pizzeria, garage vintage, barbier, disquaire, brocante).
+- "luxe" : haut de gamme assumé (joaillier, gastronomie, hôtel, cave, événementiel d'exception).
+Choisis aussi la palette pour qu'elle serve cette personnalité (pas toujours la première), et l'en-tête. Si la demande impose un style, respecte-le. Écris dans "theme.reason" une phrase qui justifie le style, la palette et l'en-tête par le métier et la demande.
 
 ## Sections
 ${sectionGuide}
@@ -68,15 +80,19 @@ ${sectionGuide}
 - Français impeccable, ton chaleureux et professionnel, phrases courtes, vouvoiement. Chaque texte est propre à CE métier et à CETTE demande : prestations, produits, vocabulaire et prix du métier réel. Aucune généralité passe-partout (« des services de qualité », « votre satisfaction est notre priorité »).
 - Aucune erreur de catégorie : une liste de pains ne contient que des pains ; une carte de plats ne contient pas de boissons ; un plombier ne propose pas d'électricité générale.
 - Données entreprise : utilise uniquement les jetons {{company.name}}, {{company.city}}, {{company.phone}}, {{company.email}}, {{company.address}} ; n'invente jamais de nom, de téléphone, d'email ni d'adresse. Pas de numéro de rue inventé dans les textes.
-- N'invente pas d'avis clients, de notes, de chiffres (années d'expérience, nombre de clients), de labels ni de certifications : pas de section "testimonials" ni "stats" sauf si la demande fournit ces éléments. Préfère une FAQ utile, des engagements concrets (« Devis gratuit », « Retrait dès 7 h »), des étapes de travail.
-- Prix et horaires : réalistes pour le métier et la région, prix indicatifs (« dès 89 € », « 4,20 € »). Horaires plausibles si la demande n'en donne pas.
+- VRAIES DONNÉES UNIQUEMENT. INTERDIT : avis clients, notes, témoignages, chiffres (années d'expérience, nombre de clients ou de chantiers, pourcentages de satisfaction), labels, certifications, récompenses — sauf si le client les fournit mot pour mot dans "Faits sur l'entreprise". N'écris donc jamais de section "testimonials", et une section "stats" seulement avec des chiffres fournis (année de création, ancienneté). Mihoji laisse alors un emplacement dans le Studio pour que le client ajoute ses vrais avis et chiffres.
+- Crédibilité par le concret, sans rien inventer : utilise l'année de création et la ville fournies, les spécialités et « ce qui distingue » donnés par le client (reformulés, rien d'ajouté), les communes voisines réelles pour la zone, des engagements simples (« Devis gratuit », « Retrait dès 7 h ») et le déroulé d'une prestation (étapes), une FAQ utile.
+- Horaires : uniquement ceux des "Faits sur l'entreprise" (section "hours" reprenant exactement ces horaires). S'ils ne sont pas fournis, aucune section "hours" et aucun horaire dans les textes.
+- Prix : réalistes pour le métier et la région, toujours indicatifs (« dès 89 € », « 4,20 € »).
 - Zone d'intervention : communes réellement voisines de la ville de l'entreprise.
+- Caractère distinctif : le site doit être reconnaissable comme celui de CE métier, pas un gabarit. Choisis une structure de page propre au métier (un restaurant ouvre sur la carte, un avocat sur ses domaines d'intervention et le déroulé d'un premier rendez-vous, un photographe sur ses images, un garage sur ses prestations et le devis), un titre d'accroche précis et mémorable, et des intitulés de section au vocabulaire du métier plutôt que « Nos services » ou « À propos ». Varie les variantes de sections.
 - Aucun texte de remplissage (lorem ipsum, « Service 1 », « Texte à venir », « Nom du produit »).
-- Principes de design : un seul appel à l'action principal par écran, sections variées (alterne les variantes), pas plus de 2 sections de suite sans image ou élément visuel.`;
+- Principes de design : un seul appel à l'action principal par écran, sections variées (alterne les variantes), pas plus de 2 sections de suite sans image ou élément visuel.
+- Galerie : seulement si le métier a des réalisations à montrer (3 à 9 images distinctes) ; sinon pas de galerie.`;
 
 export type DesignCompany = { name: string; activity?: string; city?: string; address?: string; hasPhone?: boolean; hasEmail?: boolean };
 
-export function designUserMessage(input: { request: string; company: DesignCompany; trade?: string; style?: string }): string {
+export function designUserMessage(input: { request: string; company: DesignCompany; trade?: string; style?: string; facts?: SiteFacts; now?: Date }): string {
   const lines = [
     `Demande du client : « ${input.request.trim()} »`,
     '',
@@ -87,6 +103,9 @@ export function designUserMessage(input: { request: string; company: DesignCompa
     ...(input.company.city ? [`- Ville : ${input.company.city} (dans les textes, écris {{company.city}})`] : []),
     `- Téléphone : ${input.company.hasPhone === false ? 'non renseigné (ne propose pas d’appel téléphonique)' : 'renseigné ({{company.phone}})'}`,
     `- Email : ${input.company.hasEmail === false ? 'non renseigné' : 'renseigné ({{company.email}})'}`,
+    '',
+    'Faits sur l\'entreprise (seules données réelles autorisées) :',
+    ...factsLines(input.facts ?? {}, input.now),
     ...(input.style ? ['', `Style imposé par le client : "${input.style}".`] : []),
     '',
     'Produis la description JSON complète du site.',

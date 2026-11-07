@@ -1,10 +1,13 @@
 'use client';
 
-import { FormEvent, useEffect, useState } from 'react';
+import { FormEvent, useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { REQUEST_MAX, REQUEST_MIN, requestExamples } from '@/lib/site/onboarding-request';
 import type { StyleId } from '@/lib/site/schema';
 import { styles } from '@/lib/site/themes';
+
+type UploadedPhoto = { id: string; url: string; kind: 'logo' | 'shop' | 'work' };
+const photoChoices = [{ kind: 'logo', label: 'Mon logo' }, { kind: 'shop', label: 'Ma boutique ou mon atelier' }, { kind: 'work', label: 'Mes réalisations' }] as const;
 
 const errorMessages: Record<string, string> = {
   insufficient_credits: 'Vous n’avez plus assez de crédits pour créer un site.',
@@ -19,6 +22,33 @@ export default function RequestPage() {
   const [style, setStyle] = useState<StyleId | null>(null);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
+  const [specialties, setSpecialties] = useState('');
+  const [distinction, setDistinction] = useState('');
+  const [photos, setPhotos] = useState<UploadedPhoto[]>([]);
+  const [uploading, setUploading] = useState(false);
+  const [photoError, setPhotoError] = useState('');
+  const files = useRef<Record<string, HTMLInputElement | null>>({});
+  const uploadPhotos = async (kind: UploadedPhoto['kind'], list: FileList | null) => {
+    if (!list?.length) return;
+    setUploading(true);
+    setPhotoError('');
+    for (const file of Array.from(list)) {
+      const form = new FormData();
+      form.set('file', file);
+      form.set('kind', kind);
+      const response = await fetch('/api/user-photos', { method: 'POST', body: form });
+      if (!response.ok) { setPhotoError('Une photo n’a pas pu être envoyée (JPEG, PNG ou WebP, 8 Mo au plus).'); break; }
+      const body = await response.json() as UploadedPhoto;
+      setPhotos((current) => [...current, { id: body.id, url: body.url, kind }]);
+    }
+    const input = files.current[kind];
+    if (input) input.value = '';
+    setUploading(false);
+  };
+  const removePhoto = async (photo: UploadedPhoto) => {
+    await fetch(`/api/user-photos?id=${photo.id}`, { method: 'DELETE' });
+    setPhotos((current) => current.filter((entry) => entry.id !== photo.id));
+  };
   useEffect(() => {
     // Sans fiche entreprise, on ne peut pas créer de site : retour à la première étape.
     void fetch('/api/onboarding/company').then((response) => response.ok ? response.json() : null).then((value) => { if (value === null) router.replace('/onboarding/siret'); });
@@ -30,6 +60,8 @@ export default function RequestPage() {
     setBusy(true);
     setError('');
     try {
+      // Les réponses aux questions courtes sont enregistrées d'abord : elles servent à la rédaction du site.
+      await fetch('/api/onboarding/profile', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ specialties: specialties.trim() || undefined, distinction: distinction.trim() || undefined }) });
       const response = await fetch('/api/onboarding/site', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ request: request.trim(), ...(style ? { style } : {}) }) });
       const body = await response.json().catch(() => ({})) as { id?: string; error?: string };
       if (!response.ok || !body.id) throw new Error(body.error ?? 'generation_failed');
@@ -55,6 +87,38 @@ export default function RequestPage() {
               {requestExamples.map((example) => <button key={example} type="button" disabled={busy} onClick={() => { setRequest(example); setError(''); }} className="rounded-full border border-slate-700 px-3 py-1.5 text-left text-sm text-slate-200 hover:border-indigo-400 disabled:opacity-60">{example}</button>)}
             </div>
           </div>
+          <fieldset disabled={busy || uploading} className="space-y-4 rounded-xl border border-slate-800 p-4">
+            <legend className="px-1 text-sm font-medium">Pour un site qui vous ressemble <span className="font-normal text-slate-400">(facultatif, 3 questions courtes)</span></legend>
+            <label className="block text-sm"><span className="text-slate-300">Vos spécialités</span>
+              <input value={specialties} onChange={(event) => setSpecialties(event.target.value)} maxLength={400} placeholder="Ex. pain au levain, viennoiseries, gâteaux d’anniversaire" className="mt-1 w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm outline-none focus:border-indigo-400" />
+            </label>
+            <label className="block text-sm"><span className="text-slate-300">Ce qui vous distingue</span>
+              <input value={distinction} onChange={(event) => setDistinction(event.target.value)} maxLength={400} placeholder="Ex. farines locales, fabrication sur place depuis trois générations" className="mt-1 w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm outline-none focus:border-indigo-400" />
+            </label>
+            <div className="text-sm">
+              <p className="text-slate-300">Vos photos <span className="text-slate-500">(utilisées à la place des photos libres de droits)</span></p>
+              <div className="mt-2 grid gap-3 sm:grid-cols-3">
+                {photoChoices.map((choice) => (
+                  <div key={choice.kind}>
+                    <label htmlFor={`photo-${choice.kind}`} className="text-xs text-slate-400">{choice.label}</label>
+                    <input id={`photo-${choice.kind}`} ref={(node) => { files.current[choice.kind] = node; }} type="file" accept="image/jpeg,image/png,image/webp" multiple={choice.kind !== 'logo'} onChange={(event) => void uploadPhotos(choice.kind, event.target.files)} className="mt-1 block w-full text-xs text-slate-300 file:mr-2 file:rounded-md file:border-0 file:bg-slate-700 file:px-3 file:py-1.5 file:text-xs file:font-semibold file:text-white" />
+                  </div>
+                ))}
+              </div>
+              {photoError && <p role="alert" className="mt-2 text-xs text-rose-300">{photoError}</p>}
+              {photos.length > 0 && (
+                <ul className="mt-3 flex flex-wrap gap-2" aria-label="Photos envoyées">
+                  {photos.map((photo) => (
+                    <li key={photo.id} className="relative">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img src={photo.url} alt={photoChoices.find((choice) => choice.kind === photo.kind)?.label ?? 'Photo'} className="h-16 w-16 rounded-lg object-cover ring-1 ring-slate-600" />
+                      <button type="button" onClick={() => void removePhoto(photo)} aria-label="Retirer cette photo" className="absolute -right-1.5 -top-1.5 h-5 w-5 rounded-full bg-slate-800 text-xs leading-5 text-slate-200 ring-1 ring-slate-600 hover:bg-rose-600">×</button>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+          </fieldset>
           <fieldset disabled={busy}>
             <legend className="text-sm font-medium">Un style en tête ? <span className="font-normal text-slate-400">(facultatif)</span></legend>
             <div className="mt-3 grid gap-3 sm:grid-cols-3 lg:grid-cols-5">
@@ -80,7 +144,7 @@ export default function RequestPage() {
           </fieldset>
           {error && <p role="alert" className="text-sm text-rose-300">{error}</p>}
           {busy && <p role="status" className="rounded-xl bg-indigo-500/10 p-3 text-sm text-indigo-200">Nous créons votre site : choix du style, rédaction des textes et sélection des photos. Cela prend environ une minute, ne fermez pas cette page.</p>}
-          <button type="submit" disabled={!valid || busy} className="w-full rounded-xl bg-indigo-600 px-4 py-3 text-sm font-semibold hover:bg-indigo-500 disabled:opacity-60">{busy ? 'Création en cours…' : 'Créer mon site'}</button>
+          <button type="submit" disabled={!valid || busy || uploading} className="w-full rounded-xl bg-indigo-600 px-4 py-3 text-sm font-semibold hover:bg-indigo-500 disabled:opacity-60">{busy ? 'Création en cours…' : 'Créer mon site'}</button>
         </form>
       </section>
     </main>

@@ -2,8 +2,13 @@ import { z } from 'zod';
 import { iconNames } from './icons';
 import { activeModules, displayModules, modulesSchema } from './modules';
 
-export const styleIds = ['artisan', 'moderne', 'premium', 'dynamique'] as const;
+export const styleIds = ['artisan', 'moderne', 'premium', 'dynamique', 'minimal', 'naturel', 'retro', 'luxe'] as const;
 export type StyleId = (typeof styleIds)[number];
+export const headerIds = ['bar', 'split', 'solid'] as const;
+export type HeaderId = (typeof headerIds)[number];
+// Emplacements « à compléter » : visibles seulement dans le Studio, jamais dans le site publié (avis, chiffres, horaires réels à ajouter).
+export const inviteKinds = ['testimonials', 'stats', 'hours'] as const;
+export type InviteKind = (typeof inviteKinds)[number];
 
 // Textes bruts uniquement : jamais de HTML. Le rendu échappe tout ; seuls les jetons {{company.*}} sont remplacés ensuite.
 const text = (max: number) => z.string().trim().min(1).max(max);
@@ -16,6 +21,8 @@ export const hrefSchema = z.string().trim().max(400).regex(SAFE_HREF, 'lien non 
 export const imageSchema = z.object({
   // Requête de recherche de photo (fournisseur d'images) et/ou adresse d'une image déjà choisie.
   query: text(120).optional(),
+  // Autres formulations du même sujet : Mihoji compare les séries de photos et garde la plus pertinente.
+  alternatives: z.array(text(120)).max(2).optional(),
   src: z.string().trim().max(600).regex(SAFE_IMAGE, 'image non autorisée').optional(),
   alt: text(160),
   credit: z.object({ name: text(80), url: z.string().trim().url().max(400).regex(/^https:\/\//) }).optional(),
@@ -249,11 +256,21 @@ const pageSchema = z.object({
   title: text(60),
   description: text(170).optional(),
   sections: z.array(sectionSchema).min(1).max(16),
+  invites: z.array(z.object({ kind: z.enum(inviteKinds), before: z.enum(['about', 'services', 'products', 'gallery', 'faq', 'team', 'cta', 'contact', 'map']).optional() })).max(3).optional(),
 });
 
 export const siteSchema = z.object({
   version: z.literal(1).default(1),
-  theme: z.object({ style: z.enum(styleIds), palette: z.string().regex(/^[a-z-]+$/).optional() }),
+  theme: z.object({
+    style: z.enum(styleIds),
+    palette: z.string().regex(/^[a-z-]+$/).optional(),
+    // Composition de l'en-tête : barre classique, logo au centre (menu à gauche, bouton à droite) ou barre pleine couleur.
+    header: z.enum(headerIds).optional(),
+    // Pourquoi ce style pour ce métier et cette demande (une phrase, gardée avec le site ; non affichée).
+    reason: text(260).optional(),
+  }),
+  // Logo de l'entreprise, envoyé par l'utilisateur (jamais généré).
+  brand: z.object({ logo: z.object({ src: z.string().trim().max(600).regex(SAFE_IMAGE, 'image non autorisée'), alt: text(120) }).optional() }).optional(),
   seo: z.object({ title: text(70), description: text(170) }),
   // Seul appel à l'action principal du site : bouton de l'en-tête et de l'écran d'accueil.
   primaryCta: ctaSchema,

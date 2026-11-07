@@ -10,7 +10,9 @@ import { LlmProviderError, type LlmProvider } from '@/lib/ai/providers/types';
 import { designRoute, type DesignTask } from '@/lib/ai/routing';
 import { createSiteDesign, restyleSiteDesign, type Complete, type CreateInput, type DesignResult } from './design';
 import { resolveSitePhotos, type PhotoReport } from '@/lib/photos/service';
+import type { SiteFacts } from './facts';
 import { siteSchema, type SiteDescription } from './schema';
+import { applyUserPhotos, type UserPhoto } from './user-photos';
 
 export type DesignProvider = { provider: 'anthropic' | 'groq' | 'mock'; model: string; complete: Complete };
 
@@ -24,7 +26,7 @@ export function designProvider(): DesignProvider {
 
 export type GenerationRecord = typeof siteGenerations.$inferSelect;
 
-type RunInput = { workspaceId: string | null; userId?: string | null; projectId?: string | null; photos?: 'auto' | 'local'; onPhotos?: (report: PhotoReport) => void; company: CreateInput['company'] & Record<string, unknown> }
+type RunInput = { workspaceId: string | null; userId?: string | null; projectId?: string | null; photos?: 'auto' | 'local'; facts?: SiteFacts; userPhotos?: UserPhoto[]; onPhotos?: (report: PhotoReport) => void; company: CreateInput['company'] & Record<string, unknown> }
   & ({ task: 'create'; request: string; trade?: string; style?: CreateInput['style'] } | { task: 'restyle'; request: string; site: SiteDescription });
 
 // Lance une génération et l'enregistre (réussie ou non) avec son coût réel en euros.
@@ -34,7 +36,7 @@ export async function runDesignGeneration(input: RunInput, signal?: AbortSignal)
   let result: DesignResult<SiteDescription>;
   try {
     result = input.task === 'create'
-      ? await createSiteDesign(complete, model, { request: input.request, company: input.company, trade: input.trade, style: input.style }, { signal })
+      ? await createSiteDesign(complete, model, { request: input.request, company: input.company, trade: input.trade, style: input.style, facts: input.facts }, { signal })
       : await restyleSiteDesign(complete, model, input.site, input.request, { signal });
   } catch (error) {
     console.error('Design generation failed.', error);
@@ -42,9 +44,13 @@ export async function runDesignGeneration(input: RunInput, signal?: AbortSignal)
     result = { ok: false, error: `fournisseur IA indisponible (${code})`, usage: { promptTokens: 0, completionTokens: 0, cacheReadTokens: 0, cacheWriteTokens: 0, costEur: 0, attempts: 1, model } };
   }
   // Photos : meilleure photo par requête (cache, Unsplash, bibliothèque locale). Une panne ne fait jamais échouer la création.
+  let photoCostEur = 0;
   if (result.ok) {
     try {
-      const { site, report } = await resolveSitePhotos(result.value, { offline: provider === 'mock', local: input.photos === 'local' });
+      // Les photos de l'utilisateur (logo, boutique, réalisations) passent avant celles d'Unsplash.
+      const withOwn = input.userPhotos?.length ? applyUserPhotos(result.value, input.userPhotos).site : result.value;
+      const { site, report } = await resolveSitePhotos(withOwn, { offline: provider === 'mock', local: input.photos === 'local' });
+      photoCostEur = report.visionCostEur;
       result = { ...result, value: siteSchema.parse(site) };
       console.info('Photos resolved.', report);
       input.onPhotos?.(report);
@@ -67,7 +73,7 @@ export async function runDesignGeneration(input: RunInput, signal?: AbortSignal)
     cacheReadTokens: result.usage.cacheReadTokens,
     cacheWriteTokens: result.usage.cacheWriteTokens,
     durationMs: Date.now() - started,
-    shadowCostEur: result.usage.costEur,
+    shadowCostEur: Math.round((result.usage.costEur + photoCostEur) * 1_000_000) / 1_000_000,
     site: result.ok ? result.value : null,
     error: result.ok ? null : result.error,
     createdBy: input.userId ?? null,

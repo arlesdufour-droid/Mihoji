@@ -26,7 +26,7 @@ test('Q5.1 saisie manuelle → demande → Studio : le site créé est au nouvea
     await page.getByRole('button', { name: example }).click();
     await expect(page.getByLabel('Votre demande')).toHaveValue(example);
   }
-  await expect(page.locator('button[aria-pressed]')).toHaveCount(5);
+  await expect(page.locator('button[aria-pressed]')).toHaveCount(9);
   await page.getByRole('button', { name: 'Élégant premium' }).click();
   await expect(page.getByRole('button', { name: 'Élégant premium' })).toHaveAttribute('aria-pressed', 'true');
   await expect(create).toBeEnabled();

@@ -2,6 +2,7 @@ import { z } from 'zod';
 import { shadowCostEur, type TokenUsage } from '../ai/pricing';
 import type { CompletionMessage, CompletionRequest, CompletionResult } from '../ai/providers/types';
 import { designSystemPrompt, designUserMessage, restyleSystemPrompt, restyleUserMessage, type DesignCompany } from './design-prompt';
+import { credibilityIssues, enforceRealData, type SiteFacts } from './facts';
 import { sectionVariants, siteSchema, styleIds, type SiteDescription } from './schema';
 import { styles } from './themes';
 
@@ -65,26 +66,34 @@ function addUsage(usage: DesignUsage, result: CompletionResult, fallbackModel: s
   usage.model = model;
 }
 
-export type CreateInput = { request: string; company: DesignCompany; trade?: string; style?: (typeof styleIds)[number] };
+export type CreateInput = { request: string; company: DesignCompany; trade?: string; style?: (typeof styleIds)[number]; facts?: SiteFacts };
 
 export async function createSiteDesign(complete: Complete, model: string, input: CreateInput, options: { maxAttempts?: number; signal?: AbortSignal } = {}): Promise<DesignResult<SiteDescription>> {
   const maxAttempts = options.maxAttempts ?? 3;
   const usage = emptyUsage(model);
   const messages: CompletionMessage[] = [
     { role: 'system', content: designSystemPrompt },
-    { role: 'user', content: designUserMessage(input) },
+    { role: 'user', content: designUserMessage({ request: input.request, company: input.company, trade: input.trade, style: input.style, facts: input.facts }) },
   ];
   let lastErrors: string[] = [];
   for (let attempt = 1; attempt <= maxAttempts; attempt += 1) {
     const result = await complete({ messages, maxTokens: 16_000, jsonMode: true, rawSystem: true, signal: options.signal });
     addUsage(usage, result, model);
     const parsed = result.truncated ? { ok: false as const, errors: ['réponse coupée par la limite de longueur : raccourcis les textes'] } : parseDesign(result.content);
+    let errors: string[];
     if (parsed.ok) {
       if (input.style && parsed.site.theme.style !== input.style) parsed.site.theme = { style: input.style, palette: undefined };
-      return { ok: true, value: parsed.site, usage };
+      // Vraies données uniquement : sections d'avis, de chiffres ou d'horaires sans source retirées (emplacement dans le Studio), textes invités à être corrigés.
+      const facts = input.facts ?? {};
+      const enforced = enforceRealData(parsed.site, facts);
+      const issues = credibilityIssues(enforced.site, facts);
+      if (issues.length === 0) return { ok: true, value: enforced.site, usage };
+      errors = [...issues.map((issue) => `donnée inventée — ${issue}`), 'Réécris ces passages sans chiffre, label, certification ni récompense qui ne figure pas dans les faits fournis.'];
+    } else {
+      errors = parsed.errors;
     }
-    lastErrors = parsed.errors;
-    messages.push({ role: 'assistant', content: result.content.slice(0, 40_000) || '{}' }, { role: 'user', content: retryMessage(parsed.errors) });
+    lastErrors = errors;
+    messages.push({ role: 'assistant', content: result.content.slice(0, 40_000) || '{}' }, { role: 'user', content: retryMessage(errors) });
   }
   return { ok: false, error: `description refusée après ${maxAttempts} essais : ${lastErrors.slice(0, 5).join(' ; ')}`, usage };
 }

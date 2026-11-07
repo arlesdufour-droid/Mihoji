@@ -44,3 +44,10 @@ e2e/.admin-email
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# banc d'essai : seules l'exécution de référence et latest.json sont versionnés
+docs/benchmark/*
+!docs/benchmark/2026-11-06-2110/
+!docs/benchmark/latest.json
+.next-e2e
+.next-build

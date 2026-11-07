@@ -117,6 +117,8 @@ async function main() {
       if (!site) { console.log(`  échec : ${record.error}`); continue; }
       result.style = site.theme.style;
       result.palette = site.theme.palette;
+      result.header = site.theme.header;
+      result.reason = site.theme.reason;
       result.sections = site.pages[0].sections.map((section) => section.type === 'module' ? `module:${section.module}` : section.type);
       result.modules = activeModules(site.modules);
       writeFileSync(resolve(runDir, `${item.id}.json`), JSON.stringify(site, null, 2));
@@ -184,7 +186,7 @@ async function main() {
   if (cases.length === benchmarkCases.length) copyFileSync(resolve(runDir, 'results.json'), resolve(baseDir, 'latest.json'));
   const { totals, uniformity } = results;
   console.log(`\nTotal : ${totals.succeeded}/${totals.sites} sites · génération ${totals.generationCostEur.toFixed(3)} € (moyenne ${totals.averageGenerationCostEur.toFixed(4)} €) · juge ${totals.judgeCostEur.toFixed(3)} € · total ${totals.totalCostEur.toFixed(3)} € · note moyenne du juge ${totals.judgeMean ?? '—'}`);
-  console.log(`Uniformité : styles ${JSON.stringify(uniformity.styles)} · ${uniformity.sitesInSameSequenceGroup} site(s) partagent une même séquence de sections (${uniformity.distinctSequences} séquences distinctes)`);
+  console.log(`Uniformité : styles ${JSON.stringify(uniformity.styles)} (le plus fréquent : ${Math.round(uniformity.maxStyleShare * 100)} %) · ${uniformity.sitesInSameSequenceGroup} site(s) partagent une même séquence de sections (${uniformity.distinctSequences} séquences distinctes)`);
   console.log(`Résultats : ${resolve(runDir, 'results.json')}`);
 }
 

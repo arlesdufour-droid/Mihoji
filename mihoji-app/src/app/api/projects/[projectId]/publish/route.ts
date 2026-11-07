@@ -28,7 +28,9 @@ export async function POST(request: Request, { params }: { params: Promise<{ pro
   const site = parseStoredSite(files.find((file) => file.path === SITE_FILE)?.content);
   const assetOrigin = getPublicOrigin(request) ?? undefined;
   const publishable = site ? Object.entries(renderSite(site, { fontBase: `${assetOrigin ?? ''}/fonts` }).files) : files.filter((file) => file.path !== SITE_FILE).map((file) => [file.path, file.content] as const);
-  const siteFiles = Object.fromEntries(publishable.map(([path, content]) => [path, injectCompanyData(content, company)]));
+  // Les photos de l'utilisateur sont servies par l'application : adresse absolue dans le site publié.
+  const withPhotos = (content: string) => (assetOrigin ? content.replaceAll('src="/api/site-photos/', `src="${assetOrigin}/api/site-photos/`) : content);
+  const siteFiles = Object.fromEntries(publishable.map(([path, content]) => [path, injectCompanyData(withPhotos(content), company)]));
   const findings = scanPublishedSite(siteFiles);
   if (findings.length > 0) {
     const [publication] = await getDb().insert(publications).values({ projectId, versionId: version.id, url: 'blocked', status: 'failed' }).returning({ id: publications.id });

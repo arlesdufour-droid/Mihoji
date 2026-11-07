@@ -7,6 +7,8 @@ const codespaceDevOrigin = process.env.CODESPACE_NAME
   : null;
 
 const nextConfig: NextConfig = {
+  // Les tests e2e construisent dans un dossier séparé (NEXT_DIST_DIR) pour pouvoir tourner pendant que l'aperçu de développement est ouvert.
+  ...(process.env.NEXT_DIST_DIR ? { distDir: process.env.NEXT_DIST_DIR } : {}),
   /* config options here */
   cacheComponents: true,
   // Les tests e2e et l'aperçu local utilisent http://127.0.0.1:3000 alors que le serveur écoute sur localhost.

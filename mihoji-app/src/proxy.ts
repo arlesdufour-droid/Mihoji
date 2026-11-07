@@ -18,7 +18,9 @@ export async function proxy(request: NextRequest) {
     return NextResponse.redirect(secureUrl, 308);
   }
   const protectedPage = ['/studio', '/settings', '/onboarding', '/agency'].some((prefix) => pathname === prefix || pathname.startsWith(`${prefix}/`));
-  const protectedApi = pathname.startsWith('/api/') && !publicApiRoutes.has(pathname);
+  // Les photos des utilisateurs sont lues par les sites publiés : lecture publique (identifiant non devinable), jamais l'écriture.
+  const publicPhoto = request.method === 'GET' && /^\/api\/site-photos\/[0-9a-f-]{36}$/i.test(pathname);
+  const protectedApi = pathname.startsWith('/api/') && !publicApiRoutes.has(pathname) && !publicPhoto;
   if (!protectedPage && !protectedApi) return NextResponse.next();
 
   const response = NextResponse.next({ request });

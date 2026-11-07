@@ -49,14 +49,52 @@ export function scoreCandidate(candidate: PhotoCandidate, query: string, rank = 
   return score - rank * 0.15;
 }
 
+// Part des mots de la requête que le texte de la photo (description, texte alternatif, mots-clés) contient.
+export function coverage(candidate: PhotoCandidate, query: string): number {
+  const words = queryWords(query);
+  if (words.length === 0) return 0;
+  const haystack = ` ${normalizeQuery(candidate.alt)} ${normalizeQuery(candidate.description)} ${candidate.tags.map(normalizeQuery).join(' ')} `;
+  return words.filter((word) => haystack.includes(word)).length / words.length;
+}
+
+// Une photo doit couvrir au moins la moitié des mots de la requête : mieux vaut un visuel graphique qu'une photo hors sujet.
+export const MIN_COVERAGE = 0.5;
+
 // Candidats classés du plus au moins pertinent, sans ceux qui ne correspondent à aucun mot ou sont hors sujet.
-export function rankCandidates(candidates: PhotoCandidate[], query: string, limit = 6): PhotoCandidate[] {
+export function isOffTopic(candidate: PhotoCandidate, query: string): boolean {
+  const normalizedQuery = normalizeQuery(query);
+  const haystack = ` ${normalizeQuery(candidate.alt)} ${normalizeQuery(candidate.description)} ${candidate.tags.map(normalizeQuery).join(' ')} `;
+  return OFF_TOPIC.some((motif) => !normalizedQuery.includes(motif) && new RegExp(`\\b${motif}`).test(haystack));
+}
+
+// trusted : résultats d'une vraie recherche (Unsplash a déjà fait correspondre la requête à la photo, dont le texte ne cite pas toujours le métier) :
+// on n'écarte que les motifs hors sujet, et le contrôle visuel tranche ensuite. Sinon, la photo doit couvrir la moitié des mots de la requête.
+export function rankCandidates(candidates: PhotoCandidate[], query: string, limit = 6, options: { trusted?: boolean } = {}): PhotoCandidate[] {
+  if (options.trusted) {
+    return candidates.map((candidate, rank) => ({ candidate, rank, score: scoreCandidate(candidate, query, rank) })).filter((entry) => !isOffTopic(entry.candidate, query)).sort((a, b) => b.score - a.score).slice(0, limit).map((entry) => entry.candidate);
+  }
   return candidates
-    .map((candidate, rank) => ({ candidate, score: scoreCandidate(candidate, query, rank) }))
-    .filter((entry) => entry.score > 2)
+    .map((candidate, rank) => ({ candidate, score: scoreCandidate(candidate, query, rank), covered: coverage(candidate, query) }))
+    .filter((entry) => entry.score > 2 && entry.covered >= MIN_COVERAGE)
     .sort((a, b) => b.score - a.score)
     .slice(0, limit)
     .map((entry) => entry.candidate);
+}
+
+// Classement pour un emplacement qui a plusieurs formulations (requête principale + alternatives) : chaque photo prend sa meilleure note,
+// les doublons (même photo trouvée par deux requêtes) sont fusionnés.
+export function rankForSlot(pool: PhotoCandidate[], queries: string[], limit = 3): PhotoCandidate[] {
+  const best = new Map<string, { candidate: PhotoCandidate; score: number }>();
+  pool.forEach((candidate, rank) => {
+    for (const query of queries) {
+      if (coverage(candidate, query) < MIN_COVERAGE) continue;
+      const score = scoreCandidate(candidate, query, rank % 20);
+      if (score <= 2) continue;
+      const known = best.get(candidate.src);
+      if (!known || score > known.score) best.set(candidate.src, { candidate, score });
+    }
+  });
+  return [...best.values()].sort((a, b) => b.score - a.score).slice(0, limit).map((entry) => entry.candidate);
 }
 
 // Unsplash exige tous les mots : une requête trop précise ne donne rien. On réessaie avec les mots les plus importants

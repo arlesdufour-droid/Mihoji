@@ -11,6 +11,7 @@ import { StudioTabs } from '@/components/studio/studio-tabs';
 import { UserMenu } from '@/components/account/user-menu';
 import type { ChatMessage } from '@/components/studio/composer';
 import type { DemoProject } from '@/lib/templates/site';
+import { PhotosPanel } from '@/components/studio/photos-panel';
 import { SiteSettings } from '@/components/settings/site-settings';
 import { formatDateTime } from '@/lib/format';
 
@@ -55,6 +56,10 @@ export function StudioShell({ projectId, remaining, isDemo, email, workspaceName
     return () => window.removeEventListener('mihoji-ui-mode-change', update);
   }, []);
 
+  const refreshProject = useCallback(() => {
+    void fetch(`/api/projects/${projectId}`).then((response) => response.ok ? response.json() : null).then((value) => { if (value?.html) { setHtml(value.html); setVersionPreview(null); setReload((count) => count + 1); } });
+  }, [projectId]);
+
   const previewHtml = versionPreview?.html ?? html;
   const content = activeTab === 'code'
     ? <div className="h-full overflow-auto bg-slate-950 p-5 font-mono text-xs leading-6 text-indigo-100"><pre className="whitespace-pre-wrap">{html}</pre></div>
@@ -73,13 +78,12 @@ export function StudioShell({ projectId, remaining, isDemo, email, workspaceName
             <EditDesignBar />
           </div>
         </div>
+      : activeTab === 'photos'
+        ? <PhotosPanel projectId={projectId} onApplied={refreshProject} />
       : activeTab === 'settings'
         ? <div className="h-full overflow-auto p-6"><SiteSettings project={null} /></div>
         : <div className="flex h-full items-center justify-center p-8 text-center"><div><p className="text-sm font-semibold text-slate-200">Espace {activeTab}</p><p className="mt-2 text-xs text-slate-500">Cet espace est prêt pour les données et les réglages de votre projet.</p></div></div>;
 
-  const refreshProject = useCallback(() => {
-    void fetch(`/api/projects/${projectId}`).then((response) => response.ok ? response.json() : null).then((value) => { if (value?.html) { setHtml(value.html); setVersionPreview(null); setReload((count) => count + 1); } });
-  }, [projectId]);
 
   useEffect(() => {
     // « Mes informations » enregistrées : l'aperçu reflète immédiatement les nouvelles coordonnées.

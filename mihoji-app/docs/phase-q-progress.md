@@ -217,3 +217,53 @@ Couvert par `e2e/phase-q-lot-5.spec.ts` (simulation : saisie manuelle, style cho
 6. Après une seconde exécution, la section « Comparaison » montre l'écart de note et de coût ; elle indique « Non comparable » si la version du banc, celle de la grille ou la source des photos diffèrent.
 
 Couvert par `src/lib/site/benchmark.test.ts` (8 tests : cas, grille, totaux, uniformité, comparaison) et `e2e/phase-q-lot-6.spec.ts` (3 tests : accès réservé aux administrateurs, affichage et comparaison, note manuelle). L'exécution réelle du banc n'est pas un test automatisé (elle coûte de l'argent).
+
+
+## Lot Q2 — qualité 2 : photos, diversité, crédibilité — terminé (objectifs de notes non atteints, voir ci-dessous)
+
+### Ménage (étape 0)
+- Arbre Git propre au départ : le travail de la galerie de notation et des réglages était déjà commité. `docs/benchmark/*` est ignoré par Git, sauf l'exécution de référence `2026-11-06-2110` et `latest.json` (laissé sur la référence).
+- Journal temporaire `/api/onboarding/*` : retiré (rien dans le code). Neutralisation de l'en-tête collant : uniquement dans `scripts/benchmark.ts`, pour les captures.
+- **Échec intermittent de l'onboarding : cause trouvée et corrigée.** `missing-fields` renvoyait vers `/onboarding/siret` si on validait avant la fin du chargement de la fiche entreprise (démarrage à froid) ; le bouton est maintenant grisé tant que la fiche n'est pas chargée. Dans `confirmation`, l'enregistrement de la fiche n'était pas attendu avant le changement de page : il l'est maintenant.
+
+### Fait
+- **Photos** : 1 requête + 2 formulations alternatives par emplacement (`image.alternatives`) ; toutes les candidates sont comparées, les 3 meilleures sont contrôlées visuellement par Haiku (`photos/verify.ts`, une requête par site, vignettes de 400 px, ≈ 0,0005 € par site, plafond 0,01 €). Une photo refusée n'est jamais utilisée : l'emplacement reste un visuel graphique. Règles (`photos/rules.ts`) : galerie sans 3 bonnes photos masquée ; grille de produits à moins de la moitié de photos sans aucune photo ; bandeau ou présentation sans photo → composition typographique. Les formulations alternatives n'utilisent que le quota Unsplash restant au-delà d'une réserve de 8 requêtes ; cache 30 jours inchangé. Bibliothèque locale : 35 → 95 requêtes (plombier, peintre, électricien, maçon, menuisier, restaurant, kiné, coach, notaire, vétérinaire, etc.), la requête qui a trouvé une photo sert de mot-clé.
+- **Photos de l'utilisateur** : onglet « Mes photos » du Studio (logo, boutique, réalisations ; redimensionnées à 1600 px, WebP, métadonnées GPS retirées, 24 au plus, stockées en base `site_photos`, servies par `/api/site-photos/<id>`), bouton « Utiliser mes photos dans le site » (sans IA ni crédit, nouvelle version). Elles passent avant Unsplash (logo dans l'en-tête, boutique en bandeau, réalisations en galerie) à la création comme après coup. Dans le site publié, adresse absolue.
+- **Diversité** : 4 styles de plus (Minimal noir et blanc, Naturel et organique, Rétro années 70, Luxe sombre ; 4 polices ajoutées), 10 palettes de plus (29 au total, contraste AA testé), 3 compositions d'en-tête (`bar`, `split`, `solid`). Le modèle justifie son choix dans `theme.reason` ; le prompt donne une personnalité de marque par style et interdit tout style par défaut.
+- **Crédibilité** : le modèle reçoit les vraies données (année de création Sirene — jamais pour une saisie manuelle —, ville, spécialités, ce qui distingue, horaires fournis). `facts.ts` : avis supprimés, chiffres clés gardés seulement s'ils viennent de l'entreprise, horaires seulement s'ils sont fournis ; chiffres, années, labels, certifications et récompenses inventés dans les textes → le modèle doit réécrire. Les sections retirées laissent un encart « à compléter » visible seulement dans l'aperçu du Studio (jamais publié). Le chat accepte un vrai avis, chiffre ou horaire fourni mot pour mot.
+- **Onboarding** : 3 questions courtes facultatives (spécialités, ce qui distingue, photos) enregistrées dans `companies.profile` (migration `0020`).
+- Divers : les e2e tournent dans un dossier de build séparé (`NEXT_DIST_DIR=.next-e2e`), donc même quand l'aperçu de développement est ouvert.
+
+### Mesure (banc v1 inchangé, photos locales, `claude-sonnet-5-5`, mêmes 12 cas)
+| Critère | Référence | Exécution A | Exécution B | Objectif |
+|---|---|---|---|---|
+| Note moyenne | 2,98 | 3,23 | 3,12 | — |
+| Photos | 1,75 | 2,33 | 2,33 | ≥ 3 |
+| Crédibilité | 2,50 | 3,08 | 2,83 | ≥ 3,5 |
+| Caractère distinctif | 2,83 | 2,92 | 2,75 | ≥ 3,5 |
+| Texte pour le métier | 3,83 | 3,92 | 3,67 | — |
+| Hiérarchie visuelle | 4,00 | 3,92 | 4,00 | — |
+| Style le plus fréquent | 5/12 (42 %) | 3/12 (25 %) | 3/12 (25 %) | ≤ 30 % |
+| Coût par site (génération) | 0,037 € | 0,055 € | 0,055 € | < 0,10 € |
+
+Écart entre A et B ≈ 0,1 point : les gains sur les photos (+0,6) et la crédibilité (+0,3 à +0,6) dépassent ce bruit ; le gain sur le caractère distinctif (+0,0 à +0,1) n'en sort pas. **Seul l'objectif de diversité est atteint.** Coût plus élevé que la référence (0,037 → 0,055 €) : réponses plus longues et nouveaux essais pour corriger les données inventées.
+
+### Pourquoi les objectifs ne sont pas atteints
+- **Photos** : en mode local, 0 à 7 requêtes par site restent sans résultat, car la bibliothèque (95 requêtes) ne couvre pas tout ce que le modèle demande (galeries de 6 à 9 images différentes). Un contrôle visuel qui refuse des photos laisse des cadres graphiques. La vraie recherche Unsplash serait bien meilleure, mais l'offre démonstration (50 requêtes par heure) ne permet pas de mesurer 12 sites. **À faire côté utilisateur : passer l'application Unsplash en « Production » (5 000 requêtes/h)**, puis lancer `npm run benchmark -- --photos=unsplash`.
+- **Crédibilité** : le juge cite surtout des numéros fictifs du banc (`01 99 00 …`), les boutons « Bientôt disponible » (réservation, paiement) et l'absence d'avis ou de certificats, que nous refusons désormais d'inventer. Cette limite est voulue.
+- **Caractère distinctif** : les styles varient, mais la structure des pages reste proche d'un site vitrine classique (héros, cartes, FAQ). Piste suivante : compositions de sections propres au métier et ordre des sections guidé par le métier.
+
+### Comment vérifier
+1. Connecté, ouvrez `/onboarding/manual`, remplissez nom, métier et adresse, cliquez sur « Continuer », puis complétez les coordonnées.
+2. Sur « Décrivez le site que vous voulez », remplissez « Vos spécialités » et « Ce qui vous distingue », envoyez un logo (« Mon logo »), une photo (« Ma boutique ou mon atelier ») et trois photos (« Mes réalisations »), puis cliquez sur « Créer mon site ».
+3. Dans l'aperçu : le logo est dans l'en-tête, vos photos sont dans le bandeau et la galerie, et deux encarts en pointillés « Avis de vos clients » et « Chiffres clés » indiquent qu'ils n'apparaissent pas sur le site publié.
+4. Cliquez sur l'onglet « Mes photos », supprimez le logo, cliquez sur « Utiliser mes photos dans le site », revenez sur « Aperçu » : le logo a disparu de l'en-tête et une nouvelle version existe dans l'historique.
+5. Dans « Mes photos », envoyez un fichier texte : le message « Format non accepté » s'affiche.
+6. `/admin/design` : 8 styles dans la barre « Styles ». `/admin/benchmark` : « Style choisi » avec la justification du modèle pour chaque site et la part du style le plus fréquent.
+
+Couvert par `e2e/phase-q-lot-q2.spec.ts` (Q2.1, Q2.2) et par les tests unitaires `facts.test.ts`, `user-photos.test.ts`, `photos/q2.test.ts`. Captures : `docs/screenshots/phase-q-lot-q2/` (avant/après).
+
+### Simulé ou restant
+- En simulation (tests e2e), pas de contrôle visuel ni de vraie recherche : le « modèle » renvoie les sites d'exemple, dont les avis et chiffres sont retirés par `enforceRealData`.
+- Les horaires et les chiffres clés se donnent par le chat (« Nos horaires : … ») ; pas encore de formulaire dédié dans le Studio.
+- Les boutons « Bientôt disponible » des modules pèsent sur la crédibilité jugée ; ce n'est pas traité ici.

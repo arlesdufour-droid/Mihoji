@@ -8,7 +8,7 @@ import { findFiller, sectionSchema, sectionTypes, sectionVariants, siteSchema, s
 import { guaranteedPairs, styles } from './themes';
 
 describe('thèmes', () => {
-  it('propose 4 styles complets, chacun avec au plus 2 familles de polices', () => {
+  it('propose 8 styles complets, chacun avec au plus 2 familles de polices', () => {
     expect(styles.map((style) => style.id)).toEqual([...styleIds]);
     for (const style of styles) {
       expect(new Set([style.fonts.heading.family, style.fonts.body.family]).size).toBeLessThanOrEqual(2);

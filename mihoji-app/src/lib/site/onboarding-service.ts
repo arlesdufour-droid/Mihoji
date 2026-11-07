@@ -5,6 +5,8 @@ import { getDb } from '@/db/client';
 import { chatMessages, companies, projects, siteGenerations } from '@/db/schema';
 import { generationSite, runDesignGeneration } from './design-service';
 import { designCompanyOf, projectNameOf } from './onboarding-request';
+import { factsOf } from './facts';
+import { listUserPhotos } from './user-photos-store';
 import { saveProjectSite } from './store';
 import type { styleIds } from './schema';
 
@@ -21,7 +23,9 @@ export async function createOnboardingSite(input: { workspaceId: string; userId:
   const [company] = await db.select().from(companies).where(eq(companies.workspaceId, input.workspaceId)).limit(1);
   if (!company) return { status: 'no_company' };
   const { trade, company: designCompany } = designCompanyOf(company);
-  const record = await runDesignGeneration({ task: 'create', request: input.request, trade, style: input.style, company: designCompany, workspaceId: input.workspaceId, userId: input.userId }, input.signal);
+  const facts = factsOf({ company, profile: company.profile, request: input.request, city: designCompany.city });
+  const userPhotos = await listUserPhotos(input.workspaceId);
+  const record = await runDesignGeneration({ task: 'create', request: input.request, trade, style: input.style, company: designCompany, facts, userPhotos, workspaceId: input.workspaceId, userId: input.userId }, input.signal);
   const site = generationSite(record);
   if (record.status !== 'succeeded' || !site) return { status: 'failed', error: record.error ?? 'génération refusée' };
   const projectId = await db.transaction(async (tx) => {

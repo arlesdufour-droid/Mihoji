@@ -18,6 +18,6 @@ export function parseStoredSite(content: string | undefined): SiteDescription | 
 
 // Fichiers d'un projet pour une description donnée : la description elle-même et son rendu.
 export function siteFiles(site: SiteDescription): Map<string, string> {
-  return new Map<string, string>([[SITE_FILE, `${JSON.stringify(site, null, 2)}\n`], ...Object.entries(renderSite(site, { inlineCss: true }).files)]);
+  return new Map<string, string>([[SITE_FILE, `${JSON.stringify(site, null, 2)}\n`], ...Object.entries(renderSite(site, { inlineCss: true, studio: true }).files)]);
 }
 

@@ -11,12 +11,12 @@ test('Q1.1 la galerie /admin/design présente les 4 styles, leurs palettes, un s
   await page.goto('/admin/design');
   await expect(page.getByRole('heading', { name: 'Design des sites générés' })).toBeVisible();
   for (const style of styles) await expect(page.getByRole('navigation', { name: 'Styles' }).getByRole('link', { name: style.label })).toBeVisible();
-  await expect(page.getByRole('navigation', { name: 'Palettes' }).getByRole('link')).toHaveCount(3);
+  await expect(page.getByRole('navigation', { name: 'Palettes' }).getByRole('link')).toHaveCount(4);
   await expect(page.locator('iframe[title^="Site d’exemple"]')).toBeVisible();
   await expect(page.getByText('16 types de sections', { exact: false })).toBeVisible();
   await page.getByRole('navigation', { name: 'Styles' }).getByRole('link', { name: 'Élégant premium' }).click();
   await expect(page).toHaveURL(/style=premium/);
-  await expect(page.getByRole('navigation', { name: 'Palettes' }).getByRole('link')).toHaveCount(2);
+  await expect(page.getByRole('navigation', { name: 'Palettes' }).getByRole('link')).toHaveCount(3);
 });
 
 test('Q1.2 les pages de rendu sont réservées aux administrateurs', async ({ playwright, baseURL }) => {

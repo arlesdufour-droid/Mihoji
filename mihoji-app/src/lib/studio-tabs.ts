@@ -1,7 +1,8 @@
-import { BarChart3, CircleDollarSign, Code2, Database, Eye, MoreHorizontal, Settings, Search } from 'lucide-react';
+import { BarChart3, ImageIcon, CircleDollarSign, Code2, Database, Eye, MoreHorizontal, Settings, Search } from 'lucide-react';
 
 export const studioTabs = [
   { id: 'preview', label: 'Aperçu', icon: Eye },
+  { id: 'photos', label: 'Mes photos', icon: ImageIcon },
   { id: 'code', label: 'Code', icon: Code2 },
   { id: 'database', label: 'Base de données', icon: Database },
   { id: 'analytics', label: 'Statistiques', icon: BarChart3 },
@@ -12,4 +13,4 @@ export const studioTabs = [
 ] as const;
 
 export type StudioTabId = (typeof studioTabs)[number]['id'];
-export const simpleStudioTabIds: StudioTabId[] = ['preview', 'settings'];
+export const simpleStudioTabIds: StudioTabId[] = ['preview', 'photos', 'settings'];

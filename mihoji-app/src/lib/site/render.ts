@@ -1,15 +1,17 @@
 import { buildCss } from './css';
 import { esc, menuIcon } from './html';
-import type { Section, SectionType, SiteDescription } from './schema';
+import type { InviteKind, Section, SectionType, SiteDescription } from './schema';
 import { moduleAnchors, type DisplayModule } from './modules';
 import { renderSection, type SectionContext } from './sections';
-import { resolveTheme } from './themes';
+import { resolveHeader, resolveTheme } from './themes';
 
 export type RenderOptions = {
   // Dossier des polices auto-hébergées (par défaut /fonts, servi par l'application).
   fontBase?: string;
   // Insère le CSS dans la page (aperçu dans le Studio) au lieu d'un fichier styles.css.
   inlineCss?: boolean;
+  // Aperçu du Studio : affiche aussi les emplacements « à compléter » (jamais dans le site publié).
+  studio?: boolean;
 };
 
 export type RenderedSite = { files: Record<string, string>; sectionTypes: SectionType[] };
@@ -54,10 +56,24 @@ function navFor(site: SiteDescription, contexts: { section: Section; id: string 
   return [...head, ...(contact ? [contact] : [])].map(({ label, href }) => ({ label, href }));
 }
 
+const INVITES: Record<InviteKind, { title: string; text: string }> = {
+  testimonials: { title: 'Avis de vos clients', text: 'Ajoutez de vrais avis pour rassurer vos futurs clients. Dites-le dans le chat : « Ajoute cet avis : … ». Cet encart n’apparaît pas sur le site publié.' },
+  stats: { title: 'Chiffres clés', text: 'Ajoutez vos vrais chiffres (années d’existence, nombre de clients…). Dites-le dans le chat : « Ajoute le chiffre : … ». Cet encart n’apparaît pas sur le site publié.' },
+  hours: { title: 'Vos horaires d’ouverture', text: 'Indiquez vos vrais horaires dans le chat : « Nos horaires : lundi au vendredi, 9 h à 18 h ». Cet encart n’apparaît pas sur le site publié.' },
+};
+
+function inviteBlock(kind: InviteKind): string {
+  const invite = INVITES[kind];
+  return `<section class="s s-invite tone-default" data-invite="${kind}" aria-label="${esc(invite.title)}"><div class="wrap"><div class="invite"><strong>${esc(invite.title)}</strong><p>${esc(invite.text)}</p></div></div></section>`;
+}
+
 function siteHeader(site: SiteDescription, nav: { label: string; href: string }[]): string {
+  const logo = site.brand?.logo;
+  const brand = logo ? `<span class="brand-wrap"><img src="${esc(logo.src)}" alt="${esc(logo.alt)}" height="40"></span>` : '{{company.name}}';
+  const brandTag = (content: string) => `<a class="brand" href="${site.pages.length > 1 ? pageFile('index') : '#top'}">${content}</a>`;
   const links = nav.map((link) => `<a href="${esc(link.href)}">${esc(link.label)}</a>`).join('');
   const menu = nav.length ? `<details class="nav-mobile"><summary aria-label="Ouvrir le menu">${menuIcon()}</summary><nav aria-label="Menu mobile">${links}<a class="btn btn-primary btn-sm menu-cta" href="${esc(site.primaryCta.href)}">${esc(site.primaryCta.label)}</a></nav></details>` : '';
-  return `<header class="site-header"><div class="wrap bar"><a class="brand" href="${site.pages.length > 1 ? pageFile('index') : '#top'}">{{company.name}}</a>${nav.length ? `<nav class="nav-desktop" aria-label="Navigation principale">${links}</nav>` : ''}<div class="bar-actions"><a class="btn btn-primary btn-sm" href="${esc(site.primaryCta.href)}">${esc(site.primaryCta.label)}</a>${menu}</div></div></header>`;
+  return `<header class="site-header header--${resolveHeader(site.theme)}"><div class="wrap bar">${brandTag(brand)}${nav.length ? `<nav class="nav-desktop" aria-label="Navigation principale">${links}</nav>` : ''}<div class="bar-actions"><a class="btn btn-primary btn-sm" href="${esc(site.primaryCta.href)}">${esc(site.primaryCta.label)}</a>${menu}</div></div></header>`;
 }
 
 function uniqueIds(sections: Section[]): { section: Section; id: string }[] {
@@ -96,6 +112,16 @@ export function renderSite(site: SiteDescription, options: RenderOptions = {}): 
       const context: SectionContext = { id, tone: resolved, primaryCta: site.primaryCta, modules: site.modules };
       return renderSection(section, context, site.pages.length > 1 ? [] : nav);
     });
+    // Emplacements « à compléter » : seulement dans le Studio, juste avant la section indiquée (par défaut avant le contact, l'accès ou le pied de page).
+    if (options.studio && page.invites?.length) {
+      for (const invite of page.invites) {
+        if (sections.some((section) => section.type === invite.kind)) continue;
+        const wanted = invite.before ? identified.findIndex(({ section }) => section.type === invite.before) : -1;
+        const fallback = identified.findIndex(({ section }) => section.type === 'contact' || section.type === 'map' || section.type === 'footer');
+        const at = wanted >= 0 ? wanted : fallback >= 0 ? fallback : body.length;
+        body.splice(at, 0, inviteBlock(invite.kind));
+      }
+    }
     const hero = body[0] && sections[0].type === 'hero' ? body.shift()! : '';
     const footer = body.pop() ?? '';
     const preload = [style.fonts.heading, style.fonts.body].filter((font, index, list) => list.findIndex((other) => other.file === font.file) === index).map((font) => `<link rel="preload" href="${esc(fontBase)}/${font.file}" as="font" type="font/woff2" crossorigin>`).join('');

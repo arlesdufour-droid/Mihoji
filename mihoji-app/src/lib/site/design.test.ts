@@ -34,7 +34,7 @@ describe('prompt du modèle de design', () => {
     for (const widget of ['google-maps', 'google-reviews', 'calendly', 'whatsapp', 'instagram']) expect(designSystemPrompt).toContain(widget);
   });
 
-  it('propose les 4 styles et toutes leurs palettes, à la création comme au changement de style', () => {
+  it('propose les 8 styles et toutes leurs palettes, à la création comme au changement de style', () => {
     for (const style of styles) {
       for (const prompt of [designSystemPrompt, restyleSystemPrompt]) {
         expect(prompt).toContain(`"${style.id}"`);
@@ -45,7 +45,7 @@ describe('prompt du modèle de design', () => {
 
   it('impose des textes propres au métier, sans faux avis ni données entreprise inventées', () => {
     expect(designSystemPrompt).toContain('Aucune erreur de catégorie');
-    expect(designSystemPrompt).toContain('N\'invente pas d\'avis clients');
+    expect(designSystemPrompt).toContain('VRAIES DONNÉES UNIQUEMENT');
     expect(designSystemPrompt).toContain('{{company.phone}}');
     expect(designSystemPrompt).toContain('EN ANGLAIS');
   });

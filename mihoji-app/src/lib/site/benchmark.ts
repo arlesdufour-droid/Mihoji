@@ -15,9 +15,12 @@ export type SiteResult = {
   generation: { id: string; costEur: number; attempts: number; durationMs: number; promptTokens: number; completionTokens: number; cacheReadTokens: number; cacheWriteTokens: number; model: string };
   style?: string;
   palette?: string;
+  header?: string;
+  /** Justification du style donnée par le modèle (theme.reason). */
+  reason?: string;
   sections?: string[];
   modules?: string[];
-  photos?: { requested: number; fromCache: number; unsplashCalls: number; fromLocal: number; unresolved: string[] };
+  photos?: { requested: number; fromCache: number; unsplashCalls: number; fromLocal: number; unresolved: string[]; verified?: number; rejected?: number; visionCostEur?: number; hiddenGalleries?: number };
   // Contrôles automatiques du rendu (pas des indicateurs de qualité).
   checks?: { desktop: AuditSummary; mobile: AuditSummary; filler: string[]; brokenImages: number };
   // Lighthouse : contrôle technique du rendu (poids, accessibilité, balisage), pas un indicateur de qualité.
@@ -32,6 +35,9 @@ export type Uniformity = {
   sameSequenceGroups: { sequence: string[]; ids: string[] }[];
   sitesInSameSequenceGroup: number;
   distinctSequences: number;
+  /** Part du style le plus fréquent (0 à 1) : objectif Q2, au plus 30 % des sites. */
+  maxStyleShare: number;
+  dominantStyle?: string;
 };
 
 export type BenchmarkResults = {
@@ -86,8 +92,12 @@ export function computeUniformity(sites: SiteResult[]): Uniformity {
     groups.set(key, group);
   }
   const shared = [...groups.values()].filter((group) => group.ids.length > 1).sort((a, b) => b.ids.length - a.ids.length);
+  const styles = count(done.map((site) => site.style));
+  const [dominantStyle, dominantCount] = Object.entries(styles).sort((a, b) => b[1] - a[1])[0] ?? [undefined, 0];
   return {
-    styles: count(done.map((site) => site.style)),
+    maxStyleShare: done.length ? round(dominantCount / done.length, 3) : 0,
+    dominantStyle,
+    styles,
     palettes: count(done.map((site) => (site.style && site.palette ? `${site.style}/${site.palette}` : undefined))),
     sameSequenceGroups: shared,
     sitesInSameSequenceGroup: shared.reduce((sum, group) => sum + group.ids.length, 0),
