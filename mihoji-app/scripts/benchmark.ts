@@ -10,9 +10,10 @@ import { assertE2eEnvironment, loadEnv } from './e2e-guard';
 
 // Banc d'essai de qualité (phase Q, lot 6) : génère les 12 sites du banc avec la VRAIE IA (base de développement),
 // puis pour chacun : captures ordinateur et mobile, contrôles automatiques du rendu, Lighthouse (contrôle du rendu) et juge IA.
-// Usage : npm run benchmark [-- plombier coach] [--photos=local|unsplash] [--no-judge] [--no-lighthouse]
+// Usage : npm run benchmark [-- plombier coach] [--photos=local|real] [--no-judge] [--no-lighthouse]
 //   --photos=local     (défaut) bibliothèque locale uniquement : photos identiques d'une exécution à l'autre, pour comparer avant/après.
-//   --photos=unsplash  cache puis Unsplash : jugement visuel ponctuel, non comparable aux exécutions « local ».
+//   --photos=real      cache puis Pixabay (clé PIXABAY_API_KEY, 90 requêtes/min) combiné à Unsplash en mode Demo (45 requêtes/h) : le banc ATTEND quand un quota est
+//                      atteint (plusieurs heures possibles). Photos mises en cache 30 jours : la 2e exécution est presque instantanée côté photos.
 // Sortie : docs/benchmark/<AAAA-MM-JJ-HHmm>/ (results.json, <id>.json, <id>.html, <id>-ordinateur.jpg, <id>-mobile.jpg) et docs/benchmark/latest.json.
 
 // Les modules serveur importent « server-only » (fourni par Next) : hors de Next, on le remplace par un module vide.
@@ -46,7 +47,7 @@ async function main() {
   assertE2eEnvironment();
   const args = process.argv.slice(2);
   const photosArg = args.find((arg) => arg.startsWith('--photos='))?.slice('--photos='.length) ?? 'local';
-  if (photosArg !== 'local' && photosArg !== 'unsplash') throw new Error('--photos doit valoir local ou unsplash.');
+  if (photosArg !== 'local' && photosArg !== 'real') throw new Error('--photos doit valoir local ou real.');
   const noJudge = args.includes('--no-judge');
   const noLighthouse = args.includes('--no-lighthouse');
   const wanted = args.filter((arg) => !arg.startsWith('--'));
@@ -106,7 +107,7 @@ async function main() {
       console.log(`→ ${item.id}…`);
       const { trade, company } = designCompanyOf({ name: item.company.name, activity: item.company.activity, address: item.company.address, missingFields: { phone: item.company.phone, email: item.company.email } });
       let photoReport: PhotoReport | undefined;
-      const record = await runDesignGeneration({ task: 'create', request: item.request, trade, company, workspaceId: null, photos: photosArg === 'local' ? 'local' : 'auto', onPhotos: (report) => { photoReport = report; } });
+      const record = await runDesignGeneration({ task: 'create', request: item.request, trade, company, workspaceId: null, photos: photosArg === 'local' ? 'local' : 'real', onPhotos: (report) => { photoReport = report; } });
       const result: SiteResult = {
         id: item.id, label: item.label, request: item.request, status: record.status, error: record.error ?? undefined, poorData: item.poorData,
         generation: { id: record.id, costEur: record.shadowCostEur, attempts: record.attempts, durationMs: record.durationMs, promptTokens: record.promptTokens, completionTokens: record.completionTokens, cacheReadTokens: record.cacheReadTokens, cacheWriteTokens: record.cacheWriteTokens, model: record.model },

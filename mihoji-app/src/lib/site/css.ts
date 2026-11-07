@@ -226,9 +226,7 @@ const SECTION_CSS: Record<SectionType, string> = {
 .mod-note{font-size:.9rem;color:var(--muted)}
 .mod-facts{display:grid;gap:.9rem}.mod-facts li,.mod-promise{display:flex;gap:.7rem;align-items:flex-start}.mod-facts .ic,.mod-promise .ic{flex:none;width:1.3rem;height:1.3rem;margin-top:.2rem;color:var(--primary)}.mod-promise{font-weight:700}
 .mod-side .ticks{margin-top:0}
-.mod-soon{display:grid;gap:.5rem;justify-items:start}
-.btn-soon,.btn-soon:hover{background:var(--surface);color:var(--muted);border:2px dashed color-mix(in srgb,var(--muted) 60%,transparent);box-shadow:none;cursor:not-allowed;transform:none;filter:none}
-.soon-badge{font-size:.8rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.mod-cta{display:grid;gap:.75rem}.mod-cta ul{display:grid;gap:.6rem;justify-items:start;list-style:none;margin:0;padding:0}.mod-cta .btn{gap:.5rem}.mod-addr{display:flex;gap:.5rem;align-items:center;color:var(--muted)}
 .mod-fallback{display:grid;gap:.55rem;padding-top:1.1rem;border-top:1px solid var(--line)}.mod-fallback .k{font-size:.9rem;color:var(--muted)}.mod-fallback li:not(.k){display:flex;gap:.6rem;align-items:center}.mod-fallback .ic{width:1.1rem;height:1.1rem;color:var(--primary)}.mod-fallback a{font-weight:700;text-decoration:none}.mod-fallback a:hover{text-decoration:underline}
 .mod-offers{display:grid;gap:1.1rem}.mod-offer{display:grid;align-content:start;gap:.35rem;background:var(--surface);color:var(--text);border:1px solid var(--line);border-radius:var(--r-lg);padding:1.5rem;box-shadow:var(--shadow)}.mod-offer .tag{justify-self:start}.mod-offer p{color:var(--muted)}.mod-offer .mod-price{font-family:var(--font-heading);font-weight:var(--hw);font-size:1.9rem;color:var(--primary);line-height:1.1}
 .mod-news .lead{margin-bottom:.6rem}

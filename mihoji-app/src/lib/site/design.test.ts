@@ -83,14 +83,16 @@ describe('modules fonctionnels', () => {
     expect(modulesSchema.safeParse({ booking: { ...catalogueModules.booking, schedule: { days: ['lundi'], start: '18:00', end: '09:00' } }, payment: catalogueModules.payment }).success).toBe(false);
   });
 
-  it('affiche le contenu des modules, et des boutons désactivés « Bientôt disponible » pour ce qui n’est pas encore actif', () => {
+  it('affiche le contenu des modules, et un vrai appel à l’action (jamais « Bientôt disponible ») pour ce qui n’est pas encore actif', () => {
     const html = renderSite(catalogueSite('artisan', undefined, 'module')).files['index.html'];
     expect(structureIssues(html)).toBe(0);
     expect(html).toContain('Diagnostic chaudière');
     expect(html).toContain('Acompte de 30 % à la réservation.');
     expect(html).toContain('du lundi au vendredi, 8 h – 18 h');
     expect(html).toContain('Mitigeur thermostatique');
-    expect(html).toContain('Bientôt disponible');
+    expect(html).not.toMatch(/bient(ô|o)t disponible/i);
+    expect(html).toContain('href="tel:{{company.phone}}"');
+    expect(html).toContain('href="mailto:{{company.email}}?subject=');
     expect(html).toContain('id="reservation"');
     expect(html).toContain('id="commande"');
     // Aucun bouton actif sans action : soit l'envoi d'un formulaire, soit un bouton désactivé.

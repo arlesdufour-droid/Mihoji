@@ -1,4 +1,4 @@
-import { pgTable, text, timestamp, uuid, integer, primaryKey, jsonb, numeric, customType } from 'drizzle-orm/pg-core';
+import { pgTable, text, timestamp, uuid, integer, primaryKey, jsonb, numeric, customType, unique } from 'drizzle-orm/pg-core';
 
 const bytea = customType<{ data: Buffer; driverData: Buffer }>({ dataType: () => 'bytea' });
 
@@ -199,7 +199,7 @@ export const siteGenerations = pgTable('site_generations', {
 // Cache des recherches de photos (phase Q, lot 3) : meilleures photos classées par requête normalisée.
 export const photoCache = pgTable('photo_cache', {
   query: text('query').primaryKey(),
-  source: text('source', { enum: ['unsplash', 'local'] }).notNull(),
+  source: text('source', { enum: ['unsplash', 'pixabay', 'local'] }).notNull(),
   candidates: jsonb('candidates').notNull().default([]),
   fetchedAt: timestamp('fetched_at', { withTimezone: true }).defaultNow().notNull(),
 });
@@ -216,3 +216,15 @@ export const sitePhotos = pgTable('site_photos', {
   height: integer('height').notNull(),
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
 });
+
+// Photos de fournisseurs qui exigent l'hébergement (Pixabay) : téléchargées une fois, servies par /api/hosted-photos/<id> (phase Q, lot Q3).
+export const hostedPhotos = pgTable('hosted_photos', {
+  id: uuid('id').defaultRandom().primaryKey(),
+  source: text('source').notNull(),
+  sourceId: text('source_id').notNull(),
+  mime: text('mime').notNull(),
+  data: bytea('data').notNull(),
+  creditName: text('credit_name').notNull(),
+  creditUrl: text('credit_url').notNull(),
+  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+}, (table) => [unique('hosted_photos_source_unique').on(table.source, table.sourceId)]);

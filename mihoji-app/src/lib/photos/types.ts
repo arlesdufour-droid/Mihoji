@@ -10,11 +10,14 @@ export type PhotoCandidate = {
   tags: string[];
   /** Adresse d'événement de téléchargement Unsplash, à appeler quand la photo est réellement utilisée. */
   downloadLocation?: string;
+  /** Pixabay : petite version (640 px) pour le contrôle visuel, et identifiant d'origine pour l'hébergement. */
+  previewUrl?: string;
+  sourceId?: string;
 };
 
 export type PhotoSearchResult = { candidates: PhotoCandidate[]; remaining?: number };
 
 export interface PhotoProvider {
-  readonly name: 'unsplash' | 'local';
+  readonly name: 'unsplash' | 'pixabay' | 'local';
   search(query: string, signal?: AbortSignal): Promise<PhotoSearchResult>;
 }

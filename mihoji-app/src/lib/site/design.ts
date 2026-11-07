@@ -1,3 +1,4 @@
+import { composeForFamily, tradeFamilyOf } from './compositions';
 import { z } from 'zod';
 import { shadowCostEur, type TokenUsage } from '../ai/pricing';
 import type { CompletionMessage, CompletionRequest, CompletionResult } from '../ai/providers/types';
@@ -87,7 +88,7 @@ export async function createSiteDesign(complete: Complete, model: string, input:
       const facts = input.facts ?? {};
       const enforced = enforceRealData(parsed.site, facts);
       const issues = credibilityIssues(enforced.site, facts);
-      if (issues.length === 0) return { ok: true, value: enforced.site, usage };
+      if (issues.length === 0) return { ok: true, value: composeForFamily(enforced.site, tradeFamilyOf({ trade: input.trade, activity: input.company.activity, request: input.request })), usage };
       errors = [...issues.map((issue) => `donnée inventée — ${issue}`), 'Réécris ces passages sans chiffre, label, certification ni récompense qui ne figure pas dans les faits fournis.'];
     } else {
       errors = parsed.errors;

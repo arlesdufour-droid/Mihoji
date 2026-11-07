@@ -6,6 +6,9 @@ import { photoCache } from '@/db/schema';
 import type { SiteDescription } from '../site/schema';
 import { assignSlots, pendingSlots } from './assign';
 import { LocalLibraryProvider } from './local';
+import { hostPixabayPhotos } from './hosting';
+import { PixabayProvider } from './pixabay';
+import { pixabayWindow, unsplashWindow } from './rate-window';
 import { applyPhotoRules } from './rules';
 import { normalizeQuery, rankCandidates, rankForSlot, simplerQueries } from './select';
 import type { PhotoCandidate } from './types';
@@ -16,6 +19,7 @@ import { verifyPhotos, VERIFY_BUDGET_EUR, type VerifySlot } from './verify';
 // En production, une clé absente n'est PAS remplacée par une simulation : la bibliothèque locale contient de vraies photos libres,
 // et l'absence de clé est seulement journalisée ; le site reste complet.
 
+const PIXABAY_PER_MINUTE = Number(process.env.PIXABAY_PER_MINUTE ?? 90); // limite de Pixabay : 100 requêtes par minute
 const HOURLY_BUDGET = Number(process.env.UNSPLASH_HOURLY_BUDGET ?? 45); // l'offre démonstration autorise 50 requêtes par heure
 const CACHE_DAYS = 30; // les photos d'un métier changent peu : un mois de cache économise le quota
 const memory = new Map<string, PhotoCandidate[]>();
@@ -36,18 +40,20 @@ async function cached(key: string): Promise<PhotoCandidate[] | null> {
   return candidates;
 }
 
-async function store(key: string, source: 'unsplash' | 'local', candidates: PhotoCandidate[]): Promise<void> {
+async function store(key: string, source: 'unsplash' | 'pixabay' | 'local', candidates: PhotoCandidate[]): Promise<void> {
   memory.set(key, candidates);
   await getDb().insert(photoCache).values({ query: key, source, candidates }).onConflictDoUpdate({ target: photoCache.query, set: { source, candidates, fetchedAt: sql`now()` } });
 }
 
 export type PhotoReport = {
-  requested: number; fromCache: number; unsplashCalls: number; fromLocal: number; unresolved: string[];
+  requested: number; fromCache: number; unsplashCalls: number; pixabayCalls: number; hosted: number; hostFailed: number; fromLocal: number; unresolved: string[];
   /** Emplacements dont les candidates ont été contrôlées visuellement, et photos refusées par ce contrôle. */
   verified: number; rejected: number; visionCostEur: number; hiddenGalleries: number;
 };
 
-type Options = { offline?: boolean; local?: boolean; verify?: boolean };
+// patient : banc d'essai avec vraies photos. Au lieu de retomber sur la bibliothèque locale quand le quota horaire est atteint,
+// on attend (fenêtre glissante d'une heure) : l'exécution peut durer plusieurs heures, mais reste sous la limite d'Unsplash.
+type Options = { offline?: boolean; local?: boolean; verify?: boolean; patient?: boolean; onWait?: (seconds: number) => void };
 
 // Remplit les emplacements d'images d'un site (requête, sans src) avec la photo la plus pertinente de chaque emplacement.
 // Chaque emplacement a 1 à 3 formulations (requête + alternatives) : on compare toutes les photos trouvées, on garde les 3 meilleures
@@ -58,39 +64,66 @@ export async function resolveSitePhotos(site: SiteDescription, options: Options 
   const slots = pendingSlots(site);
   const primaries = [...new Set(slots.map((slot) => normalizeQuery(slot.query as string)))];
   const alternatives = [...new Set(slots.flatMap((slot) => (slot.alternatives ?? []).map(normalizeQuery)))].filter((query) => query && !primaries.includes(query));
-  const report: PhotoReport = { requested: primaries.length + alternatives.length, fromCache: 0, unsplashCalls: 0, fromLocal: 0, unresolved: [], verified: 0, rejected: 0, visionCostEur: 0, hiddenGalleries: 0 };
-  const key = options.offline || options.local ? undefined : process.env.UNSPLASH_ACCESS_KEY; // offline : simulation et tests, aucun appel Unsplash
-  const unsplash = key ? new UnsplashProvider(key) : null;
+  const report: PhotoReport = { requested: primaries.length + alternatives.length, fromCache: 0, unsplashCalls: 0, pixabayCalls: 0, hosted: 0, hostFailed: 0, fromLocal: 0, unresolved: [], verified: 0, rejected: 0, visionCostEur: 0, hiddenGalleries: 0 };
+  const remote = !options.offline && !options.local; // offline : simulation et tests, aucun appel réseau
+  const unsplashKey = remote ? process.env.UNSPLASH_ACCESS_KEY : undefined;
+  const pixabayKey = remote ? process.env.PIXABAY_API_KEY : undefined;
+  const unsplash = unsplashKey ? new UnsplashProvider(unsplashKey) : null;
+  const pixabay = pixabayKey ? new PixabayProvider(pixabayKey) : null;
+  let pixabayAvailable = Boolean(pixabay);
   const local = new LocalLibraryProvider();
   let budget = unsplash ? HOURLY_BUDGET - await callsLastHour() : 0;
-  if (!unsplash && !options.offline && !options.local && primaries.length) console.warn('UNSPLASH_ACCESS_KEY absente : photos de la bibliothèque locale uniquement.');
+  if (unsplash && options.patient && unsplashWindow.used === 0) unsplashWindow.reset(Math.max(0, HOURLY_BUDGET - budget)); // appels déjà faits cette heure par d'autres processus
+  if (!unsplash && !pixabay && remote && primaries.length) console.warn('UNSPLASH_ACCESS_KEY et PIXABAY_API_KEY absentes : photos de la bibliothèque locale uniquement.');
   const library = new Map<string, PhotoCandidate[]>();
 
   const fetchQuery = async (normalized: string, optional: boolean) => {
-    const hit = options.local ? null : await cached(normalized);
+    const hit = options.local || options.offline ? null : await cached(normalized); // simulation et banc « local » : jamais le cache, pour des résultats reproductibles
     if (hit?.length) { library.set(normalized, hit); report.fromCache += 1; return; }
-    let candidates: PhotoCandidate[] = [];
+    let fromUnsplash: PhotoCandidate[] = [];
+    let fromPixabay: PhotoCandidate[] = [];
     let searched = false;
-    // Un résultat vide déjà mémorisé évite de redépenser le quota sur une requête qui ne donne rien.
-    // Les formulations alternatives ne consomment que le quota restant au-delà d'une réserve de 8 requêtes.
-    if (unsplash && !hit && (!optional || budget > 8)) {
-      // Requête complète, puis versions plus courtes si Unsplash ne renvoie rien (chaque essai coûte une requête du quota).
+    // Pixabay : rapide (100 requêtes par minute), essayé pour toutes les formulations. Ses photos seront téléchargées et hébergées si elles sont retenues.
+    if (pixabay && pixabayAvailable && !hit) {
       for (const attempt of [normalized, ...(optional ? [] : simplerQueries(normalized))]) {
-        if (budget <= 0 || candidates.length) break;
+        if (!pixabayAvailable || fromPixabay.length) break;
         try {
+          if (options.patient) await pixabayWindow.take(PIXABAY_PER_MINUTE, Date.now, undefined, options.onWait);
+          const result = await pixabay.search(attempt);
+          report.pixabayCalls += 1;
+          searched = true;
+          fromPixabay = rankCandidates(result.candidates, attempt, 8, { trusted: true }).map((candidate) => ({ ...candidate, tags: [...candidate.tags, attempt] }));
+        } catch (error) {
+          console.error('Pixabay search failed.', error);
+          pixabayAvailable = false; // 429 ou panne : on continue sans Pixabay pour le reste de ce site
+        }
+      }
+    }
+    // Unsplash : un résultat vide déjà mémorisé évite de redépenser le quota. Quand Pixabay est disponible, Unsplash ne sert qu'aux requêtes
+    // principales (le quota de l'offre démonstration est de 50 par heure). Sinon, les alternatives ne prennent que le quota au-delà d'une réserve de 8.
+    const wantsUnsplash = unsplash && !hit && (options.patient ? (!optional || !pixabayAvailable) : (!optional || budget > 8));
+    if (wantsUnsplash) {
+      for (const attempt of [normalized, ...(optional ? [] : simplerQueries(normalized))]) {
+        if ((!options.patient && budget <= 0) || fromUnsplash.length) break;
+        try {
+          if (options.patient) await unsplashWindow.take(HOURLY_BUDGET, Date.now, undefined, options.onWait);
           const result = await unsplash.search(attempt);
           budget = Math.min(budget - 1, result.remaining === undefined ? budget - 1 : result.remaining - 5);
           report.unsplashCalls += 1;
           searched = true;
-          candidates = rankCandidates(result.candidates, attempt, 8, { trusted: true }).map((candidate) => ({ ...candidate, tags: [...candidate.tags, attempt] }));
-          if (candidates.length) await store(normalized, 'unsplash', candidates);
+          fromUnsplash = rankCandidates(result.candidates, attempt, 8, { trusted: true }).map((candidate) => ({ ...candidate, tags: [...candidate.tags, attempt] }));
         } catch (error) {
           console.error('Unsplash search failed.', error);
           break;
         }
       }
     }
-    if (!candidates.length && searched) await store(normalized, 'unsplash', []);
+    // Les deux fournisseurs sont combinés (une photo de chaque, tour à tour) : le contrôle visuel choisit ensuite.
+    const interleaved: PhotoCandidate[] = [];
+    for (let i = 0; i < Math.max(fromUnsplash.length, fromPixabay.length); i += 1) interleaved.push(...[fromUnsplash[i], fromPixabay[i]].filter((photo): photo is PhotoCandidate => Boolean(photo)));
+    let candidates = interleaved.slice(0, 10);
+    if (candidates.length) await store(normalized, fromUnsplash.length ? 'unsplash' : 'pixabay', candidates);
+    else if (searched) await store(normalized, unsplash ? 'unsplash' : 'pixabay', []);
     if (!candidates.length) {
       candidates = rankCandidates((await local.search(normalized)).candidates, normalized, 8, { trusted: true });
       if (candidates.length) report.fromLocal += 1;
@@ -130,7 +163,11 @@ export async function resolveSitePhotos(site: SiteDescription, options: Options 
 
   const assigned = assignSlots(site, choices);
   report.unresolved = assigned.missing;
-  const { site: ruled, hiddenGalleries } = applyPhotoRules(assigned.site);
+  // Conditions de l'API Pixabay : les photos retenues sont téléchargées et hébergées par Mihoji.
+  const hosting = await hostPixabayPhotos(assigned.site, assigned.used);
+  report.hosted = hosting.hosted;
+  report.hostFailed = hosting.failed;
+  const { site: ruled, hiddenGalleries } = applyPhotoRules(hosting.site);
   report.hiddenGalleries = hiddenGalleries;
   // Signale à Unsplash les téléchargements effectifs (règle d'attribution), sans bloquer ni échouer la génération.
   if (unsplash) await Promise.allSettled(assigned.used.filter((photo) => photo.downloadLocation).map((photo) => unsplash.trackDownload(photo.downloadLocation!)));

@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest';
+import { RateWindow } from './rate-window';
 import { assignSlots, pendingSlots } from './assign';
 import { applyPhotoRules } from './rules';
 import { coverage, rankForSlot } from './select';
@@ -80,5 +81,51 @@ describe('règles d’affichage des photos', () => {
     const kept = out.pages[0].sections.find((section) => section.type === 'gallery');
     expect(hiddenGalleries).toBe(0);
     expect(kept?.type === 'gallery' && kept.images.length).toBe(3);
+  });
+});
+
+
+describe('attente du quota des fournisseurs (mode patient)', () => {
+  it('laisse passer jusqu’à la limite puis attend la fin de la fenêtre glissante', async () => {
+    const window = new RateWindow(3_600_000);
+    let clock = 0;
+    const waits: number[] = [];
+    const wait = async (ms: number) => { waits.push(ms); clock += ms; };
+    for (let i = 0; i < 3; i += 1) await window.take(3, () => clock, wait);
+    expect(waits).toEqual([]);
+    await window.take(3, () => clock, wait);
+    expect(waits).toEqual([3_601_000]);
+  });
+  it('tient compte des appels déjà faits par un autre processus', async () => {
+    const window = new RateWindow(60_000);
+    window.reset(2, 0);
+    let clock = 0;
+    const waits: number[] = [];
+    await window.take(2, () => clock, async (ms) => { waits.push(ms); clock += ms; });
+    expect(waits).toEqual([61_000]);
+  });
+});
+
+import { isPixabayUrl, toCandidate as pixabayCandidate } from './pixabay';
+import { media } from '../site/html';
+
+describe('Pixabay', () => {
+  const hit = { id: 4242, pageURL: 'https://pixabay.com/photos/x-4242/', tags: 'baker, bread, bakery', webformatURL: 'https://pixabay.com/get/a_640.jpg', largeImageURL: 'https://pixabay.com/get/a_1280.jpg', user: 'Jane', user_id: 7 };
+  it('transforme un résultat en candidate avec ses mots-clés, un crédit et un aperçu', () => {
+    const candidate = pixabayCandidate(hit);
+    expect(candidate).toMatchObject({ src: 'https://pixabay.com/get/a_1280.jpg', tags: ['baker', 'bread', 'bakery'], previewUrl: 'https://pixabay.com/get/a_640.jpg', sourceId: '4242' });
+    expect(candidate.credit).toEqual({ name: 'Jane', url: 'https://pixabay.com/users/Jane-7/' });
+  });
+  it('reconnaît les adresses Pixabay (à héberger) et pas les autres', () => {
+    expect(isPixabayUrl('https://pixabay.com/get/a.jpg')).toBe(true);
+    expect(isPixabayUrl('https://cdn.pixabay.com/photo/a.jpg')).toBe(true);
+    expect(isPixabayUrl('/api/hosted-photos/abc')).toBe(false);
+    expect(isPixabayUrl('https://images.unsplash.com/a')).toBe(false);
+  });
+  it('affiche une photo hébergée avec le crédit du photographe et un lien vers Pixabay, jamais vers Unsplash', () => {
+    const html = media({ src: '/api/hosted-photos/11111111-1111-1111-1111-111111111111', alt: 'Pain', credit: { name: 'Jane', url: 'https://pixabay.com/users/Jane-7/' } });
+    expect(html).toContain('src="/api/hosted-photos/');
+    expect(html).toContain('>Pixabay</a>');
+    expect(html).not.toContain('Unsplash');
   });
 });

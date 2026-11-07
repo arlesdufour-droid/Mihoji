@@ -23,9 +23,11 @@ test('Q2.1 un administrateur génère un site avec ses modules, le voit, puis en
 
   const frame = page.frameLocator('iframe[title="Site généré"]');
   await expect(frame.locator('#reservation')).toBeVisible();
-  await expect(frame.locator('#reservation').getByRole('button', { name: 'Réserver en ligne' })).toBeDisabled();
-  await expect(frame.locator('#reservation').getByText('Bientôt disponible')).toBeVisible();
-  await expect(frame.locator('#tarifs').getByRole('button', { name: 'Payer en ligne' })).toBeDisabled();
+  // Lot Q3 : jamais de « Bientôt disponible » pour les visiteurs ; un module inactif propose un vrai appel à l'action.
+  await expect(frame.locator('#reservation a[href^="tel:"]')).toBeVisible();
+  await expect(frame.locator('#reservation a[href^="mailto:"]')).toBeVisible();
+  await expect(frame.locator('body')).not.toContainText(/bientôt disponible/i);
+  await expect(frame.locator('#tarifs a[href^="tel:"]')).toBeVisible();
   await expect(frame.locator('header').getByRole('link', { name: 'Réserver' }).first()).toHaveAttribute('href', '#reservation');
 
   const firstUrl = page.url();

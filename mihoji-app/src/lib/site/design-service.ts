@@ -26,7 +26,7 @@ export function designProvider(): DesignProvider {
 
 export type GenerationRecord = typeof siteGenerations.$inferSelect;
 
-type RunInput = { workspaceId: string | null; userId?: string | null; projectId?: string | null; photos?: 'auto' | 'local'; facts?: SiteFacts; userPhotos?: UserPhoto[]; onPhotos?: (report: PhotoReport) => void; company: CreateInput['company'] & Record<string, unknown> }
+type RunInput = { workspaceId: string | null; userId?: string | null; projectId?: string | null; photos?: 'auto' | 'local' | 'real'; facts?: SiteFacts; userPhotos?: UserPhoto[]; onPhotos?: (report: PhotoReport) => void; company: CreateInput['company'] & Record<string, unknown> }
   & ({ task: 'create'; request: string; trade?: string; style?: CreateInput['style'] } | { task: 'restyle'; request: string; site: SiteDescription });
 
 // Lance une génération et l'enregistre (réussie ou non) avec son coût réel en euros.
@@ -49,7 +49,7 @@ export async function runDesignGeneration(input: RunInput, signal?: AbortSignal)
     try {
       // Les photos de l'utilisateur (logo, boutique, réalisations) passent avant celles d'Unsplash.
       const withOwn = input.userPhotos?.length ? applyUserPhotos(result.value, input.userPhotos).site : result.value;
-      const { site, report } = await resolveSitePhotos(withOwn, { offline: provider === 'mock', local: input.photos === 'local' });
+      const { site, report } = await resolveSitePhotos(withOwn, { offline: provider === 'mock', local: input.photos === 'local', patient: input.photos === 'real', onWait: (seconds) => console.info(`Quota Unsplash atteint : attente de ${Math.ceil(seconds / 60)} min.`) });
       photoCostEur = report.visionCostEur;
       result = { ...result, value: siteSchema.parse(site) };
       console.info('Photos resolved.', report);

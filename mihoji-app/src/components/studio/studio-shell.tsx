@@ -12,6 +12,7 @@ import { UserMenu } from '@/components/account/user-menu';
 import type { ChatMessage } from '@/components/studio/composer';
 import type { DemoProject } from '@/lib/templates/site';
 import { PhotosPanel } from '@/components/studio/photos-panel';
+import { InfosPanel } from '@/components/studio/infos-panel';
 import { SiteSettings } from '@/components/settings/site-settings';
 import { formatDateTime } from '@/lib/format';
 
@@ -80,6 +81,8 @@ export function StudioShell({ projectId, remaining, isDemo, email, workspaceName
         </div>
       : activeTab === 'photos'
         ? <PhotosPanel projectId={projectId} onApplied={refreshProject} />
+      : activeTab === 'infos'
+        ? <InfosPanel projectId={projectId} onApplied={refreshProject} />
       : activeTab === 'settings'
         ? <div className="h-full overflow-auto p-6"><SiteSettings project={null} /></div>
         : <div className="flex h-full items-center justify-center p-8 text-center"><div><p className="text-sm font-semibold text-slate-200">Espace {activeTab}</p><p className="mt-2 text-xs text-slate-500">Cet espace est prêt pour les données et les réglages de votre projet.</p></div></div>;

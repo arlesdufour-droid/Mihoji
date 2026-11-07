@@ -57,3 +57,12 @@ Chaque module fonctionne en simulation en développement, avec des tests e2e.
 
 ## Lot 9 : bloc sur mesure (mode expert)
 - En mode expert, un type de section « sur mesure » dont le code est généré par l'IA et testé dans le bac à sable E2B avant intégration, pour les besoins hors catalogue.
+
+## Lot Q3 : Pexels, plus de « Bientôt disponible », banc réaliste, compositions par métier, formulaires Studio
+1. Photos : **Pixabay** comme second fournisseur à la place de Pexels (Pexels abandonné : pas de clé disponible) — `PIXABAY_API_KEY`, conditions de l'API respectées (photos retenues téléchargées et hébergées, résultats en cache), mêmes contrôles de pertinence. Unsplash reste en mode Demo (50 requêtes/h). Banc avec vraies photos : les deux fournisseurs combinés, cache, requêtes étalées dans le temps (mode « patient »), temps estimé annoncé avant lancement.
+2. Sur les sites (aperçu et publication), ne jamais afficher « Bientôt disponible » aux visiteurs : un module inactif est remplacé par un appel à l'action réel (téléphone, email, formulaire de contact).
+3. Banc d'essai : données de test réalistes (vrais formats de numéros, adresses plausibles), pour que le juge ne pénalise plus des artefacts du banc.
+4. Caractère distinctif : compositions de sections propres à chaque famille de métiers (restaurant : menu et réservation en premier ; artisan : réalisations et devis ; praticien : prestations et rendez-vous ; photographe : portfolio plein écran ; commerce : produits et click & collect).
+5. Studio : formulaires dédiés pour les horaires et les chiffres clés (sans passer par le chat).
+6. Relancer le banc avec les vraies photos (Pixabay + Unsplash, mode patient), 2 exécutions, comparer à Q2.
+Livraison : commit « Phase Q – Lot Q3 », push, résumé court avec tableau comparatif.

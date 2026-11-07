@@ -4,14 +4,13 @@ import type { Section } from './schema';
 
 type ModuleSection = Extract<Section, { type: 'module' }>;
 
-// Bouton d'une fonction pas encore active : désactivé, avec la mention « Bientôt disponible » (jamais un bouton sans action).
-function soon(label: string): string {
-  return `<div class="mod-soon"><button class="btn btn-soon" type="button" disabled>${esc(label)}</button><span class="soon-badge">Bientôt disponible</span></div>`;
-}
-
-// En attendant le module en ligne (lot 7), le visiteur peut toujours joindre l'entreprise.
-function fallback(intro: string): string {
-  return `<ul class="mod-fallback"><li class="k">${esc(intro)}</li><li data-company-opt="phone">${icon('phone')}<a href="tel:{{company.phone}}">{{company.phone}}</a></li><li data-company-opt="email">${icon('mail')}<a href="mailto:{{company.email}}">{{company.email}}</a></li></ul>`;
+// Un module sans service en ligne actif ne montre jamais « Bientôt disponible » aux visiteurs :
+// il propose un vrai appel à l'action (téléphone, email, adresse). Les éléments absents disparaissent (data-company-opt).
+function cta(intro: string, phoneLabel: string, emailLabel: string, subject: string): string {
+  return `<div class="mod-cta"><p class="k">${esc(intro)}</p><ul>`
+    + `<li data-company-opt="phone"><a class="btn btn-primary" href="tel:{{company.phone}}">${icon('phone')}<span>${esc(phoneLabel)} {{company.phone}}</span></a></li>`
+    + `<li data-company-opt="email"><a class="btn btn-ghost" href="mailto:{{company.email}}?subject=${encodeURIComponent(subject)}">${icon('mail')}<span>${esc(emailLabel)}</span></a></li>`
+    + `<li class="mod-addr">${icon('pin')}<span>{{company.address}}</span></li></ul></div>`;
 }
 
 const LOCATIONS = { onsite: 'Au cabinet', home: 'À domicile', remote: 'En visio', outdoor: 'En extérieur' } as const;
@@ -45,7 +44,7 @@ function booking(module: NonNullable<SiteModules['booking']>): { body: string; a
   ];
   return {
     body: `<ul class="mod-list">${rows}</ul>`,
-    aside: `<ul class="mod-facts">${facts.map((fact) => `<li>${fact}</li>`).join('')}</ul>${soon('Réserver en ligne')}${fallback('En attendant, réservez par téléphone ou par email :')}`,
+    aside: `<ul class="mod-facts">${facts.map((fact) => `<li>${fact}</li>`).join('')}</ul>${cta('Pour réserver :', 'Appeler le', 'Réserver par email', 'Demande de rendez-vous')}`,
   };
 }
 
@@ -63,7 +62,7 @@ function shop(module: NonNullable<SiteModules['shop']>): { body: string; aside: 
   ];
   return {
     body: list,
-    aside: `<ul class="mod-facts">${facts.map((fact) => `<li>${fact}</li>`).join('')}</ul>${soon('Commander en ligne')}${fallback('En attendant, commandez par téléphone :')}`,
+    aside: `<ul class="mod-facts">${facts.map((fact) => `<li>${fact}</li>`).join('')}</ul>${cta('Pour commander :', 'Commander au', 'Commander par email', 'Commande')}`,
   };
 }
 
@@ -71,21 +70,21 @@ function payment(module: NonNullable<SiteModules['payment']>): { body: string; a
   const offers = module.offers.map((offer) => `<li class="mod-offer"><span class="tag">${KINDS[offer.kind]}</span><h3>${esc(offer.name)}</h3><p class="mod-price">${formatPrice(offer.price)}${offer.period ? `<small> / ${offer.period === 'month' ? 'mois' : 'an'}</small>` : ''}</p>${offer.sessions ? `<p>${offer.sessions} séance${offer.sessions > 1 ? 's' : ''}</p>` : ''}${offer.description ? `<p>${esc(offer.description)}</p>` : ''}</li>`).join('');
   return {
     body: `<ul class="mod-offers cols-${Math.min(3, module.offers.length)}">${offers}</ul>`,
-    aside: `${soon('Payer en ligne')}${fallback('En attendant, contactez-nous pour régler :')}`,
+    aside: `${cta('Pour régler ou réserver une offre :', 'Appeler le', 'Écrire pour une offre', 'Demande d’offre')}`,
   };
 }
 
 function newsletter(module: NonNullable<SiteModules['newsletter']>): { body: string; aside: string } {
   return {
     body: `<div class="mod-news">${module.incentive ? `<p class="lead">${esc(module.incentive)}</p>` : ''}<p class="mod-note">${esc(module.frequency)} · Désinscription en un clic.</p></div>`,
-    aside: soon('S’inscrire'),
+    aside: cta('Pour recevoir nos nouvelles :', 'Appeler le', 'Demander la lettre par email', 'Inscription à la lettre d’information'),
   };
 }
 
 function clientArea(module: NonNullable<SiteModules['clientArea']>): { body: string; aside: string } {
   return {
     body: `<ul class="ticks">${module.features.map((feature) => `<li>${icon('check')}<span>${FEATURES[feature]}</span></li>`).join('')}</ul>`,
-    aside: soon('Se connecter'),
+    aside: cta('Pour accéder à votre espace :', 'Appeler le', 'Écrire pour mon espace', 'Accès à mon espace client'),
   };
 }
 

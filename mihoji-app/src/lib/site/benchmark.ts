@@ -20,7 +20,7 @@ export type SiteResult = {
   reason?: string;
   sections?: string[];
   modules?: string[];
-  photos?: { requested: number; fromCache: number; unsplashCalls: number; fromLocal: number; unresolved: string[]; verified?: number; rejected?: number; visionCostEur?: number; hiddenGalleries?: number };
+  photos?: { requested: number; fromCache: number; unsplashCalls: number; pixabayCalls?: number; hosted?: number; fromLocal: number; unresolved: string[]; verified?: number; rejected?: number; visionCostEur?: number; hiddenGalleries?: number };
   // Contrôles automatiques du rendu (pas des indicateurs de qualité).
   checks?: { desktop: AuditSummary; mobile: AuditSummary; filler: string[]; brokenImages: number };
   // Lighthouse : contrôle technique du rendu (poids, accessibilité, balisage), pas un indicateur de qualité.
@@ -45,7 +45,7 @@ export type BenchmarkResults = {
   rubricVersion: number;
   runId: string;
   startedAt: string;
-  photos: 'local' | 'unsplash';
+  photos: 'local' | 'unsplash' | 'real';
   provider: string;
   model: string;
   effort: string;

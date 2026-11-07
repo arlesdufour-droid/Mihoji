@@ -29,7 +29,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ pro
   const assetOrigin = getPublicOrigin(request) ?? undefined;
   const publishable = site ? Object.entries(renderSite(site, { fontBase: `${assetOrigin ?? ''}/fonts` }).files) : files.filter((file) => file.path !== SITE_FILE).map((file) => [file.path, file.content] as const);
   // Les photos de l'utilisateur sont servies par l'application : adresse absolue dans le site publié.
-  const withPhotos = (content: string) => (assetOrigin ? content.replaceAll('src="/api/site-photos/', `src="${assetOrigin}/api/site-photos/`) : content);
+  const withPhotos = (content: string) => (assetOrigin ? content.replaceAll('src="/api/site-photos/', `src="${assetOrigin}/api/site-photos/`).replaceAll('src="/api/hosted-photos/', `src="${assetOrigin}/api/hosted-photos/`) : content);
   const siteFiles = Object.fromEntries(publishable.map(([path, content]) => [path, injectCompanyData(withPhotos(content), company)]));
   const findings = scanPublishedSite(siteFiles);
   if (findings.length > 0) {

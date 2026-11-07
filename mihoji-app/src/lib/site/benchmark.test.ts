@@ -10,7 +10,7 @@ function site(id: string, sections: string[], style: string, palette: string, ex
 
 describe('cas du banc d’essai', () => {
   it('compte 12 cas figés, aux identifiants uniques et aux métiers variés', () => {
-    expect(BENCHMARK_VERSION).toBe(1);
+    expect(BENCHMARK_VERSION).toBe(2);
     expect(benchmarkCases).toHaveLength(12);
     expect(new Set(benchmarkCases.map((item) => item.id)).size).toBe(12);
     expect(new Set(benchmarkCases.map((item) => item.company.activity)).size).toBe(12);

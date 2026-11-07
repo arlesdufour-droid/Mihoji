@@ -29,6 +29,19 @@ export function thumbnail(src: string): string {
   }
 }
 
+// Photos Pixabay : on télécharge nous-mêmes l'aperçu (jamais d'adresse Pixabay transmise à un tiers ni affichée) et on l'envoie en base64.
+async function imageBlock(candidate: PhotoCandidate): Promise<Anthropic.ContentBlockParam> {
+  if (!candidate.previewUrl) return { type: 'image', source: { type: 'url', url: thumbnail(candidate.src) } };
+  try {
+    const response = await fetch(candidate.previewUrl, { signal: AbortSignal.timeout(15_000) });
+    const type = response.headers.get('content-type')?.split(';')[0] ?? '';
+    if (!response.ok || !/^image\/(jpeg|png|webp)$/.test(type)) throw new Error(`preview_${response.status}`);
+    return { type: 'image', source: { type: 'base64', media_type: type as 'image/jpeg' | 'image/png' | 'image/webp', data: Buffer.from(await response.arrayBuffer()).toString('base64') } };
+  } catch {
+    return { type: 'text', text: '(image indisponible : refuse cette photo)' };
+  }
+}
+
 export const verifySystemPrompt = `Tu contrôles les photos d'un site web d'entreprise. Pour chaque emplacement, on te donne le sujet attendu et jusqu'à 3 photos candidates (A, B, C).
 Accepte une photo seulement si elle montre clairement le sujet attendu, dans un contexte professionnel crédible, sans texte lisible, logo, drapeau, filigrane ni cadrage étrange, et sans visage grimaçant.
 Refuse une photo hors sujet, d'un autre métier, trop abstraite, sombre ou floue.
@@ -61,9 +74,9 @@ export async function verifyPhotos(slots: VerifySlot[], options: { client?: Anth
   const content: Anthropic.ContentBlockParam[] = [];
   for (const slot of slots) {
     content.push({ type: 'text', text: `Emplacement ${slot.id} — sujet attendu : ${slot.subject}` });
-    slot.candidates.slice(0, 3).forEach((candidate, index) => {
-      content.push({ type: 'text', text: `Photo ${LETTERS[index]} :` }, { type: 'image', source: { type: 'url', url: thumbnail(candidate.src) } });
-    });
+    for (const [index, candidate] of slot.candidates.slice(0, 3).entries()) {
+      content.push({ type: 'text', text: `Photo ${LETTERS[index]} :` }, await imageBlock(candidate));
+    }
   }
   try {
     const message = await client.messages.create({ model: VERIFY_MODEL, max_tokens: 3000, system: verifySystemPrompt, messages: [{ role: 'user', content }] }, { signal: options.signal });

@@ -1,5 +1,6 @@
 import { iconNames } from './icons';
 import { displayModules, webhookEvents } from './modules';
+import { compositionGuide } from './compositions';
 import { factsLines, type SiteFacts } from './facts';
 import { headerIds, sectionTypes, sectionVariants } from './schema';
 import { styles } from './themes';
@@ -86,6 +87,8 @@ ${sectionGuide}
 - Prix : réalistes pour le métier et la région, toujours indicatifs (« dès 89 € », « 4,20 € »).
 - Zone d'intervention : communes réellement voisines de la ville de l'entreprise.
 - Caractère distinctif : le site doit être reconnaissable comme celui de CE métier, pas un gabarit. Choisis une structure de page propre au métier (un restaurant ouvre sur la carte, un avocat sur ses domaines d'intervention et le déroulé d'un premier rendez-vous, un photographe sur ses images, un garage sur ses prestations et le devis), un titre d'accroche précis et mémorable, et des intitulés de section au vocabulaire du métier plutôt que « Nos services » ou « À propos ». Varie les variantes de sections.
+- Compositions par famille de métiers (l'ordre des sections est de toute façon réordonné ainsi après ta réponse, autant le prévoir) :
+${compositionGuide}
 - Aucun texte de remplissage (lorem ipsum, « Service 1 », « Texte à venir », « Nom du produit »).
 - Principes de design : un seul appel à l'action principal par écran, sections variées (alterne les variantes), pas plus de 2 sections de suite sans image ou élément visuel.
 - Galerie : seulement si le métier a des réalisations à montrer (3 à 9 images distinctes) ; sinon pas de galerie.`;

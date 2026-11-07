@@ -59,8 +59,12 @@ export function media(image: SiteImage | undefined, options: MediaOptions = {}):
   const img = responsive
     ? `<img class="media" src="${esc(responsive.src)}" srcset="${esc(responsive.srcset)}" sizes="${esc(sizes)}" alt="${esc(image.alt)}" loading="${loading}" decoding="async">`
     : `<img class="media" src="${esc(image.src)}" alt="${esc(image.alt)}" loading="${loading}" decoding="async">`;
+  const fromPixabay = image.credit?.url.startsWith('https://pixabay.com/');
+  const providerLink = fromPixabay
+    ? '<a href="https://pixabay.com" rel="noopener" target="_blank">Pixabay</a>'
+    : '<a href="https://unsplash.com/?utm_source=mihoji&amp;utm_medium=referral" rel="noopener" target="_blank">Unsplash</a>';
   const credit = image.credit
-    ? `<small class="credit">Photo : <a href="${esc(image.credit.url)}" rel="noopener" target="_blank">${esc(image.credit.name)}</a> · <a href="https://unsplash.com/?utm_source=mihoji&amp;utm_medium=referral" rel="noopener" target="_blank">Unsplash</a></small>`
+    ? `<small class="credit">Photo : <a href="${esc(image.credit.url)}" rel="noopener" target="_blank">${esc(image.credit.name)}</a> · ${providerLink}</small>`
     : '';
   return `<div class="${cls}">${img}${credit}</div>`;
 }

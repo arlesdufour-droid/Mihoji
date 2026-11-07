@@ -267,3 +267,25 @@ Couvert par `e2e/phase-q-lot-q2.spec.ts` (Q2.1, Q2.2) et par les tests unitaires
 - En simulation (tests e2e), pas de contrôle visuel ni de vraie recherche : le « modèle » renvoie les sites d'exemple, dont les avis et chiffres sont retirés par `enforceRealData`.
 - Les horaires et les chiffres clés se donnent par le chat (« Nos horaires : … ») ; pas encore de formulaire dédié dans le Studio.
 - Les boutons « Bientôt disponible » des modules pèsent sur la crédibilité jugée ; ce n'est pas traité ici.
+
+
+## Lot Q3 — Unsplash patient, plus de « Bientôt disponible », banc réaliste, compositions par métier, formulaires Studio — code livré, banc avec vraies photos EN ATTENTE
+
+### Fait
+- **Photos — Pixabay** (clé `PIXABAY_API_KEY`, documentée dans `.env.example`) comme second fournisseur, en plus d'Unsplash (mode Demo). Pour chaque requête : cache 30 jours, puis Pixabay (toutes les formulations, ≤ 90 requêtes/min), puis Unsplash (requêtes principales seulement quand Pixabay répond, pour économiser les 45 requêtes/h) ; les deux listes sont entrelacées puis passent par le même classement par mots-clés et le même contrôle visuel (Haiku). **Conditions de l'API Pixabay** : les photos retenues sont téléchargées une fois et hébergées en base (`hosted_photos`, migration `0021`), servies par `/api/hosted-photos/<id>` (adresse absolue dans le site publié) ; aucune adresse Pixabay n'est affichée, ni envoyée à un tiers (le contrôle visuel reçoit l'aperçu téléchargé en base64) ; un téléchargement raté laisse le visuel graphique. Crédit « Photo : nom · Pixabay » sur le site. Test de fumée réel : `npx tsx scripts/smoke-photos.ts` (2 photos trouvées, contrôlées et hébergées en 4 à 8 s).
+- **Mode patient** du banc (`npm run benchmark -- --photos=real`) : fenêtres glissantes (`photos/rate-window.ts`, testée) — le banc attend quand un quota est atteint au lieu de retomber sur la bibliothèque locale. En simulation et en banc « local », le cache n'est plus lu (résultats reproductibles).
+- **« Bientôt disponible »** : plus jamais côté visiteur (aperçu et publication). Un module sans service en ligne affiche à la place des boutons réels : « Appeler le … », « … par email » (objet pré-rempli) et l'adresse ; les éléments sans donnée disparaissent. (Le texte reste dans les pages de facturation/réglages du Studio, qui ne sont pas des sites visiteurs.)
+- **Banc réaliste** : numéros à indicatif régional cohérent avec la ville, non séquentiels ; exemples du banc corrigés (`BENCHMARK_VERSION` 2). **Les notes v1 (Q2) ne sont donc plus comparables automatiquement** : la comparaison avec Q2 se fera à la main dans ce fichier.
+- **Compositions par métier** (`site/compositions.ts`) : cinq familles (restaurant, artisan, praticien, photographe, commerce) reconnues par métier/activité/demande ; consignes dans le prompt et ordre garanti après génération (bandeau en premier, pied de page en dernier, carte en variante « menu » pour le restaurant, portfolio en « masonry » juste après le bandeau pour le photographe).
+- **Studio** : onglet « Horaires et chiffres » (formulaires dédiés, sans chat) ; chaque enregistrement crée une version, les horaires sont aussi mémorisés dans le profil de l'entreprise pour les prochaines créations ; un seul chiffre est refusé (2 à 4 requis) ; tout vider retire la section et ramène l'encart « à compléter ».
+- Tests : `compositions.test.ts`, Pixabay (candidate, hébergement, crédit), `real-data-forms.test.ts`, attente du quota (`q2.test.ts`), `design.test.ts` ; e2e `phase-q-lot-q3.spec.ts` (Q3.1) et `phase-q-lot-2.spec.ts` mis à jour.
+
+### Comment vérifier
+1. Connecté, créez un site, cliquez sur l'onglet « Horaires et chiffres ».
+2. Renseignez « Lundi » (7 h – 19 h), « Dimanche » (Fermé), une remarque, puis « Enregistrer les horaires » : message « Enregistré ». Dans « Aperçu », une section d'horaires apparaît.
+3. Saisissez un seul chiffre puis « Enregistrer les chiffres clés » : message demandant au moins deux chiffres. Ajoutez-en un second : la section « chiffres clés » apparaît et l'encart pointillé disparaît.
+4. Dans l'aperçu, aucun « Bientôt disponible » ; les modules proposent « Appeler… » et « …par email ».
+
+### Reste / simulé
+- **Banc avec vraies photos (point 6) : non lancé.** Estimation soumise à l'utilisateur avant lancement (voir le résumé de fin de lot).
+- Suite e2e : une exécution d'un seul tenant a subi des plantages du navigateur (« Page crashed », mémoire de la machine) ; les 57 tests passent quand on relance les fichiers par groupes (24 + 14 + les autres du premier passage).

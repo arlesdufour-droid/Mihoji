@@ -3,7 +3,7 @@ import { z } from 'zod';
 // Modules fonctionnels d'un site : ce que le site FAIT (devis, rendez-vous, boutique…), en plus de ce qu'il affiche.
 // Le schéma est complet dès le lot 2 pour que le modèle de design puisse les proposer ; leur fonctionnement réel
 // (réception côté serveur, paiement Stripe Connect, emails, widgets, webhooks) arrive aux lots 7 et 8.
-// En attendant, le rendu affiche le contenu (catalogue, créneaux, offres) et un bouton désactivé « Bientôt disponible ».
+// En attendant, le rendu affiche le contenu (catalogue, créneaux, offres) et un appel à l'action réel (téléphone, email, adresse) ; jamais de « Bientôt disponible » côté visiteur.
 
 const text = (max: number) => z.string().trim().min(1).max(max);
 const time = z.string().regex(/^([01]\d|2[0-3]):[0-5]\d$/, 'heure au format HH:MM');

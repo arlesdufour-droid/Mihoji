@@ -59,7 +59,7 @@ export default async function BenchmarkPage({ searchParams }: { searchParams: Pr
 
       <section aria-label="Exécution" className="mt-6 grid gap-3 rounded-xl border border-slate-700 bg-slate-900 p-5 text-sm md:grid-cols-2">
         <p><span className="text-slate-400">Banc</span> v{results.benchmarkVersion} · <span className="text-slate-400">grille du juge</span> v{results.rubricVersion}</p>
-        <p data-testid="benchmark-photos"><span className="text-slate-400">Source des photos</span> : {results.photos === 'local' ? 'bibliothèque locale (comparable)' : 'Unsplash (jugement visuel ponctuel, non comparable)'}</p>
+        <p data-testid="benchmark-photos"><span className="text-slate-400">Source des photos</span> : {results.photos === 'local' ? 'bibliothèque locale (comparable)' : results.photos === 'real' ? 'Pixabay + Unsplash (vraies photos, mises en cache : deux exécutions « vraies photos » sont comparables)' : 'Unsplash (jugement visuel ponctuel, non comparable)'}</p>
         <p><span className="text-slate-400">Modèle de design</span> {results.provider} · {results.model} · effort {results.effort} · prompt {results.promptHash}</p>
         <p><span className="text-slate-400">Sites réussis</span> {totals.succeeded}/{totals.sites}</p>
         <p data-testid="benchmark-cost"><span className="text-slate-400">Coût</span> génération {eur(totals.generationCostEur)} (moyenne {eur(totals.averageGenerationCostEur)}) · juge {eur(totals.judgeCostEur)} · total {eur(totals.totalCostEur)}</p>
