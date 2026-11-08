@@ -119,6 +119,7 @@ const SECTION_CSS: Record<SectionType, string> = {
 .svc-item p{color:var(--muted)}.svc-item .price{margin-top:auto;padding-top:.8rem}
 .svc-icon{display:grid;place-items:center;width:3.25rem;height:3.25rem;border-radius:var(--r-sm);background:color-mix(in srgb,var(--primary) 12%,var(--surface));color:var(--primary);margin-bottom:.4rem}
 .s-services--icons .svc-item{background:transparent;border:0;box-shadow:none;padding:.5rem 1rem;text-align:center;align-items:center}.s-services--icons .svc-icon{width:4.25rem;height:4.25rem;border-radius:999px;background:var(--primary);color:var(--on-primary)}.s-services--icons .svc-icon .ic{width:1.9rem;height:1.9rem}
+.svc-item--photo{padding:0;overflow:hidden;gap:.6rem}.svc-item--photo>h3,.svc-item--photo>p,.svc-item--photo>.price{padding-inline:1.5rem}.svc-item--photo>.price{padding-bottom:1.5rem}.svc-item--photo>p{margin-bottom:.4rem}.svc-photo{width:100%;aspect-ratio:16/10;border-radius:0}.svc-photo .media,.svc-photo img{width:100%;height:100%;object-fit:cover;display:block}
 .svc-list{display:grid;border-top:1px solid var(--line)}.svc-list li{display:grid;grid-template-columns:auto 1fr;gap:.5rem 1.5rem;align-items:baseline;padding:1.75rem 0;border-bottom:1px solid var(--line)}
 .svc-num{font-family:var(--font-heading);font-weight:var(--hw);color:var(--primary);font-size:1.1rem}.svc-list p{color:var(--muted);margin-top:.4rem}.svc-list .price{grid-column:2}
 @media(min-width:760px){.svc-grid{grid-template-columns:repeat(2,1fr)}.svc-grid.cols-3,.svc-grid.cols-4{grid-template-columns:repeat(var(--cols),1fr)}}

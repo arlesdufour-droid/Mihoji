@@ -71,3 +71,22 @@ export function composeForFamily(site: SiteDescription, family: TradeFamily | un
   const sections = [...(first ? [first] : []), ...adjusted, ...(last ? [last] : [])];
   return { ...site, pages: [{ ...page, sections }, ...site.pages.slice(1)] };
 }
+
+// Les photos servent le contenu (phase Q, lot 7) : une galerie n'est gardée que si le métier a des réalisations à montrer, et placée haut dans la page.
+// Praticiens et métiers du conseil (coach, kiné, avocat, consultant) : pas de galerie générique, la présentation porte un portrait et chaque prestation sa photo.
+// Métier inconnu : une galerie reste seulement si elle figure parmi les premières sections (jamais « posée » en bas de page).
+const GALLERY_FAMILIES: TradeFamily[] = ['artisan', 'photographe', 'restaurant', 'commerce'];
+const MAX_GALLERY_RANK = 4; // position maximale (après le bandeau) d'une galerie
+
+export function placeGalleries(site: SiteDescription, family: TradeFamily | undefined): SiteDescription {
+  const page = site.pages[0];
+  const allowed = family ? GALLERY_FAMILIES.includes(family) : true;
+  let removed = false;
+  const kept = page.sections.filter((section, index) => {
+    if (section.type !== 'gallery') return true;
+    if (!allowed || (!family && index > MAX_GALLERY_RANK)) { removed = true; return false; }
+    return true;
+  });
+  if (!removed) return site;
+  return { ...site, pages: [{ ...page, sections: kept }, ...site.pages.slice(1)] };
+}

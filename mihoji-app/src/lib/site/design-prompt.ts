@@ -18,7 +18,7 @@ const v = (type: keyof typeof sectionVariants) => sectionVariants[type].map((var
 export const sectionGuide = `Champs communs facultatifs de toute section : id (ancre, minuscules), nav (libellé de menu ou false), tone ("default"|"alt"|"inverse", laisse vide en général).
 - hero (variant ${v('hero')}) : eyebrow?, title (≤110), subtitle? (≤280), cta? {label,href}, secondaryCta?, highlights? [0-4] (≤44 car.), image? {query, alt}
 - about (variant ${v('about')}) : eyebrow?, title, paragraphs [1-3] (≤640), highlights? [0-4], image?
-- services (variant ${v('services')}) : eyebrow?, title, intro?, items [2-8] {title (≤60), description (≤240), icon?, price? (texte, ex. "dès 89 €")}
+- services (variant ${v('services')}) : eyebrow?, title, intro?, items [2-8] {title (≤60), description (≤240), icon?, price? (texte, ex. "dès 89 €"), image? {query, alt}}
 - products (variant ${v('products')}) : eyebrow?, title, intro?, items [2-9] {name, description?, price? (texte), tag? (≤24), image?}
 - gallery (variant ${v('gallery')}) : eyebrow?, title?, intro?, images [3-9] {image, caption?}
 - testimonials (variant ${v('testimonials')}) : eyebrow?, title, items [1-6] {quote, author, role?, rating? 1-5}
@@ -91,7 +91,8 @@ ${sectionGuide}
 ${compositionGuide}
 - Aucun texte de remplissage (lorem ipsum, « Service 1 », « Texte à venir », « Nom du produit »).
 - Principes de design : un seul appel à l'action principal par écran, sections variées (alterne les variantes), pas plus de 2 sections de suite sans image ou élément visuel.
-- Galerie : seulement si le métier a des réalisations à montrer (3 à 9 images distinctes) ; sinon pas de galerie.`;
+- Les photos servent le contenu, elles ne décorent pas : une photo dans le bandeau d'accueil (hero) ; **une photo par prestation** (image sur chaque élément de "services" : toutes ou aucune, avec des sujets distincts et concrets) ; pour un praticien ou un coach (kiné, coach, avocat, consultant, coiffeur…), un **portrait de professionnel** dans la section de présentation (about, variante "image-left" ou "image-right", requête du type "friendly coach portrait office") ; pour un artisan, des **réalisations** (galerie) placées haut dans la page, avant la présentation. Pas d'avant/après : seul l'artisan peut fournir ses vraies photos, Mihoji ne fabrique pas de faux « avant/après ».
+- Galerie : seulement pour les métiers qui ont des réalisations ou un produit fini à montrer (artisan, photographe, restaurant, commerce), 3 à 9 images distinctes, placée dans les premières sections ; **jamais de galerie pour un praticien, un coach, un avocat ou un consultant**, ni posée en bas de page sans raison.`;
 
 export type DesignCompany = { name: string; activity?: string; city?: string; address?: string; hasPhone?: boolean; hasEmail?: boolean };
 

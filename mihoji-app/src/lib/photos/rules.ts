@@ -18,6 +18,12 @@ export function applyPhotoRules(site: SiteDescription): { site: SiteDescription;
       // Sans photo, un bandeau ou une présentation à cadre photo devient une composition typographique (pas de cadre vide).
       if (section.type === 'hero' && !section.image?.src && section.variant !== 'centered') { section.variant = 'centered'; delete section.image; }
       if (section.type === 'about' && !section.image?.src && section.variant !== 'text') { section.variant = 'text'; delete section.image; }
+      // Une photo par prestation : toutes ou aucune (jamais de cartes mêlant photos et cadres vides) ; les photos s'affichent en variante « cartes ».
+      if (section.type === 'services') {
+        const withPhoto = section.items.filter((item) => item.image?.src).length;
+        if (withPhoto === section.items.length) section.variant = 'cards';
+        else section.items = section.items.map((item) => { const { image, ...rest } = item; void image; return rest; });
+      }
       if (section.type === 'products') {
         const withPhoto = section.items.filter((item) => item.image?.src).length;
         if (withPhoto < Math.ceil(section.items.length / 2)) section.items = section.items.map((item) => { const { image, ...rest } = item; void image; return rest; });

@@ -94,7 +94,7 @@ export const servicesSchema = z.object({
   eyebrow,
   title: text(100),
   intro,
-  items: z.array(z.object({ title: text(60), description: text(240), icon: z.enum(iconNames).optional(), price: text(40).optional() })).min(2).max(8),
+  items: z.array(z.object({ title: text(60), description: text(240), icon: z.enum(iconNames).optional(), price: text(40).optional(), image: imageSchema.optional() })).min(2).max(8),
 });
 
 export const productsSchema = z.object({

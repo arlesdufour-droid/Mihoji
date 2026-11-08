@@ -31,6 +31,12 @@ export function mockDesignJson(userMessage: string): string {
   if (/click|commande|boutique|retrait/.test(plain)) modules.shop = catalogueModules.shop;
   if (modules.booking && modules.booking.payment === 'none') delete modules.booking.depositPercent;
   const sections = site.pages[0].sections;
+  // Comme le vrai modèle (lot 7) : pour un praticien, les photos de la galerie d'exemple deviennent une photo par prestation (la galerie est ensuite retirée).
+  if (['coach', 'kine', 'avocat'].includes(sampleId)) {
+    const gallery = sections.find((section) => section.type === 'gallery');
+    const services = sections.find((section) => section.type === 'services');
+    if (gallery && services && gallery.type === 'gallery' && services.type === 'services') services.items = services.items.map((item, index) => (gallery.images[index] ? { ...item, image: { ...gallery.images[index].image, alt: `${item.title}` } } : item));
+  }
   const footerIndex = sections.findIndex((section) => section.type === 'footer');
   const anchors: Record<string, string> = { quote: 'Demandez votre devis', booking: 'Réservez en ligne', shop: 'Commandez en click & collect', payment: 'Nos formules' };
   const moduleSections = Object.keys(modules).filter((key) => key in anchors).map((key) => ({ type: 'module' as const, variant: 'panel' as const, module: key as 'quote', title: anchors[key] }));

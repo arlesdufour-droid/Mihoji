@@ -289,3 +289,20 @@ Couvert par `e2e/phase-q-lot-q2.spec.ts` (Q2.1, Q2.2) et par les tests unitaires
 ### Reste / simulé
 - **Banc avec vraies photos (point 6) : non lancé.** Estimation soumise à l'utilisateur avant lancement (voir le résumé de fin de lot).
 - Suite e2e : une exécution d'un seul tenant a subi des plantages du navigateur (« Page crashed », mémoire de la machine) ; les 57 tests passent quand on relance les fichiers par groupes (24 + 14 + les autres du premier passage).
+
+## Lot 7 — étape 1 : les photos servent le contenu — terminée
+
+### Fait
+- **Source des photos** : Pixabay en premier partout (génération réelle et banc) ; Unsplash seulement en secours (aucune photo trouvée, ou toutes refusées par le contrôle visuel), **au plus 4 appels par site, sans jamais attendre le quota** (`UNSPLASH_PER_SITE`, documenté dans `.env.example`) ; cache 30 jours maximal. Migration `0022` (contrainte `photo_cache.source` qui bloquait Pixabay), photos hébergées publiques dans `src/proxy.ts`, type d'image réel détecté (`sniffImageType`).
+- **Une photo par prestation** : `services.items[].image` (schéma, rendu en cartes à photo, prompt). Règle : toutes les prestations ont une photo ou aucune (jamais de mélange avec des cadres vides).
+- **Galerie justifiée** (`placeGalleries`) : retirée pour les praticiens/coachs/avocats/consultants ; gardée pour artisan, photographe, restaurant, commerce ; métier inconnu : gardée seulement si elle figure parmi les premières sections. Le prompt demande : photo d'en-tête, photo par prestation, portrait pour les praticiens, réalisations haut dans la page pour les artisans.
+- Tests : `content-photos.test.ts` (5), `cache-source.test.ts` (7) ; e2e `phase-q-lot-7-1.spec.ts` (coach : photo par prestation, aucune galerie). Suite : 201 tests unitaires, 58 e2e en une exécution.
+
+### Simulé / non livré
+- **Avant/après non livré** : des photos de stock ne peuvent pas montrer les vrais chantiers du commerçant ; fabriquer un « avant/après » serait trompeur. Il ne sera possible qu'avec les photos de l'artisan (onglet « Mes photos »), à traiter plus tard.
+- En simulation (e2e), le « modèle » reprend les photos de la galerie d'exemple comme photos de prestation pour un coach/kiné/avocat ; la pertinence réelle des photos se mesure avec la vraie IA (une génération en fin de lot, après accord sur le coût).
+
+### Comment vérifier
+1. Créez un site pour un coach sportif (saisie manuelle, « Coach sportif »).
+2. Dans l'aperçu, la section des prestations montre une photo sur chaque carte ; il n'y a aucune section galerie.
+Couvert par `e2e/phase-q-lot-7-1.spec.ts`.

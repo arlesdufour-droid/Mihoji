@@ -45,7 +45,8 @@ function services(section: Extract<Section, { type: 'services' }>, context: Sect
   if (section.variant === 'list') {
     return `${open(section, context)}${wrap(`${header}<ol class="svc-list">${section.items.map((item, index) => `<li><span class="svc-num" aria-hidden="true">${String(index + 1).padStart(2, '0')}</span><div><h3>${esc(item.title)}</h3><p>${esc(item.description)}</p></div>${item.price ? `<span class="price">${esc(item.price)}</span>` : ''}</li>`).join('')}</ol>`)}</section>`;
   }
-  const cards = section.items.map((item) => `<li class="svc-item"><span class="svc-icon">${icon(item.icon ?? 'check')}</span><h3>${esc(item.title)}</h3><p>${esc(item.description)}</p>${item.price ? `<span class="price">${esc(item.price)}</span>` : ''}</li>`).join('');
+  const photos = section.variant === 'cards' && section.items.every((item) => item.image?.src);
+  const cards = section.items.map((item) => `<li class="svc-item${photos ? ' svc-item--photo' : ''}">${photos ? media(item.image, { cls: 'svc-photo', sizes: '(min-width: 900px) 33vw, 100vw' }) : `<span class="svc-icon">${icon(item.icon ?? 'check')}</span>`}<h3>${esc(item.title)}</h3><p>${esc(item.description)}</p>${item.price ? `<span class="price">${esc(item.price)}</span>` : ''}</li>`).join('');
   return `${open(section, context)}${wrap(`${header}<ul class="svc-grid cols-${Math.min(3, section.items.length)}">${cards}</ul>`)}</section>`;
 }
 
