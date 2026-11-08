@@ -52,9 +52,17 @@ async function imageBlock(candidate: PhotoCandidate): Promise<Anthropic.ContentB
   }
 }
 
-export const verifySystemPrompt = `Tu contrôles les photos d'un site web d'entreprise. Pour chaque emplacement, on te donne le sujet attendu et jusqu'à 3 photos candidates (A, B, C).
+export const legacyVerifySystemPrompt = `Tu contrôles les photos d'un site web d'entreprise. Pour chaque emplacement, on te donne le sujet attendu et jusqu'à 3 photos candidates (A, B, C).
 Accepte une photo seulement si elle montre clairement le sujet attendu, dans un contexte professionnel crédible, sans texte lisible, logo, drapeau, filigrane ni cadrage étrange, et sans visage grimaçant.
 Refuse une photo hors sujet, d'un autre métier, trop abstraite, sombre ou floue.
+Réponds UNIQUEMENT par du JSON : {"slots":[{"id":0,"accepted":["B","A"]}]} — "accepted" liste les photos acceptables de la meilleure à la moins bonne, vide si aucune ne convient.`;
+
+// Consigne actuelle (lot 7) : le contrôle visuel écarte les photos franchement mauvaises, pas celles qui sont seulement imparfaites.
+export const verifySystemPrompt = `Tu contrôles les photos d'un site web d'entreprise. Pour chaque emplacement, on te donne le sujet attendu et jusqu'à 3 photos candidates (A, B, C).
+Accepte une photo qui illustre raisonnablement le sujet : le bon métier, le bon lieu, le bon geste, le bon produit ou un détail qui l'évoque clairement (un outil, une matière, une ambiance de travail). Le sujet exact n'a pas besoin d'être au premier plan, ni la scène d'être parfaite ou posée en studio. Une photo plutôt sombre, naturelle ou de reportage est acceptable si on comprend ce qu'elle montre.
+Le métier doit être le bon : un outil ou une scène d'un autre corps de métier (moteur de voiture pour un plombier, cuisine pour un fleuriste, poignée de main générique sans lien avec le cabinet ou l'activité) est refusé.
+Refuse uniquement : une photo d'un autre métier ou sans rapport avec le sujet, un texte lisible, un logo ou une marque visible, un drapeau, un filigrane, un visage grimaçant, une image très floue ou presque noire, une illustration ou un dessin quand une photo est attendue, ou une personne nommée ou reconnaissable (célébrité).
+En cas de doute entre accepter et refuser, accepte. Classe les photos acceptées de la meilleure à la moins bonne.
 Réponds UNIQUEMENT par du JSON : {"slots":[{"id":0,"accepted":["B","A"]}]} — "accepted" liste les photos acceptables de la meilleure à la moins bonne, vide si aucune ne convient.`;
 
 export const verifySchema = z.object({ slots: z.array(z.object({ id: z.number().int(), accepted: z.array(z.string()).max(3) })) });
@@ -76,7 +84,7 @@ export function parseVerdicts(text: string, slots: VerifySlot[]): Verdict[] | nu
 
 export type VerifyOutcome = { verdicts: Verdict[] | null; costEur: number };
 
-export async function verifyPhotos(slots: VerifySlot[], options: { client?: Anthropic; signal?: AbortSignal } = {}): Promise<VerifyOutcome> {
+export async function verifyPhotos(slots: VerifySlot[], options: { client?: Anthropic; signal?: AbortSignal; systemPrompt?: string } = {}): Promise<VerifyOutcome> {
   if (slots.length === 0) return { verdicts: [], costEur: 0 };
   const apiKey = process.env.ANTHROPIC_API_KEY;
   if (!options.client && !apiKey) return { verdicts: null, costEur: 0 };
@@ -89,7 +97,7 @@ export async function verifyPhotos(slots: VerifySlot[], options: { client?: Anth
     }
   }
   try {
-    const message = await client.messages.create({ model: VERIFY_MODEL, max_tokens: 3000, system: verifySystemPrompt, messages: [{ role: 'user', content }] }, { signal: options.signal });
+    const message = await client.messages.create({ model: VERIFY_MODEL, max_tokens: 3000, system: options.systemPrompt ?? verifySystemPrompt, messages: [{ role: 'user', content }] }, { signal: options.signal });
     const text = message.content.map((block) => (block.type === 'text' ? block.text : '')).join('');
     const costEur = shadowCostEur(VERIFY_MODEL, { promptTokens: message.usage.input_tokens, completionTokens: message.usage.output_tokens, cacheReadTokens: message.usage.cache_read_input_tokens ?? 0, cacheWriteTokens: message.usage.cache_creation_input_tokens ?? 0 });
     const verdicts = parseVerdicts(text, slots);

@@ -74,3 +74,24 @@ describe('Unsplash en secours', () => {
     expect(unsplashAllowed(0, 0, 4)).toBe(false);
   });
 });
+
+import { legacyVerifySystemPrompt, verifyPhotos, verifySystemPrompt } from './verify';
+
+describe('contrôle visuel des photos : consigne', () => {
+  const candidate = { src: 'https://images.unsplash.com/photo-1?w=800', alt: 'x', tags: [], credit: { name: 'a', url: 'https://unsplash.com' } } as never;
+  const fakeClient = (seen: { system?: string }) => ({ messages: { create: async (body: { system: string }) => { seen.system = body.system; return { content: [{ type: 'text', text: '{"slots":[{"id":0,"accepted":["A"]}]}' }], usage: { input_tokens: 10, output_tokens: 5 } }; } } }) as never;
+  it('la consigne actuelle est plus indulgente que l’ancienne mais refuse toujours les autres métiers et les textes lisibles', () => {
+    expect(verifySystemPrompt).toContain('En cas de doute entre accepter et refuser, accepte');
+    expect(verifySystemPrompt).toContain('Le métier doit être le bon');
+    expect(verifySystemPrompt).toContain('un texte lisible');
+    expect(legacyVerifySystemPrompt).toContain('trop abstraite, sombre ou floue');
+    expect(verifySystemPrompt).not.toContain('trop abstraite, sombre ou floue');
+  });
+  it('utilise la consigne actuelle par défaut, ou celle qu’on lui donne (audit avant/après)', async () => {
+    const seen: { system?: string } = {};
+    await verifyPhotos([{ id: 0, subject: 's', candidates: [candidate] }], { client: fakeClient(seen) });
+    expect(seen.system).toBe(verifySystemPrompt);
+    await verifyPhotos([{ id: 0, subject: 's', candidates: [candidate] }], { client: fakeClient(seen), systemPrompt: legacyVerifySystemPrompt });
+    expect(seen.system).toBe(legacyVerifySystemPrompt);
+  });
+});

@@ -46,11 +46,21 @@ describe('une photo par prestation', () => {
     expect((html.match(/class="media-box svc-photo"/g) ?? []).length).toBe(section.items.length);
     expect(html).toContain('svc-item--photo');
   });
-  it('retire toutes les photos de prestation si une seule manque (pas de cartes mêlant photos et cadres vides)', () => {
+  it('garde les photos trouvées et met un visuel graphique aux prestations restées sans photo', () => {
     const ruled = applyPhotoRules(withServicePhotos(1)).site;
     const section = services(ruled);
     if (section.type !== 'services') throw new Error();
-    expect(section.items.every((item) => !item.image)).toBe(true);
-    expect(renderSite(ruled).files['index.html']).not.toContain('svc-item--photo');
+    expect(section.items.filter((item) => item.image?.src)).toHaveLength(1);
+    const html = renderSite(ruled).files['index.html'];
+    expect(html).toContain('svc-item--photo');
+    // une carte à vraie photo, les autres avec le visuel graphique du thème (cadre « placeholder » avec icône, jamais un cadre vide)
+    expect((html.match(/<img class="media"/g) ?? []).length).toBeGreaterThanOrEqual(1);
+    expect((html.match(/media-box svc-photo media--placeholder/g) ?? []).length).toBe(section.items.length - 1);
+  });
+  it('sans aucune photo trouvée, les prestations restent des cartes à icône, sans cadre photo', () => {
+    const ruled = applyPhotoRules(withServicePhotos(0)).site;
+    const html = renderSite(ruled).files['index.html'];
+    expect(html).not.toContain('svc-item--photo');
+    expect(html).not.toContain('svc-photo');
   });
 });
