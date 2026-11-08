@@ -19,7 +19,8 @@
     "design:generate": "tsx scripts/design-generate.ts",
     "benchmark": "tsx scripts/benchmark.ts",
     "sites:migrate": "tsx scripts/migrate-sites.ts",
-    "storage:report": "tsx scripts/storage-report.ts"
+    "storage:report": "tsx scripts/storage-report.ts",
+    "photos:audit": "tsx scripts/photo-verify-audit.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^1.3.0",
