@@ -65,6 +65,8 @@ test('3. aucune version n’est créée quand aucune opération n’a été appl
   await login(page, context);
   await page.getByTitle('Historique des versions').click();
   await expect(page.getByRole('heading', { name: 'Historique des versions' })).toBeVisible();
+  // La liste des versions se charge après l'ouverture du panneau : on attend qu'elle soit affichée avant de compter.
+  await expect(page.getByRole('button', { name: 'Restaurer', exact: true }).first()).toBeVisible();
   const before = await page.getByRole('button', { name: 'Restaurer', exact: true }).count();
   await page.getByTitle('Fermer').click();
   await sendChat(page, 'Raconte-moi une blague');
@@ -73,6 +75,7 @@ test('3. aucune version n’est créée quand aucune opération n’a été appl
   const panel = page.locator('div.absolute.inset-y-0.right-0');
   await expect(panel.getByRole('heading', { name: 'Historique des versions' })).toBeVisible();
   await expect(panel).not.toContainText('Raconte-moi une blague');
+  await expect(page.getByRole('button', { name: 'Restaurer', exact: true }).first()).toBeVisible();
   expect(await page.getByRole('button', { name: 'Restaurer', exact: true }).count()).toBe(before);
 });
 

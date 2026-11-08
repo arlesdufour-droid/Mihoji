@@ -1,13 +1,11 @@
 import { NextResponse, type NextRequest } from 'next/server';
 import { createServerClient } from '@supabase/ssr';
-import { getPublicOrigin } from '@/lib/site-url';
+import { getRequestOrigin } from '@/lib/site-url';
 
-const publicApiRoutes = new Set(['/api/health', '/api/auth/magic-link', '/api/public/leads']);
+const publicApiRoutes = new Set(['/api/health', '/api/auth/magic-link', '/api/public/leads', '/api/webhooks/stripe']);
 
 function redirectToLogin(request: NextRequest) {
-  const origin = getPublicOrigin(request);
-  if (!origin) return NextResponse.json({ error: 'public_origin_not_configured' }, { status: 500 });
-  return NextResponse.redirect(new URL('/login', origin));
+  return NextResponse.redirect(new URL('/login', getRequestOrigin(request)));
 }
 
 export async function proxy(request: NextRequest) {
@@ -20,7 +18,7 @@ export async function proxy(request: NextRequest) {
   const protectedPage = ['/studio', '/settings', '/onboarding', '/agency'].some((prefix) => pathname === prefix || pathname.startsWith(`${prefix}/`));
   // Les photos des utilisateurs sont lues par les sites publiés : lecture publique (identifiant non devinable), jamais l'écriture.
   const publicPhoto = request.method === 'GET' && /^\/api\/(site-photos|hosted-photos)\/[0-9a-f-]{36}$/i.test(pathname);
-  const protectedApi = pathname.startsWith('/api/') && !publicApiRoutes.has(pathname) && !publicPhoto;
+  const protectedApi = pathname.startsWith('/api/') && !publicApiRoutes.has(pathname) && !pathname.startsWith('/api/public/') && !publicPhoto;
   if (!protectedPage && !protectedApi) return NextResponse.next();
 
   const response = NextResponse.next({ request });

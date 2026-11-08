@@ -344,3 +344,30 @@ Couvert par `e2e/phase-q-lot-7-2.spec.ts`.
 1. Studio → aperçu du site d'un plombier, section devis : remplissez nom, email, prestation, message → « Demander mon devis » : page « Merci ! ».
 2. Onglet « Demandes reçues » : la demande apparaît ; cliquez sur « Nouvelle » pour la marquer « Traitée ».
 Couvert par `e2e/phase-q-lot-7-3.spec.ts`.
+
+## Lot 7 — étape 4 : rendez-vous avec acompte via Stripe Connect — terminée en SIMULATION (test réel Stripe en attente de vos clés)
+
+### Fait
+- **Fournisseur de paiement** (`src/lib/payments/`) : interface `PaymentsProvider` avec une implémentation **réelle** (`stripe.ts`, SDK officiel : comptes Express connectés, paiement direct sur le compte du commerçant, remboursement, webhook signé) et une implémentation **simulée** (`simulated.ts`, active seulement hors production quand `STRIPE_SECRET_KEY` est vide). Une clé `sk_live_…` est toujours refusée (règle du projet : mode test uniquement) ; en production, une clé absente est une erreur explicite (`mode.ts`, testé).
+- **Brancher Stripe** (onglet « Connexions », bouton « Connecter Stripe ») : crée ou reprend le compte connecté de l'espace, redirige vers la configuration Stripe, puis vérifie auprès de Stripe que le compte peut encaisser avant de l'activer. L'adresse de retour ne contient aucun identifiant de compte (il reste lié à l'espace côté serveur, chiffré).
+- **Rendez-vous sur le site** : formulaire natif sans JavaScript (prestation, date, heure, coordonnées). Le serveur vérifie les horaires, les jours d'ouverture, le délai minimal et l'absence de chevauchement (verrou par projet), calcule l'acompte (pourcentage du prix), puis redirige vers Stripe Checkout ; un créneau en attente de paiement reste réservé 30 minutes. Sans Stripe branché, une réservation avec acompte est refusée clairement.
+- **Confirmation** : par le webhook Stripe (signature vérifiée, `checkout.session.completed` / `expired`) ou, en simulation, par la page de paiement de test (carte 4242… acceptée, 4000 0000 0000 0002 refusée). Emails au client (confirmation, reste à payer sur place) et au commerçant (versement direct sur son compte), simulés.
+- **Onglet « Rendez-vous »** du Studio : liste, acompte payé, « annuler et rembourser » (remboursement via le fournisseur, état « Annulé et remboursé »).
+- Tests : `slots.test.ts` (7 : fuseau Paris et heure d'été, jours, délai, chevauchement, acompte), `payments.test.ts` (6), e2e `phase-q-lot-7-4.spec.ts` (sans Stripe → refus clair ; connexion Stripe ; carte refusée puis acceptée ; montant 26,70 € = 30 % de 89 € ; compte connecté enregistré chiffré ; créneau pris ; hors horaires ; annulation avec remboursement ; déconnexion). Suite : 235 tests unitaires, **61 e2e en une exécution entièrement verte**.
+
+### Stabilisation de la suite e2e (causes réelles corrigées, aucun test relancé)
+- **Q3.1 « Horaires et chiffres »** : le panneau chargeait ses données deux fois au montage (double exécution des effets en développement) ; la seconde réponse écrasait la saisie en cours (ligne « Lundi » perdue). Corrigé dans `infos-panel.tsx` (appel périmé ignoré, mises à jour fonctionnelles) ; 5 tours consécutifs sans échec (contre un échec tous les 1 à 4 tours avant).
+- **Aperçu du Studio** : le chargement initial n'est plus capable d'écraser un rafraîchissement plus récent (compteur de requêtes commun).
+- **`phase-4a-lot-0` n°3** : le test comptait les versions avant leur chargement.
+- **Proxy** : sans adresse publique configurée, la redirection vers `/login` renvoyait une erreur 500 (le test n'avait réussi avant que par hasard) ; origine déduite de l'hôte demandé (`getRequestOrigin`).
+- Les routes du Studio sont précompilées dans l'initialisation des e2e.
+
+### Simulé / en attente de vous
+- **Test réel Stripe non fait** (aucune clé) : cartes de test officielles (paiement réussi, refusé, remboursement) et vérification du versement au compte connecté. À faire par vous : compte Stripe en mode test avec Connect (Express, France), clé `sk_test_…` dans `STRIPE_SECRET_KEY`, webhook `<domaine>/api/webhooks/stripe` (`checkout.session.completed` et `checkout.session.expired`, y compris comptes connectés) dans `STRIPE_WEBHOOK_SECRET` (en local : `stripe listen --forward-to localhost:3000/api/webhooks/stripe`). Ensuite je pourrai ajouter le test e2e réel.
+- Rappels (`reminders`) et emails réels non faits ; emails simulés.
+
+### Comment vérifier
+1. Studio → « Connexions » → « Connecter Stripe » (simulation : compte de test connecté).
+2. Dans l'aperçu, section rendez-vous : choisissez une prestation, une date (jour ouvré, au moins 2 jours plus tard), une heure, vos coordonnées → « Réserver et payer l'acompte » ; page de paiement de test : carte 4000 0000 0000 0002 (refusée) puis 4242 4242 4242 4242 → « Rendez-vous confirmé ».
+3. Onglet « Rendez-vous » : le rendez-vous apparaît avec « Acompte payé » ; « annuler et rembourser » → « Annulé et remboursé ».
+Couvert par `e2e/phase-q-lot-7-4.spec.ts`.

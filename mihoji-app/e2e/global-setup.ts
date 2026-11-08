@@ -6,6 +6,7 @@ import type { FullConfig } from '@playwright/test';
 import { siteFiles } from '../src/lib/site/files';
 import { samples, withSamplePhotos } from '../src/lib/site/samples';
 import { siteSchema } from '../src/lib/site/schema';
+import { authCookies } from './helpers';
 import { assertE2eEnvironment, E2E_EMAIL_DOMAIN, E2E_EMAIL_PREFIX, loadEnv } from '../scripts/e2e-guard';
 
 export default async function globalSetup(config: FullConfig) {
@@ -85,4 +86,20 @@ export default async function globalSetup(config: FullConfig) {
   // Préchauffe la route de génération (compilée à la demande par le serveur de développement) pour que le premier test ne dépasse pas ses délais.
   const baseURL = config.projects[0]?.use.baseURL;
   if (baseURL) await fetch(`${baseURL}/api/generate`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: '{}' }).catch(() => undefined);
+  // Préchauffe les pages et API du Studio : le serveur de développement les compile à la demande, et une recompilation pendant un test
+  // (Fast Refresh) peut remonter un composant et effacer une saisie en cours. Les routes sont donc compilées une fois ici, avant les tests.
+  if (baseURL) {
+    const cookie = authCookies({ email, userId, workspaceId, projectId, legacyProjectId, qualityProjectId, siteProjectId, session: verified.data.session } as never).map((entry) => `${entry.name}=${entry.value}`).join('; ');
+    const paths = [
+      '/login', '/onboarding/manual', '/onboarding/siret',
+      ...['preview', 'photos', 'infos', 'requests', 'bookings', 'connections', 'settings', 'code'].map((tab) => `/studio/${siteProjectId}/${tab}`),
+      `/api/projects/${siteProjectId}`, `/api/projects/${siteProjectId}/versions`, `/api/projects/${siteProjectId}/chat`, `/api/projects/${siteProjectId}/real-data`,
+      `/api/projects/${siteProjectId}/leads`, `/api/projects/${siteProjectId}/bookings`, '/api/connections', '/api/user-photos', '/api/company',
+    ];
+    for (const path of paths) await fetch(`${baseURL}${path}`, { headers: { cookie }, redirect: 'manual' }).then((response) => response.arrayBuffer()).catch(() => undefined);
+    // Routes publiques et paiement simulé (requêtes sans effet : refusées par la validation).
+    for (const path of ['/api/public/leads', '/api/public/bookings']) await fetch(`${baseURL}${path}`, { method: 'POST', body: new FormData() }).then((response) => response.arrayBuffer()).catch(() => undefined);
+    await fetch(`${baseURL}/api/public/payments/sim?session=none`).then((response) => response.arrayBuffer()).catch(() => undefined);
+    await fetch(`${baseURL}/api/public/bookings/done?b=none`).then((response) => response.arrayBuffer()).catch(() => undefined);
+  }
 }

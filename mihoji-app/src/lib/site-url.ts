@@ -9,3 +9,13 @@ export function getPublicOrigin(request: Request): string | null {
 }
 
 export const getSiteUrl = getPublicOrigin;
+
+// Origine à utiliser pour les adresses de retour et de redirection : adresse publique configurée, sinon l'hôte réellement demandé par le navigateur
+// (y compris en développement local, où l'adresse reconstruite par le serveur peut différer et ne porterait pas le cookie de session).
+export function getRequestOrigin(request: Request): string {
+  const configured = getPublicOrigin(request);
+  if (configured) return configured;
+  const host = request.headers.get('x-forwarded-host') ?? request.headers.get('host');
+  if (host) return `${request.headers.get('x-forwarded-proto')?.split(',')[0]?.trim() || 'http'}://${host}`;
+  return new URL(request.url).origin;
+}

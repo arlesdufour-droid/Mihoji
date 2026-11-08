@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 type Hours = { rows: { day: string; hours: string }[]; note?: string };
 type Stats = { items: { value: string; label: string }[] };
@@ -20,15 +20,17 @@ export function InfosPanel({ projectId, onApplied }: { projectId: string; onAppl
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState<{ tone: 'ok' | 'error'; text: string; scope: 'hours' | 'stats' } | null>(null);
 
-  const load = useCallback(async () => {
-    const response = await fetch(`/api/projects/${projectId}/real-data`);
-    if (!response.ok) return;
-    const value = await response.json() as { hours: Hours; stats: Stats };
-    setHours(value.hours);
-    setStats(value.stats);
+  // Le chargement ne s'applique qu'une fois : l'appel d'un montage abandonné (double exécution des effets en développement, navigation) est ignoré,
+  // sinon sa réponse tardive écraserait ce que l'utilisateur a déjà saisi.
+  useEffect(() => {
+    let active = true;
+    void fetch(`/api/projects/${projectId}/real-data`).then((response) => (response.ok ? response.json() : null)).then((value: { hours: Hours; stats: Stats } | null) => {
+      if (!active || !value) return;
+      setHours(value.hours);
+      setStats(value.stats);
+    });
+    return () => { active = false; };
   }, [projectId]);
-  // eslint-disable-next-line react-hooks/set-state-in-effect
-  useEffect(() => { void load(); }, [load]);
 
   const save = async (scope: 'hours' | 'stats') => {
     setBusy(true);
@@ -58,11 +60,11 @@ export function InfosPanel({ projectId, onApplied }: { projectId: string; onAppl
         <div className="mt-4 grid gap-3 sm:grid-cols-2">
           {hours.rows.map((row, index) => (
             <label key={row.day} className="block text-sm"><span className="text-slate-300">{row.day}</span>
-              <input value={row.hours} maxLength={40} disabled={busy} onChange={(event) => setHours({ ...hours, rows: hours.rows.map((entry, position) => position === index ? { ...entry, hours: event.target.value } : entry) })} className={field} />
+              <input value={row.hours} maxLength={40} disabled={busy} onChange={(event) => { const value = event.target.value; setHours((current) => current && { ...current, rows: current.rows.map((entry, position) => position === index ? { ...entry, hours: value } : entry) }); }} className={field} />
             </label>
           ))}
           <label className="block text-sm sm:col-span-2"><span className="text-slate-300">Remarque (facultatif)</span>
-            <input value={hours.note ?? ''} maxLength={170} disabled={busy} placeholder="Ex. Fermé les jours fériés" onChange={(event) => setHours({ ...hours, note: event.target.value })} className={field} />
+            <input value={hours.note ?? ''} maxLength={170} disabled={busy} placeholder="Ex. Fermé les jours fériés" onChange={(event) => { const value = event.target.value; setHours((current) => current && { ...current, note: value }); }} className={field} />
           </label>
         </div>
         {status('hours')}
@@ -76,10 +78,10 @@ export function InfosPanel({ projectId, onApplied }: { projectId: string; onAppl
           {stats.items.map((item, index) => (
             <div key={index} className="grid gap-3 sm:grid-cols-[9rem_1fr]">
               <label className="block text-sm"><span className="text-slate-300">Chiffre {index + 1}</span>
-                <input value={item.value} maxLength={14} disabled={busy} placeholder="Ex. 350" onChange={(event) => setStats({ items: stats.items.map((entry, position) => position === index ? { ...entry, value: event.target.value } : entry) })} className={field} />
+                <input value={item.value} maxLength={14} disabled={busy} placeholder="Ex. 350" onChange={(event) => { const value = event.target.value; setStats((current) => current && { items: current.items.map((entry, position) => position === index ? { ...entry, value } : entry) }); }} className={field} />
               </label>
               <label className="block text-sm"><span className="text-slate-300">Description {index + 1}</span>
-                <input value={item.label} maxLength={50} disabled={busy} placeholder="Ex. chantiers réalisés" onChange={(event) => setStats({ items: stats.items.map((entry, position) => position === index ? { ...entry, label: event.target.value } : entry) })} className={field} />
+                <input value={item.label} maxLength={50} disabled={busy} placeholder="Ex. chantiers réalisés" onChange={(event) => { const value = event.target.value; setStats((current) => current && { items: current.items.map((entry, position) => position === index ? { ...entry, label: value } : entry) }); }} className={field} />
               </label>
             </div>
           ))}

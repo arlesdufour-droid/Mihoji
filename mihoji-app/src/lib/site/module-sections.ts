@@ -1,5 +1,6 @@
 import { leadFormNote, leadFormOpen } from './lead-form';
 import { esc, head, icon } from './html';
+import { fromMinutes, slotStep, toMinutes } from '../bookings/slots';
 import { formatDays, formatDuration, formatPrice, formatTime, type SiteModules } from './modules';
 import type { Section } from './schema';
 
@@ -35,6 +36,17 @@ function quote(module: NonNullable<SiteModules['quote']>): { body: string; aside
   };
 }
 
+// Formulaire de rendez-vous (envoi natif, sans JavaScript) : le serveur vérifie les horaires, le délai et la disponibilité, puis redirige vers le paiement de l'acompte si besoin.
+function bookingForm(module: NonNullable<SiteModules['booking']>): string {
+  const shortest = Math.min(...module.services.map((service) => service.durationMinutes));
+  const step = slotStep(module);
+  const times: string[] = [];
+  for (let at = toMinutes(module.schedule.start); at + shortest <= toMinutes(module.schedule.end); at += step) times.push(fromMinutes(at));
+  const options = module.services.map((service) => `<option value="${esc(service.name)}">${esc(service.name)} (${formatDuration(service.durationMinutes)}${service.price !== undefined && service.price > 0 ? `, ${formatPrice(service.price)}` : ''})</option>`).join('');
+  const label = module.payment === 'none' ? 'Réserver ce rendez-vous' : module.payment === 'deposit' ? 'Réserver et payer l’acompte' : 'Réserver et payer';
+  return `<div class="form-card"><form class="form" method="post" action="/api/public/bookings"><input type="hidden" name="site" value="{{site.id}}"><div class="lead-hp" aria-hidden="true"><label>Ne pas remplir<input name="website" tabindex="-1" autocomplete="off"></label></div><label>Prestation<select name="service" required>${options}</select></label><div class="form-row"><label>Date<input name="date" type="date" required></label><label>Heure<select name="time" required>${times.map((time) => `<option value="${time}">${formatTime(time)}</option>`).join('')}</select></label></div><div class="form-row"><label>Votre nom<input name="nom" autocomplete="name" required></label><label>Téléphone<input name="telephone" type="tel" autocomplete="tel"></label></div><label>Votre email<input name="email" type="email" autocomplete="email" required></label><label>Une précision ? (facultatif)<textarea name="notes" rows="3"></textarea></label><button class="btn btn-primary" type="submit">${label}</button><p class="form-note">Vos informations ne servent qu’à votre rendez-vous.</p></form></div>`;
+}
+
 function booking(module: NonNullable<SiteModules['booking']>): { body: string; aside: string } {
   const rows = module.services.map((service) => `<li class="mod-row"><div><h3>${esc(service.name)}</h3><p>${formatDuration(service.durationMinutes)}${service.location ? ` · ${LOCATIONS[service.location]}` : ''}</p></div>${service.price !== undefined ? `<span class="price">${service.price === 0 ? 'Offert' : formatPrice(service.price)}</span>` : ''}</li>`).join('');
   const payment = module.payment === 'full' ? 'Paiement en ligne à la réservation.' : module.payment === 'deposit' ? `Acompte de ${module.depositPercent} % à la réservation.` : 'Règlement sur place.';
@@ -44,7 +56,7 @@ function booking(module: NonNullable<SiteModules['booking']>): { body: string; a
     `${icon('shield')}<span>${esc(payment)}${module.cancellationPolicy ? ` ${esc(module.cancellationPolicy)}` : ''}</span>`,
   ];
   return {
-    body: `<ul class="mod-list">${rows}</ul>`,
+    body: `<ul class="mod-list">${rows}</ul>${bookingForm(module)}`,
     aside: `<ul class="mod-facts">${facts.map((fact) => `<li>${fact}</li>`).join('')}</ul>${cta('Pour réserver :', 'Appeler le', 'Réserver par email', 'Demande de rendez-vous')}`,
   };
 }

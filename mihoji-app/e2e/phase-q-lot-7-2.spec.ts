@@ -23,7 +23,7 @@ test('L7.2 connecter et déconnecter Brevo, jeton chiffré, et l’assistant pro
   await expect(page).toHaveURL(new RegExp(`/studio/${projectId}/connections$`));
   const brevo = page.locator('[data-connector="brevo"]');
   await expect(brevo).toContainText('Ce que l’assistant pourra faire');
-  await expect(page.locator('[data-connector="stripe"]').getByRole('button', { name: 'Bientôt disponible' })).toBeDisabled();
+  await expect(page.locator('[data-connector="google-calendar"]').getByRole('button', { name: 'Bientôt disponible' })).toBeDisabled();
 
   // Une clé refusée par le service n'est pas enregistrée.
   await brevo.getByRole('button', { name: 'Connecter Brevo' }).click();

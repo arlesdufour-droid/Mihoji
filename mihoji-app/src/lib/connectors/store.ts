@@ -11,7 +11,8 @@ export type ConnectionSummary = { provider: string; accountLabel: string; scopes
 // Jamais de jeton dans ce qui sort de ce module vers le navigateur : seulement un résumé.
 export async function listConnections(workspaceId: string): Promise<ConnectionSummary[]> {
   const rows = await getDb().select().from(connections).where(eq(connections.workspaceId, workspaceId));
-  return rows.map((row) => ({ provider: row.provider, accountLabel: row.accountLabel, scopes: row.scopes, connectedAt: row.createdAt }));
+  // Une ligne sans droit accordé est une connexion en cours (compte Stripe créé, configuration pas terminée) : pas encore « connectée ».
+  return rows.filter((row) => row.scopes.length > 0).map((row) => ({ provider: row.provider, accountLabel: row.accountLabel, scopes: row.scopes, connectedAt: row.createdAt }));
 }
 
 export async function connectedProviders(workspaceId: string): Promise<string[]> {
@@ -29,6 +30,11 @@ export async function saveConnection(input: { workspaceId: string; provider: str
 export async function removeConnection(workspaceId: string, provider: string): Promise<boolean> {
   const removed = await getDb().delete(connections).where(and(eq(connections.workspaceId, workspaceId), eq(connections.provider, provider as never))).returning({ id: connections.id });
   return removed.length > 0;
+}
+
+// Connexion en cours : le compte est créé chez le fournisseur mais pas encore prêt ; il reste lié à cet espace (aucun identifiant dans l'adresse de retour).
+export async function savePendingConnection(workspaceId: string, provider: string, secret: string): Promise<void> {
+  await saveConnection({ workspaceId, provider, secret, accountLabel: 'Configuration en cours', scopes: [] });
 }
 
 // Pour le code serveur qui appelle le service du commerçant (jamais exposé à une route publique).

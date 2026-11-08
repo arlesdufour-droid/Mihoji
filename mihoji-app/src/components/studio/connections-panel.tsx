@@ -28,6 +28,30 @@ export function ConnectionsPanel() {
   // eslint-disable-next-line react-hooks/set-state-in-effect
   useEffect(() => { void load(); }, [load]);
 
+  // Retour de la configuration Stripe : message selon le résultat.
+  useEffect(() => {
+    const state = new URLSearchParams(window.location.search).get('stripe');
+    if (!state) return;
+    const texts: Record<string, { tone: 'ok' | 'error'; text: string }> = {
+      connected: { tone: 'ok', text: 'Stripe est connecté : les paiements arrivent directement sur votre compte.' },
+      incomplete: { tone: 'error', text: 'La configuration de votre compte Stripe n’est pas terminée. Cliquez de nouveau sur « Connecter Stripe » pour la reprendre.' },
+      missing: { tone: 'error', text: 'Aucune configuration Stripe en cours : cliquez sur « Connecter Stripe ».' },
+      error: { tone: 'error', text: 'Stripe ne répond pas pour le moment. Réessayez dans quelques minutes.' },
+    };
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    if (texts[state]) setMessage({ id: 'stripe', ...texts[state] });
+  }, []);
+
+  const startStripe = async () => {
+    setBusy(true);
+    setMessage(null);
+    const response = await fetch('/api/connections/stripe/start', { method: 'POST' });
+    const body = await response.json().catch(() => ({})) as { url?: string; error?: string };
+    if (response.ok && body.url) { window.location.href = body.url; return; }
+    setBusy(false);
+    setMessage({ id: 'stripe', tone: 'error', text: errors[body.error ?? ''] ?? 'La connexion a échoué.' });
+  };
+
   const connect = async (item: Connector) => {
     setBusy(true);
     setMessage(null);
@@ -63,6 +87,7 @@ export function ConnectionsPanel() {
                   </div>
                   {item.status === 'soon' ? <button type="button" disabled className="rounded-lg border border-slate-700 px-3 py-1.5 text-sm text-slate-500">Bientôt disponible</button>
                     : item.connected ? <button type="button" disabled={busy} onClick={() => void disconnect(item)} className="rounded-lg border border-slate-600 px-3 py-1.5 text-sm hover:bg-slate-800">Déconnecter {item.label}</button>
+                    : item.auth === 'stripe_connect' ? <button type="button" disabled={busy} onClick={() => void startStripe()} className="rounded-lg bg-indigo-500 px-3 py-1.5 text-sm font-medium text-white hover:bg-indigo-400">Connecter {item.label}</button>
                     : <button type="button" onClick={() => { setOpen(open === item.id ? null : item.id); setMessage(null); }} className="rounded-lg bg-indigo-500 px-3 py-1.5 text-sm font-medium text-white hover:bg-indigo-400">Connecter {item.label}</button>}
                 </div>
                 <p className="mt-3 text-xs text-slate-500">Ce que l’assistant pourra faire : {item.capabilities.map((capability) => capabilityLabels[capability]).join(', ')}.</p>

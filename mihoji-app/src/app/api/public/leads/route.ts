@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { getPublicOrigin } from '@/lib/site-url';
+import { getRequestOrigin } from '@/lib/site-url';
 import { leadSchema } from '@/lib/leads/schema';
 import { receiveLead } from '@/lib/leads/service';
 import { consumeRateLimit } from '@/lib/rate-limit';
@@ -25,7 +25,7 @@ export async function POST(request: Request) {
   if (!parsed.success) return reply(422, 'invalid_request', 'Vérifiez votre nom, votre email et votre message, puis réessayez.');
   const ip = (request.headers.get('x-forwarded-for') ?? '').split(',')[0].trim() || 'unknown';
   if (!(await consumeRateLimit(`lead-ip:${ip}`, 8, 60 * 60 * 1000)) || !(await consumeRateLimit(`lead-site:${parsed.data.site}`, 60, 60 * 60 * 1000))) return reply(429, 'rate_limited', 'Trop de demandes pour le moment : réessayez plus tard ou appelez-nous.');
-  const origin = getPublicOrigin(request) ?? new URL(request.url).origin;
+  const origin = getRequestOrigin(request);
   const result = await receiveLead(parsed.data, { inboxUrl: `${origin}/studio/${parsed.data.site}/requests` });
   if (!result.ok) return reply(404, 'unknown_site', 'Ce site n’existe plus.');
   return wantsJson ? NextResponse.json({ ok: true }, { status: 201, headers: cors }) : page('Merci !', 'Votre demande a bien été envoyée. Nous vous répondons rapidement.');

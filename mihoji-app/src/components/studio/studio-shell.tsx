@@ -13,6 +13,7 @@ import type { ChatMessage } from '@/components/studio/composer';
 import type { DemoProject } from '@/lib/templates/site';
 import { PhotosPanel } from '@/components/studio/photos-panel';
 import { InfosPanel } from '@/components/studio/infos-panel';
+import { BookingsPanel } from '@/components/studio/bookings-panel';
 import { RequestsPanel } from '@/components/studio/requests-panel';
 import { ConnectionsPanel } from '@/components/studio/connections-panel';
 import { SiteSettings } from '@/components/settings/site-settings';
@@ -33,6 +34,8 @@ export function StudioShell({ projectId, remaining, isDemo, email, workspaceName
   const [reload, setReload] = useState(0);
   const [versionPreview, setVersionPreview] = useState<VersionPreview | null>(null);
   const [mode, setMode] = useState<'simple' | 'expert'>('simple');
+  // Les réponses arrivent parfois dans le désordre (chargement initial lent, deux enregistrements rapprochés) : seule la plus récente requête met l'aperçu à jour.
+  const refreshTicket = useRef(0);
   useEffect(() => {
     const stored = window.localStorage.getItem('mihoji-ui-mode');
     // Lecture post-montage obligatoire : la lire au rendu initial provoque une erreur d'hydratation.
@@ -40,10 +43,12 @@ export function StudioShell({ projectId, remaining, isDemo, email, workspaceName
     if (stored === 'expert') setMode('expert');
   }, []);
   useEffect(() => {
+    const ticket = ++refreshTicket.current;
     void fetch(`/api/projects/${projectId}`).then((response) => response.ok ? response.json() : null).then((value) => {
       if (value) {
         setProject(value as DemoProject);
-        setHtml(value.html || initialHtml);
+        // Un rafraîchissement plus récent (enregistrement dans le Studio) a déjà mis l'aperçu à jour : on ne l'écrase pas avec cette réponse tardive.
+        if (ticket === refreshTicket.current) setHtml(value.html || initialHtml);
       }
     });
   }, [projectId]);
@@ -59,8 +64,6 @@ export function StudioShell({ projectId, remaining, isDemo, email, workspaceName
     return () => window.removeEventListener('mihoji-ui-mode-change', update);
   }, []);
 
-  // Les réponses arrivent parfois dans le désordre (deux enregistrements rapprochés) : seule la plus récente requête met l'aperçu à jour.
-  const refreshTicket = useRef(0);
   const refreshProject = useCallback(() => {
     const ticket = ++refreshTicket.current;
     void fetch(`/api/projects/${projectId}`).then((response) => response.ok ? response.json() : null).then((value) => { if (value?.html && ticket === refreshTicket.current) { setHtml(value.html); setVersionPreview(null); setReload((count) => count + 1); } });
@@ -90,6 +93,8 @@ export function StudioShell({ projectId, remaining, isDemo, email, workspaceName
         ? <InfosPanel projectId={projectId} onApplied={refreshProject} />
       : activeTab === 'requests'
         ? <RequestsPanel projectId={projectId} />
+      : activeTab === 'bookings'
+        ? <BookingsPanel projectId={projectId} />
       : activeTab === 'connections'
         ? <ConnectionsPanel />
       : activeTab === 'settings'

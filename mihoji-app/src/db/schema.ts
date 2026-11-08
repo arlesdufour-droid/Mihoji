@@ -258,3 +258,24 @@ export const leads = pgTable('leads', {
   notification: text('notification').notNull().default('pending'),
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
 });
+
+// Rendez-vous pris sur les sites (phase Q, lot 7) : acompte payé directement au commerçant (Stripe Connect).
+export const bookings = pgTable('bookings', {
+  id: uuid('id').defaultRandom().primaryKey(),
+  workspaceId: uuid('workspace_id').notNull().references(() => workspaces.id, { onDelete: 'cascade' }),
+  projectId: uuid('project_id').notNull().references(() => projects.id, { onDelete: 'cascade' }),
+  service: text('service').notNull(),
+  startsAt: timestamp('starts_at', { withTimezone: true }).notNull(),
+  durationMinutes: integer('duration_minutes').notNull(),
+  customerName: text('customer_name').notNull(),
+  customerEmail: text('customer_email').notNull(),
+  customerPhone: text('customer_phone').notNull().default(''),
+  notes: text('notes').notNull().default(''),
+  totalCents: integer('total_cents').notNull().default(0),
+  dueCents: integer('due_cents').notNull().default(0),
+  status: text('status', { enum: ['pending_payment', 'confirmed', 'cancelled', 'refunded'] }).notNull().default('confirmed'),
+  stripeAccountId: text('stripe_account_id'),
+  stripeSessionId: text('stripe_session_id'),
+  stripePaymentIntentId: text('stripe_payment_intent_id'),
+  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+});
