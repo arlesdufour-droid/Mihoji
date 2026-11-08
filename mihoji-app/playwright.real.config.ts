@@ -8,7 +8,7 @@ export default defineConfig({
   timeout: 180_000,
   workers: 1,
   expect: { timeout: 30_000 },
-  use: { baseURL: 'http://127.0.0.1:3000', headless: true },
+  use: { baseURL: 'http://127.0.0.1:3000', headless: true, launchOptions: { args: ['--disable-dev-shm-usage'] } },
   webServer: { command: 'npm run dev', url: 'http://127.0.0.1:3000', reuseExistingServer: true, timeout: 120_000 },
   globalSetup: './e2e/global-setup.ts',
   globalTeardown: './e2e/global-teardown.ts',

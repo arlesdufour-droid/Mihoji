@@ -22,6 +22,8 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 8. En cas de blocage externe, documente-le dans `docs/phase-2-progress.md`, explique en une phrase ce que l'utilisateur doit faire et passe au lot suivant s'il n'en dépend pas.
 9. À la fin de chaque lot, donne un résumé court en français simple : ce qui marche, comment le tester dans l'aperçu et ce que l'utilisateur doit faire.
 10. Les tests e2e (`npm run test:e2e`) ne tournent que contre l'environnement de développement : le garde-fou `scripts/e2e-guard.ts` refuse de démarrer si `APP_ENV=production` ou si `DATABASE_URL` n'est pas celle de la base de développement. Ne jamais contourner cette protection. Les utilisateurs de test ont un email reconnaissable `e2e+…@mihoji.test` ; ils sont créés par le setup Playwright et supprimés, avec toutes leurs données, par le teardown.
+11. Vérifications intermédiaires de la qualité des sites : utilise un mini-banc de 4 sites (`npm run benchmark -- plombier boulangerie restaurant coach`, avec `--photos=real` si les photos comptent). Le banc complet de 12 sites ne se lance qu'en fin de lot, en UNE seule exécution, sauf demande explicite de l'utilisateur. Ne jamais lancer les e2e et le banc en même temps (mémoire du Codespace).
+12. Les e2e Chromium utilisent `--disable-dev-shm-usage` (le `/dev/shm` du Codespace ne fait que 64 Mo : sinon « Page crashed ») et 1 seul worker.
 
 ## Définition de « terminé » — phase 3b
 
