@@ -56,7 +56,7 @@ export function sectionOutline(site: SiteDescription): string {
   }).join('\n');
 }
 
-export function editUserMessage(input: { request: string; site: SiteDescription; company: EditCompany; history?: EditHistoryMessage[] }): string {
+export function editUserMessage(input: { request: string; site: SiteDescription; company: EditCompany; history?: EditHistoryMessage[]; connectors?: string }): string {
   const recent = (input.history ?? []).slice(-6).map((message) => `${message.role === 'user' ? 'Client' : 'Mihoji'} : ${message.content.replace(/\s+/g, ' ').slice(0, 300)}`);
   return [
     'Entreprise :',
@@ -64,6 +64,7 @@ export function editUserMessage(input: { request: string; site: SiteDescription;
     ...(input.company.activity ? [`- Activité : ${input.company.activity}`] : []),
     ...(input.company.city ? [`- Ville : ${input.company.city}`] : []),
     `- Téléphone : ${input.company.hasPhone === false ? 'non renseigné' : 'renseigné'} ; email : ${input.company.hasEmail === false ? 'non renseigné' : 'renseigné'}`,
+    ...(input.connectors ? ['', input.connectors] : []),
     '',
     'Sections de la page d’accueil (index) :',
     sectionOutline(input.site),

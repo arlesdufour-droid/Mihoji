@@ -228,3 +228,15 @@ export const hostedPhotos = pgTable('hosted_photos', {
   creditUrl: text('credit_url').notNull(),
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
 }, (table) => [unique('hosted_photos_source_unique').on(table.source, table.sourceId)]);
+
+// Connexions du commerçant à ses outils (phase Q, lot 7) : jetons chiffrés, un seul compte par outil et par espace.
+export const connections = pgTable('connections', {
+  id: uuid('id').defaultRandom().primaryKey(),
+  workspaceId: uuid('workspace_id').notNull().references(() => workspaces.id, { onDelete: 'cascade' }),
+  provider: text('provider', { enum: ['stripe', 'brevo', 'google-calendar', 'calendly', 'shop-sync', 'google-business'] }).notNull(),
+  accountLabel: text('account_label').notNull().default(''),
+  credentials: text('credentials').notNull(),
+  scopes: text('scopes').array().notNull().default([]),
+  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+  updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
+}, (table) => [unique('connections_workspace_provider_unique').on(table.workspaceId, table.provider)]);

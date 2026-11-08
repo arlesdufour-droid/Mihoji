@@ -306,3 +306,23 @@ Couvert par `e2e/phase-q-lot-q2.spec.ts` (Q2.1, Q2.2) et par les tests unitaires
 1. Créez un site pour un coach sportif (saisie manuelle, « Coach sportif »).
 2. Dans l'aperçu, la section des prestations montre une photo sur chaque carte ; il n'y a aucune section galerie.
 Couvert par `e2e/phase-q-lot-7-1.spec.ts`.
+
+## Lot 7 — étape 2 : écran « Connexions » et cadre des connecteurs — terminée
+
+### Fait
+- **Cadre technique** (`src/lib/connectors/`) : registre des connecteurs avec leurs **capacités** (ex. `payments.deposit`, `email.notify`), droits minimaux détaillés au commerçant ; chiffrement AES-256-GCM des jetons (`crypto.ts`, clé `CONNECTIONS_ENCRYPTION_KEY`, erreur explicite en production si absente) ; table `connections` (migration `0023`, un compte par outil et par espace, supprimée avec l'espace) ; routes `GET /api/connections`, `POST/DELETE /api/connections/<outil>` (aucun jeton ne sort jamais vers le navigateur, limite de 20 essais par heure).
+- **Onglet « Connexions »** du Studio (mode simple et expert) : fiche par outil avec « ce que l'assistant pourra faire » et droits demandés ; Brevo connectable avec sa clé d'API (vérifiée auprès de Brevo, puis chiffrée) ; déconnexion à tout moment (jeton supprimé) ; les autres outils sont désactivés avec « Bientôt disponible ».
+- **Capacités exposées à l'IA** : la modification par le chat reçoit la liste des outils branchés et des capacités utilisables ; quand une demande suppose un outil non branché (acompte, boutique, liste de contacts), la réponse du chat invite à le brancher dans « Connexions » (ou dit que l'outil arrive bientôt).
+- **Correctif d'un test instable** (Q3.1) : cause réelle = course dans le Studio, une réponse plus ancienne pouvait écraser l'aperçu après deux enregistrements rapprochés ; corrigé par un compteur de requêtes dans `studio-shell.tsx`.
+- Tests : `connectors.test.ts` (10 : chiffrement, altération, mauvaise clé, capacités, propositions) ; e2e `phase-q-lot-7-2.spec.ts`. Suite : 211 tests unitaires, 59 e2e en une exécution.
+
+### Simulé / en attente
+- La vérification de la clé Brevo est **simulée en e2e** (`CONNECTORS_MOCK=1`, clé « test-… » acceptée) ; en production la vérification réelle appelle `GET https://api.brevo.com/v3/account` (non testée en réel : aucune clé Brevo du commerçant disponible).
+- Stripe (étape 4), Google Agenda, Calendly, Shopify/WooCommerce et fiche Google (lot 8) sont affichés « Bientôt disponible ».
+- **À faire par vous avant la mise en production** : définir `CONNECTIONS_ENCRYPTION_KEY` (`openssl rand -base64 32`) dans l'environnement de production.
+
+### Comment vérifier
+1. Studio → onglet « Connexions ». Brevo : « Connecter Brevo », saisissez une clé, « Enregistrer la connexion » → « Brevo est connecté ».
+2. Rechargez la page : Brevo reste connecté. « Déconnecter Brevo » → la clé est supprimée.
+3. Dans l'aperçu, écrivez au chat « Ajoute la prise de rendez-vous avec acompte » : la réponse mentionne Stripe et l'onglet « Connexions ».
+Couvert par `e2e/phase-q-lot-7-2.spec.ts`.

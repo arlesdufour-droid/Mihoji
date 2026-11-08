@@ -6,6 +6,8 @@ import { companies, siteGenerations } from '@/db/schema';
 import { cityOf } from '@/lib/company/render';
 import { resolveSitePhotos } from '@/lib/photos/service';
 import { LlmProviderError } from '@/lib/ai/providers/types';
+import { connectorsContext } from '@/lib/connectors/hints';
+import { connectedProviders } from '@/lib/connectors/store';
 import { designProvider } from './design-service';
 import { editSiteDesign } from './edit-run';
 import type { EditHistoryMessage } from './edit-prompt';
@@ -28,11 +30,13 @@ export async function runSiteEdit(input: { projectId: string; workspaceId: strin
   const [company] = await db.select().from(companies).where(eq(companies.workspaceId, input.workspaceId)).limit(1);
   const fields = company?.missingFields && typeof company.missingFields === 'object' ? company.missingFields as Record<string, string> : {};
   const { provider, model, complete } = designProvider();
+  const connected = await connectedProviders(input.workspaceId).catch(() => [] as string[]);
   const started = Date.now();
   const outcome = await editSiteDesign(complete, model, {
     request: input.request,
     site: before,
     history: input.history,
+    connectors: connectorsContext(connected),
     company: { name: company?.name ?? 'Entreprise', activity: company?.activity, city: company ? cityOf(company.address) : undefined, hasPhone: Boolean(fields.phone), hasEmail: Boolean(fields.email) },
   }, { signal: input.signal });
   const tokens = outcome.usage.promptTokens + outcome.usage.completionTokens + outcome.usage.cacheReadTokens + outcome.usage.cacheWriteTokens;

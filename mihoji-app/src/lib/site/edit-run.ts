@@ -25,7 +25,7 @@ function emptyUsage(model: string): DesignUsage {
 export async function editSiteDesign(
   complete: Complete,
   model: string,
-  input: { request: string; site: SiteDescription; company: EditCompany; history?: EditHistoryMessage[] },
+  input: { request: string; site: SiteDescription; company: EditCompany; history?: EditHistoryMessage[]; connectors?: string },
   options: { maxAttempts?: number; signal?: AbortSignal } = {},
 ): Promise<EditOutcome> {
   const maxAttempts = options.maxAttempts ?? 3;

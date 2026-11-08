@@ -16,6 +16,8 @@ import { chatProtocolPrompt, parseChatPlan, retryFeedbackMessage } from '@/lib/a
 import { dropFailedExchanges, GENERATION_FAILED_MESSAGE, GENERATION_SCOPE_FAILED_MESSAGE } from '@/lib/ai/failure';
 import { keywordsOf } from '@/lib/ai/keywords';
 import { runSiteEdit } from '@/lib/site/edit-service';
+import { connectorHintMessage } from '@/lib/connectors/hints';
+import { connectedProviders } from '@/lib/connectors/store';
 
 // Une modification structurée peut demander plusieurs essais du modèle de design.
 export const maxDuration = 300;
@@ -88,8 +90,11 @@ async function handleChat(session: AppSession, workspaceId: string, parsed: Pars
       console.warn('Site modification cancelled by automatic checks.', { reasons: siteEdit.reasons });
       return new Response(GENERATION_SCOPE_FAILED_MESSAGE, { headers: { ...headers, 'x-mihoji-changed': '0' } });
     }
-    if (siteEdit.status === 'unchanged') return new Response(siteEdit.summary, { headers: { ...headers, 'x-mihoji-changed': '0' } });
-    return new Response(siteEdit.summary, { headers: { ...headers, 'x-mihoji-changed': '1', 'x-mihoji-files': siteEdit.files.filter((file) => file !== 'site.json').join(',') } });
+    // La demande suppose un outil non branché (paiement, liste de contacts…) : on le dit, et on invite à le brancher dans « Connexions ».
+    const hint = connectorHintMessage(prompt, await connectedProviders(workspaceId).catch(() => [] as string[]));
+    const reply = hint ? `${siteEdit.summary}\n\n${hint}` : siteEdit.summary;
+    if (siteEdit.status === 'unchanged') return new Response(reply, { headers: { ...headers, 'x-mihoji-changed': '0' } });
+    return new Response(reply, { headers: { ...headers, 'x-mihoji-changed': '1', 'x-mihoji-files': siteEdit.files.filter((file) => file !== 'site.json').join(',') } });
   }
 
   let text = '';
