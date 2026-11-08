@@ -92,13 +92,13 @@ export default async function globalSetup(config: FullConfig) {
     const cookie = authCookies({ email, userId, workspaceId, projectId, legacyProjectId, qualityProjectId, siteProjectId, session: verified.data.session } as never).map((entry) => `${entry.name}=${entry.value}`).join('; ');
     const paths = [
       '/login', '/onboarding/manual', '/onboarding/siret',
-      ...['preview', 'photos', 'infos', 'requests', 'bookings', 'connections', 'settings', 'code'].map((tab) => `/studio/${siteProjectId}/${tab}`),
+      ...['preview', 'photos', 'infos', 'requests', 'bookings', 'orders', 'connections', 'settings', 'code'].map((tab) => `/studio/${siteProjectId}/${tab}`),
       `/api/projects/${siteProjectId}`, `/api/projects/${siteProjectId}/versions`, `/api/projects/${siteProjectId}/chat`, `/api/projects/${siteProjectId}/real-data`,
-      `/api/projects/${siteProjectId}/leads`, `/api/projects/${siteProjectId}/bookings`, '/api/connections', '/api/user-photos', '/api/company',
+      `/api/projects/${siteProjectId}/leads`, `/api/projects/${siteProjectId}/bookings`, `/api/projects/${siteProjectId}/orders`, '/api/connections', '/api/user-photos', '/api/company',
     ];
     for (const path of paths) await fetch(`${baseURL}${path}`, { headers: { cookie }, redirect: 'manual' }).then((response) => response.arrayBuffer()).catch(() => undefined);
     // Routes publiques et paiement simulé (requêtes sans effet : refusées par la validation).
-    for (const path of ['/api/public/leads', '/api/public/bookings']) await fetch(`${baseURL}${path}`, { method: 'POST', body: new FormData() }).then((response) => response.arrayBuffer()).catch(() => undefined);
+    for (const path of ['/api/public/leads', '/api/public/bookings', '/api/public/orders']) await fetch(`${baseURL}${path}`, { method: 'POST', body: new FormData() }).then((response) => response.arrayBuffer()).catch(() => undefined);
     await fetch(`${baseURL}/api/public/payments/sim?session=none`).then((response) => response.arrayBuffer()).catch(() => undefined);
     await fetch(`${baseURL}/api/public/bookings/done?b=none`).then((response) => response.arrayBuffer()).catch(() => undefined);
   }

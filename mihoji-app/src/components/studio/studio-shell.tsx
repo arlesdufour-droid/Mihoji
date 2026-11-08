@@ -13,6 +13,7 @@ import type { ChatMessage } from '@/components/studio/composer';
 import type { DemoProject } from '@/lib/templates/site';
 import { PhotosPanel } from '@/components/studio/photos-panel';
 import { InfosPanel } from '@/components/studio/infos-panel';
+import { OrdersPanel } from '@/components/studio/orders-panel';
 import { BookingsPanel } from '@/components/studio/bookings-panel';
 import { RequestsPanel } from '@/components/studio/requests-panel';
 import { ConnectionsPanel } from '@/components/studio/connections-panel';
@@ -95,6 +96,8 @@ export function StudioShell({ projectId, remaining, isDemo, email, workspaceName
         ? <RequestsPanel projectId={projectId} />
       : activeTab === 'bookings'
         ? <BookingsPanel projectId={projectId} />
+      : activeTab === 'orders'
+        ? <OrdersPanel projectId={projectId} />
       : activeTab === 'connections'
         ? <ConnectionsPanel />
       : activeTab === 'settings'

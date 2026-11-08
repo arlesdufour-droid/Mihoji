@@ -57,7 +57,7 @@ export const shopModuleSchema = z.object({
     category: text(40).optional(),
     // Délai de commande à l'avance (ex. 48 h pour une pièce montée).
     preorderHours: z.number().int().min(0).max(336).optional(),
-  })).min(1).max(40),
+  })).min(1).max(50),
   pickup: z.object({ schedule: openingSchema, leadTimeHours: z.number().int().min(0).max(168).default(2) }).optional(),
   payment: z.enum(['online', 'on-pickup', 'both']).default('online'),
   minimumOrder: price.optional(),

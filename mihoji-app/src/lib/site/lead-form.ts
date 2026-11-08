@@ -13,7 +13,7 @@ export const leadFormNote = '<p class="form-note">Vos informations ne servent qu
 
 // À la publication, le site est servi ailleurs que par l'application : l'action du formulaire devient une adresse absolue.
 export function absolutizeLeadActions(html: string, origin: string): string {
-  return html.replaceAll(`action="${LEADS_PATH}"`, `action="${origin}${LEADS_PATH}"`).replaceAll('action="/api/public/bookings"', `action="${origin}/api/public/bookings"`);
+  return html.replaceAll(`action="${LEADS_PATH}"`, `action="${origin}${LEADS_PATH}"`).replaceAll('action="/api/public/bookings"', `action="${origin}/api/public/bookings"`).replaceAll('action="/api/public/orders"', `action="${origin}/api/public/orders"`);
 }
 
 export function injectSiteId(html: string, projectId: string): string {

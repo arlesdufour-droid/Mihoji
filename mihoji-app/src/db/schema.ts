@@ -279,3 +279,23 @@ export const bookings = pgTable('bookings', {
   stripePaymentIntentId: text('stripe_payment_intent_id'),
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
 });
+
+// Commandes click & collect passées sur les sites (phase Q, lot 7) : paiement direct au commerçant (Stripe Connect) ou au retrait.
+export const orders = pgTable('orders', {
+  id: uuid('id').defaultRandom().primaryKey(),
+  workspaceId: uuid('workspace_id').notNull().references(() => workspaces.id, { onDelete: 'cascade' }),
+  projectId: uuid('project_id').notNull().references(() => projects.id, { onDelete: 'cascade' }),
+  customerName: text('customer_name').notNull(),
+  customerEmail: text('customer_email').notNull(),
+  customerPhone: text('customer_phone').notNull().default(''),
+  notes: text('notes').notNull().default(''),
+  lines: jsonb('lines').$type<{ name: string; unitCents: number; quantity: number }[]>().notNull(),
+  totalCents: integer('total_cents').notNull(),
+  pickupAt: timestamp('pickup_at', { withTimezone: true }).notNull(),
+  paymentMode: text('payment_mode', { enum: ['online', 'on_pickup'] }).notNull(),
+  status: text('status', { enum: ['pending_payment', 'confirmed', 'collected', 'cancelled', 'refunded'] }).notNull().default('confirmed'),
+  stripeAccountId: text('stripe_account_id'),
+  stripeSessionId: text('stripe_session_id'),
+  stripePaymentIntentId: text('stripe_payment_intent_id'),
+  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+});

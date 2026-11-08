@@ -61,10 +61,21 @@ function booking(module: NonNullable<SiteModules['booking']>): { body: string; a
   };
 }
 
+// Commande click & collect (envoi natif, sans JavaScript) : une quantité par produit, retrait, coordonnées ; le serveur recalcule les prix et contrôle le créneau.
+function shopForm(module: NonNullable<SiteModules['shop']>, rows: string): string {
+  const pickup = module.pickup!;
+  const times: string[] = [];
+  for (let at = toMinutes(pickup.schedule.start); at < toMinutes(pickup.schedule.end); at += 30) times.push(fromMinutes(at));
+  const choice = module.payment === 'both' ? `<fieldset class="form-choice"><legend>Paiement</legend><label><input type="radio" name="pay" value="online" checked> Payer en ligne</label><label><input type="radio" name="pay" value="on_pickup"> Payer au retrait</label></fieldset>` : '';
+  const label = module.payment === 'on-pickup' ? 'Commander (paiement au retrait)' : module.payment === 'both' ? 'Commander' : 'Commander et payer';
+  return `<form class="form shop-form" method="post" action="/api/public/orders"><input type="hidden" name="site" value="{{site.id}}"><div class="lead-hp" aria-hidden="true"><label>Ne pas remplir<input name="website" tabindex="-1" autocomplete="off"></label></div>${rows}<div class="form-card"><div class="form-row"><label>Date de retrait<input name="date" type="date" required></label><label>Heure de retrait<select name="time" required>${times.map((time) => `<option value="${time}">${formatTime(time)}</option>`).join('')}</select></label></div><div class="form-row"><label>Votre nom<input name="nom" autocomplete="name" required></label><label>Téléphone<input name="telephone" type="tel" autocomplete="tel"></label></div><label>Votre email<input name="email" type="email" autocomplete="email" required></label><label>Une précision ? (facultatif)<textarea name="notes" rows="2"></textarea></label>${choice}<button class="btn btn-primary" type="submit">${label}</button><p class="form-note">Vos informations ne servent qu’à votre commande.</p></div></form>`;
+}
+
 function shop(module: NonNullable<SiteModules['shop']>): { body: string; aside: string } {
   const categories = [...new Set(module.products.map((product) => product.category ?? ''))];
+  const ordering = module.mode !== 'delivery' && Boolean(module.pickup);
   const list = categories.map((category) => {
-    const items = module.products.filter((product) => (product.category ?? '') === category).map((product) => `<li class="mod-row"><div><h3>${esc(product.name)}</h3>${product.description ? `<p>${esc(product.description)}</p>` : ''}${product.preorderHours ? `<p class="mod-note">À commander ${product.preorderHours} h à l’avance</p>` : ''}</div><span class="price">${formatPrice(product.price)}${product.unit ? `<small> / ${esc(product.unit)}</small>` : ''}</span></li>`).join('');
+    const items = module.products.map((product, index) => ({ product, index })).filter(({ product }) => (product.category ?? '') === category).map(({ product, index }) => `<li class="mod-row"><div><h3>${esc(product.name)}</h3>${product.description ? `<p>${esc(product.description)}</p>` : ''}${product.preorderHours ? `<p class="mod-note">À commander ${product.preorderHours} h à l’avance</p>` : ''}</div><span class="price">${formatPrice(product.price)}${product.unit ? `<small> / ${esc(product.unit)}</small>` : ''}</span>${ordering ? `<label class="qty"><span class="sr-only">Quantité : ${esc(product.name)}</span><input type="number" name="qty_${index}" min="0" max="20" value="0" inputmode="numeric" aria-label="Quantité : ${esc(product.name)}"></label>` : ''}</li>`).join('');
     return `${category ? `<h3 class="mod-cat">${esc(category)}</h3>` : ''}<ul class="mod-list">${items}</ul>`;
   }).join('');
   const mode = module.mode === 'click-collect' ? 'Commandez en ligne, retirez en boutique.' : module.mode === 'delivery' ? 'Commandez en ligne, nous livrons.' : 'Retrait en boutique ou livraison.';
@@ -74,7 +85,7 @@ function shop(module: NonNullable<SiteModules['shop']>): { body: string; aside: 
     `${icon('shield')}<span>${module.payment === 'on-pickup' ? 'Paiement au retrait.' : module.payment === 'both' ? 'Paiement en ligne ou au retrait.' : 'Paiement sécurisé en ligne.'}${module.minimumOrder ? ` Commande minimum : ${formatPrice(module.minimumOrder)}.` : ''}</span>`,
   ];
   return {
-    body: list,
+    body: ordering ? shopForm(module, list) : list,
     aside: `<ul class="mod-facts">${facts.map((fact) => `<li>${fact}</li>`).join('')}</ul>${cta('Pour commander :', 'Commander au', 'Commander par email', 'Commande')}`,
   };
 }

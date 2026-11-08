@@ -353,7 +353,7 @@ Couvert par `e2e/phase-q-lot-7-3.spec.ts`.
 - **Rendez-vous sur le site** : formulaire natif sans JavaScript (prestation, date, heure, coordonnées). Le serveur vérifie les horaires, les jours d'ouverture, le délai minimal et l'absence de chevauchement (verrou par projet), calcule l'acompte (pourcentage du prix), puis redirige vers Stripe Checkout ; un créneau en attente de paiement reste réservé 30 minutes. Sans Stripe branché, une réservation avec acompte est refusée clairement.
 - **Confirmation** : par le webhook Stripe (signature vérifiée, `checkout.session.completed` / `expired`) ou, en simulation, par la page de paiement de test (carte 4242… acceptée, 4000 0000 0000 0002 refusée). Emails au client (confirmation, reste à payer sur place) et au commerçant (versement direct sur son compte), simulés.
 - **Onglet « Rendez-vous »** du Studio : liste, acompte payé, « annuler et rembourser » (remboursement via le fournisseur, état « Annulé et remboursé »).
-- Tests : `slots.test.ts` (7 : fuseau Paris et heure d'été, jours, délai, chevauchement, acompte), `payments.test.ts` (6), e2e `phase-q-lot-7-4.spec.ts` (sans Stripe → refus clair ; connexion Stripe ; carte refusée puis acceptée ; montant 26,70 € = 30 % de 89 € ; compte connecté enregistré chiffré ; créneau pris ; hors horaires ; annulation avec remboursement ; déconnexion). Suite : 235 tests unitaires, **61 e2e en une exécution entièrement verte**.
+- Tests : `slots.test.ts` (7 : fuseau Paris et heure d'été, jours, délai, chevauchement, acompte), `payments.test.ts` (6), e2e `phase-q-lot-7-4.spec.ts` (sans Stripe → refus clair ; connexion Stripe ; carte refusée puis acceptée ; montant 26,70 € = 30 % de 89 € ; compte connecté enregistré chiffré ; créneau pris ; hors horaires ; annulation avec remboursement ; déconnexion). Suite : 229 tests unitaires, **61 e2e en une exécution entièrement verte**.
 
 ### Stabilisation de la suite e2e (causes réelles corrigées, aucun test relancé)
 - **Q3.1 « Horaires et chiffres »** : le panneau chargeait ses données deux fois au montage (double exécution des effets en développement) ; la seconde réponse écrasait la saisie en cours (ligne « Lundi » perdue). Corrigé dans `infos-panel.tsx` (appel périmé ignoré, mises à jour fonctionnelles) ; 5 tours consécutifs sans échec (contre un échec tous les 1 à 4 tours avant).
@@ -371,3 +371,25 @@ Couvert par `e2e/phase-q-lot-7-3.spec.ts`.
 2. Dans l'aperçu, section rendez-vous : choisissez une prestation, une date (jour ouvré, au moins 2 jours plus tard), une heure, vos coordonnées → « Réserver et payer l'acompte » ; page de paiement de test : carte 4000 0000 0000 0002 (refusée) puis 4242 4242 4242 4242 → « Rendez-vous confirmé ».
 3. Onglet « Rendez-vous » : le rendez-vous apparaît avec « Acompte payé » ; « annuler et rembourser » → « Annulé et remboursé ».
 Couvert par `e2e/phase-q-lot-7-4.spec.ts`.
+
+## Lot 7 — étape 5 : petite boutique (click & collect, jusqu'à 50 produits) — terminée en SIMULATION pour Stripe
+
+### Fait
+- **Catalogue jusqu'à 50 produits** (schéma `shop.products` et consigne au modèle de design passés de 40 à 50).
+- **Commande sur le site** : formulaire natif sans JavaScript dans la section boutique (une quantité par produit, date et heure de retrait par pas de 30 minutes, coordonnées, choix « payer en ligne / au retrait » quand le site propose les deux). Le serveur **recalcule tout** depuis le site enregistré (`src/lib/orders/compute.ts`, logique pure testée) : un prix envoyé par le navigateur est ignoré ; panier vide, quantité hors de 0 à 20, minimum de commande, jour fermé, heure hors créneaux, délai du retrait et délai de préparation du produit le plus long (ex. 48 h) sont contrôlés.
+- **Paiement** : en ligne via le même fournisseur que les rendez-vous (Stripe Connect, paiement direct sur le compte du commerçant ; simulé hors production sans clé), ou au retrait sans paiement. Sans Stripe branché, une commande payée en ligne est refusée clairement. Confirmation par le webhook (le même point d'entrée sert rendez-vous et commandes) ; emails au client et au commerçant (simulés).
+- **Onglet « Commandes »** du Studio : retrait, client, lignes, total, « Payée en ligne » ou « À encaisser au retrait », « marquer retirée », « annuler et rembourser » (remboursement via le fournisseur).
+- Table `orders` (migration `0026`), route publique `POST /api/public/orders` (limites par IP et par site, champ piège), page de retour et page de paiement simulée communes avec les rendez-vous.
+- Tests : `compute.test.ts` (7 : total en centimes, refus, jours et heures, délais, mode de paiement, livraison seule, 50 produits au plus) ; e2e `phase-q-lot-7-5.spec.ts` (Stripe connecté ; commande de 178 € : carte refusée puis acceptée ; compte connecté simulé ; commande payée au retrait ; prix ignorés côté navigateur ; panier vide, quantité 99, heure hors créneaux refusés ; retrait effectué ; annulation avec remboursement). Suite : 236 tests unitaires, **62 e2e en une exécution entièrement verte**.
+
+### Simulé / en attente de vous
+- Comme l'étape 4 : **le test réel Stripe** (cartes de test officielles, versement au compte connecté) attend votre clé `sk_test_…` et le secret du webhook.
+- **Livraison** non implémentée (seul le retrait en boutique est commandable ; un site « livraison seule » garde l'affichage du catalogue et les boutons d'appel).
+- Pas de stock ni de panier multi-pages : une commande = un formulaire. Photos de produits non gérées dans ce lot.
+- Photos hébergées : les projets de test n'en créent aucune (IA et photos simulées), rien à nettoyer ; voir « Stockage » dans le résumé de fin de lot.
+
+### Comment vérifier
+1. Studio → « Connexions » → « Connecter Stripe » (simulation).
+2. Dans l'aperçu, section boutique : indiquez des quantités, une date de retrait (jour ouvré, au moins 2 jours plus tard), une heure, vos coordonnées → « Commander » : page de paiement de test (carte 4000 0000 0000 0002 refusée, puis 4242 4242 4242 4242) → « Commande confirmée ». Essayez aussi « Payer au retrait ».
+3. Onglet « Commandes » : les commandes apparaissent ; « marquer retirée » ; « Annuler et rembourser » sur une commande payée en ligne.
+Couvert par `e2e/phase-q-lot-7-5.spec.ts`.
