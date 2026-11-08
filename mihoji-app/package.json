@@ -18,7 +18,8 @@
     "design:screenshots": "playwright test --config playwright.design.config.ts design-screenshots",
     "design:generate": "tsx scripts/design-generate.ts",
     "benchmark": "tsx scripts/benchmark.ts",
-    "sites:migrate": "tsx scripts/migrate-sites.ts"
+    "sites:migrate": "tsx scripts/migrate-sites.ts",
+    "storage:report": "tsx scripts/storage-report.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^1.3.0",

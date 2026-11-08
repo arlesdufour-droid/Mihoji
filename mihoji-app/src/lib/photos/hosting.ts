@@ -1,6 +1,7 @@
 import 'server-only';
 
 import { and, eq } from 'drizzle-orm';
+import sharp from 'sharp';
 import { getDb } from '@/db/client';
 import { hostedPhotos } from '@/db/schema';
 import type { SiteDescription } from '../site/schema';
@@ -25,8 +26,15 @@ async function hostOne(photo: PhotoCandidate): Promise<string | null> {
   if (!response.ok || !/^image\/(jpeg|png|webp)$/.test(mime)) return null;
   const bytes = Buffer.from(await response.arrayBuffer());
   if (bytes.length === 0 || bytes.length > MAX_BYTES) return null;
-  const [row] = await db.insert(hostedPhotos).values({ source: 'pixabay', sourceId, mime, data: bytes, creditName: photo.credit.name, creditUrl: photo.credit.url })
-    .onConflictDoUpdate({ target: [hostedPhotos.source, hostedPhotos.sourceId], set: { mime } }).returning({ id: hostedPhotos.id });
+  // Stockage économe (offre gratuite de Supabase : 500 Mo) : 1600 px au plus et WebP, environ deux fois plus léger que l'original ; en cas d'échec, l'original est conservé.
+  let stored = { data: bytes, mime: sniffImageType(bytes) ?? mime };
+  try {
+    stored = { data: await sharp(bytes, { limitInputPixels: 80_000_000 }).rotate().resize({ width: 1600, height: 1600, fit: 'inside', withoutEnlargement: true }).webp({ quality: 78 }).toBuffer(), mime: 'image/webp' };
+  } catch (error) {
+    console.warn('Hosted photo kept as downloaded (compression failed).', error instanceof Error ? error.message : error);
+  }
+  const [row] = await db.insert(hostedPhotos).values({ source: 'pixabay', sourceId, mime: stored.mime, data: stored.data, creditName: photo.credit.name, creditUrl: photo.credit.url })
+    .onConflictDoUpdate({ target: [hostedPhotos.source, hostedPhotos.sourceId], set: { mime: stored.mime } }).returning({ id: hostedPhotos.id });
   return hostedPhotoUrl(row.id);
 }
 

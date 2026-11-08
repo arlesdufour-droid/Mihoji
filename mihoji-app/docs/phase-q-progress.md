@@ -393,3 +393,10 @@ Couvert par `e2e/phase-q-lot-7-4.spec.ts`.
 2. Dans l'aperçu, section boutique : indiquez des quantités, une date de retrait (jour ouvré, au moins 2 jours plus tard), une heure, vos coordonnées → « Commander » : page de paiement de test (carte 4000 0000 0000 0002 refusée, puis 4242 4242 4242 4242) → « Commande confirmée ». Essayez aussi « Payer au retrait ».
 3. Onglet « Commandes » : les commandes apparaissent ; « marquer retirée » ; « Annuler et rembourser » sur une commande payée en ligne.
 Couvert par `e2e/phase-q-lot-7-5.spec.ts`.
+
+## Lot 7 — vérification avec la vraie IA (une génération, 2026-11-08) : fonctions OK, photos « au service du contenu » NON obtenues
+
+- **Spec** `e2e/phase-q-lot-7-real.spec.ts` (`npm run test:e2e:real -- phase-q-lot-7-real`) : cabinet de kinésithérapie, « rendez-vous en ligne et acompte pour réserver », vraie IA Anthropic, coût de génération < 0,10 €.
+- **OK** : module de rendez-vous créé (acompte de 30 %), formulaire de rendez-vous présent, aucune galerie générique pour un praticien, style « naturel », contraste et débordement mesurés sans défaut à 1280 et 390 px.
+- **PAS OK** : seulement **1 photo** dans tout l'aperçu, **0 sur 4 prestations avec photo, pas de portrait** dans la présentation. L'objectif du point 1 du lot 7 (photo par prestation, portrait pour les praticiens) n'est donc **pas atteint avec le vrai modèle** : le modèle n'a manifestement pas suivi la nouvelle consigne d'images, ou les photos demandées n'ont pas pu être associées (la règle « toutes ou aucune » retire alors les photos de prestation). La cause exacte n'a pas été isolée : les données de la génération sont supprimées par le nettoyage des e2e. Il faut une seconde génération de diagnostic (≈ 0,05 €, hors règle « une génération par lot »), qui sauvegarde la description produite et le rapport de photos avant nettoyage.
+- Les e2e automatiques (IA simulée) valident le rendu et les règles, pas la capacité du modèle à produire ces images.
