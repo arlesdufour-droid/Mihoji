@@ -8,7 +8,7 @@ import { assignSlots, pendingSlots } from './assign';
 import { LocalLibraryProvider } from './local';
 import { hostPixabayPhotos } from './hosting';
 import { PixabayProvider } from './pixabay';
-import { pixabayWindow, unsplashWindow } from './rate-window';
+import { pixabayWindow, unsplashAllowed } from './rate-window';
 import { applyPhotoRules } from './rules';
 import { normalizeQuery, rankCandidates, rankForSlot, simplerQueries } from './select';
 import type { PhotoCandidate } from './types';
@@ -21,6 +21,8 @@ import { verifyPhotos, VERIFY_BUDGET_EUR, type VerifySlot } from './verify';
 
 const PIXABAY_PER_MINUTE = Number(process.env.PIXABAY_PER_MINUTE ?? 90); // limite de Pixabay : 100 requêtes par minute
 const HOURLY_BUDGET = Number(process.env.UNSPLASH_HOURLY_BUDGET ?? 45); // l'offre démonstration autorise 50 requêtes par heure
+// Unsplash n'est qu'un secours : au plus ce nombre d'appels par site, et jamais d'attente du quota (l'emplacement reste alors graphique).
+const UNSPLASH_PER_SITE = Number(process.env.UNSPLASH_PER_SITE ?? 4);
 const CACHE_DAYS = 30; // les photos d'un métier changent peu : un mois de cache économise le quota
 const memory = new Map<string, PhotoCandidate[]>();
 
@@ -51,8 +53,8 @@ export type PhotoReport = {
   verified: number; rejected: number; visionCostEur: number; hiddenGalleries: number;
 };
 
-// patient : banc d'essai avec vraies photos. Au lieu de retomber sur la bibliothèque locale quand le quota horaire est atteint,
-// on attend (fenêtre glissante d'une heure) : l'exécution peut durer plusieurs heures, mais reste sous la limite d'Unsplash.
+// patient : banc d'essai avec vraies photos. Le quota de Pixabay (100 requêtes par minute) est attendu au lieu d'être contourné.
+// Unsplash, lui, n'est jamais attendu : simple secours, plafonné par site.
 type Options = { offline?: boolean; local?: boolean; verify?: boolean; patient?: boolean; onWait?: (seconds: number) => void };
 
 // Remplit les emplacements d'images d'un site (requête, sans src) avec la photo la plus pertinente de chaque emplacement.
@@ -73,7 +75,6 @@ export async function resolveSitePhotos(site: SiteDescription, options: Options 
   let pixabayAvailable = Boolean(pixabay);
   const local = new LocalLibraryProvider();
   let budget = unsplash ? HOURLY_BUDGET - await callsLastHour() : 0;
-  if (unsplash && options.patient && unsplashWindow.used === 0) unsplashWindow.reset(Math.max(0, HOURLY_BUDGET - budget)); // appels déjà faits cette heure par d'autres processus
   if (!unsplash && !pixabay && remote && primaries.length) console.warn('UNSPLASH_ACCESS_KEY et PIXABAY_API_KEY absentes : photos de la bibliothèque locale uniquement.');
   const library = new Map<string, PhotoCandidate[]>();
 
@@ -99,14 +100,13 @@ export async function resolveSitePhotos(site: SiteDescription, options: Options 
         }
       }
     }
-    // Unsplash : un résultat vide déjà mémorisé évite de redépenser le quota. Quand Pixabay est disponible, Unsplash ne sert qu'aux requêtes
-    // principales (le quota de l'offre démonstration est de 50 par heure). Sinon, les alternatives ne prennent que le quota au-delà d'une réserve de 8.
-    const wantsUnsplash = unsplash && !hit && (options.patient ? (!optional || !pixabayAvailable) : (!optional || budget > 8));
+    // Unsplash = secours : seulement si Pixabay est absent, en panne ou n'a rien trouvé, dans la limite de UNSPLASH_PER_SITE appels par site
+    // et du quota horaire restant. On n'attend jamais le quota : sans réponse, l'emplacement reste graphique (ou local).
+    const wantsUnsplash = unsplash && !hit && fromPixabay.length === 0;
     if (wantsUnsplash) {
       for (const attempt of [normalized, ...(optional ? [] : simplerQueries(normalized))]) {
-        if ((!options.patient && budget <= 0) || fromUnsplash.length) break;
+        if (!unsplashAllowed(budget, report.unsplashCalls, UNSPLASH_PER_SITE) || fromUnsplash.length) break;
         try {
-          if (options.patient) await unsplashWindow.take(HOURLY_BUDGET, Date.now, undefined, options.onWait);
           const result = await unsplash.search(attempt);
           budget = Math.min(budget - 1, result.remaining === undefined ? budget - 1 : result.remaining - 5);
           report.unsplashCalls += 1;
@@ -122,8 +122,8 @@ export async function resolveSitePhotos(site: SiteDescription, options: Options 
     const interleaved: PhotoCandidate[] = [];
     for (let i = 0; i < Math.max(fromUnsplash.length, fromPixabay.length); i += 1) interleaved.push(...[fromUnsplash[i], fromPixabay[i]].filter((photo): photo is PhotoCandidate => Boolean(photo)));
     let candidates = interleaved.slice(0, 10);
-    if (candidates.length) await store(normalized, fromUnsplash.length ? 'unsplash' : 'pixabay', candidates);
-    else if (searched) await store(normalized, unsplash ? 'unsplash' : 'pixabay', []);
+    if (candidates.length) await store(normalized, fromPixabay.length ? 'pixabay' : 'unsplash', candidates);
+    else if (searched) await store(normalized, fromUnsplash.length || report.unsplashCalls > 0 ? 'unsplash' : 'pixabay', []);
     if (!candidates.length) {
       candidates = rankCandidates((await local.search(normalized)).candidates, normalized, 8, { trusted: true });
       if (candidates.length) report.fromLocal += 1;
@@ -156,6 +156,37 @@ export async function resolveSitePhotos(site: SiteDescription, options: Options 
           const accepted = verdict.accepted.map((index) => candidates[index]);
           report.rejected += candidates.length - accepted.length;
           return accepted;
+        });
+      }
+    }
+  }
+
+  // Secours Unsplash : emplacements restés sans photo pertinente (rien trouvé, ou tout refusé par le contrôle visuel). Plafonné, sans attente.
+  if (unsplash && !options.local && !options.offline && options.verify !== false) {
+    const empty = choices.map((candidates, id) => (candidates.length === 0 ? id : -1)).filter((id) => id >= 0);
+    const rescue: VerifySlot[] = [];
+    for (const id of empty) {
+      if (!unsplashAllowed(budget, report.unsplashCalls, UNSPLASH_PER_SITE)) break;
+      const query = normalizeQuery(slots[id].query as string);
+      try {
+        const result = await unsplash.search(query);
+        budget = Math.min(budget - 1, result.remaining === undefined ? budget - 1 : result.remaining - 5);
+        report.unsplashCalls += 1;
+        const found = rankForSlot(rankCandidates(result.candidates, query, 8, { trusted: true }), [query], 3);
+        if (found.length) rescue.push({ id, subject: `${slots[id].alt} (recherche : ${slots[id].query})`, candidates: found });
+      } catch (error) {
+        console.error('Unsplash rescue failed.', error);
+        break;
+      }
+    }
+    if (rescue.length) {
+      const outcome = await verifyPhotos(rescue);
+      report.visionCostEur += outcome.costEur;
+      if (outcome.verdicts) {
+        choices = choices.map((candidates, id) => {
+          const entry = rescue.find((item) => item.id === id);
+          const verdict = outcome.verdicts!.find((item) => item.id === id);
+          return entry && verdict ? verdict.accepted.map((index) => entry.candidates[index]) : candidates;
         });
       }
     }

@@ -27,3 +27,8 @@ export class RateWindow {
 
 export const unsplashWindow = new RateWindow(3_600_000); // Unsplash (offre démonstration) : 50 requêtes par heure
 export const pixabayWindow = new RateWindow(60_000); // Pixabay : 100 requêtes par minute
+
+/** Unsplash n'est qu'un secours : appel permis seulement s'il reste du quota horaire et de la place dans le plafond par site. */
+export function unsplashAllowed(hourlyBudgetLeft: number, callsThisSite: number, perSiteCap: number): boolean {
+  return hourlyBudgetLeft > 0 && callsThisSite < perSiteCap;
+}

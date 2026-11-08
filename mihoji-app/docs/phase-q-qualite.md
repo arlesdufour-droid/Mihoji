@@ -43,20 +43,31 @@ Mets à jour docs/phase-q-progress.md, push sur main.
 ## Ajout important : sites fonctionnels, pas seulement informatifs
 La description structurée du site doit prévoir dès le lot 2 des MODULES fonctionnels, en plus des sections d'affichage. Le modèle de design peut les proposer quand la demande ou le métier s'y prête (ex. restaurant → réservation, boutique → vente, artisan → devis, coach → rendez-vous + paiement).
 
-## Lot 7 : modules transactionnels
-- Devis/contact : réception côté serveur (plus de mailto), stockage, notification email, tableau « Demandes reçues » dans le Studio.
-- Rendez-vous : créneaux configurables, confirmation et rappel par email, gestion dans le Studio.
-- Paiement et boutique simple : catalogue, panier, click & collect, acomptes ; paiement via Stripe Connect (l'argent va directement au commerçant, Mihoji ne le détient jamais).
-- Newsletter : inscription avec consentement RGPD, export des contacts.
-- Espace client : connexion des clients du commerçant, documents, historique.
-Chaque module fonctionne en simulation en développement, avec des tests e2e.
+## Principe des lots 7 à 9 : Mihoji connecte, il ne concurrence pas
+Mihoji ne concurrence pas Wix ou Shopify ; il **connecte**. Un écran « Connexions » du Studio permet au commerçant de brancher ses outils (Stripe, Google Agenda, Calendly, Shopify/WooCommerce, Brevo, fiche Google). Chaque connecteur déclare des **capacités** que l'IA du Studio peut utiliser : à « ajoute la prise de rendez-vous avec acompte », l'IA s'appuie sur les connecteurs branchés (ou propose de les brancher). Jetons chiffrés en base, droits minimaux, déconnexion possible à tout moment.
 
-## Lot 8 : intégrations
-- Widgets : Google Maps, avis Google, Calendly, bouton WhatsApp, flux Instagram.
-- Webhooks sortants configurables par site (nouveau devis, rendez-vous, commande, inscription), signés, avec relance en cas d'échec et journal des envois. Documentation pour Make et Zapier.
+## Lot 7 : images au service du contenu, connexions, devis, rendez-vous avec acompte, petite boutique
+Ordre imposé, chaque étape testée avant la suivante :
+1. **Images** : les photos servent le contenu (en-tête, une par prestation, réalisations ou avant/après pour les artisans, portrait pour les coachs et praticiens) ; plus de galerie posée en bas de page sans raison (retour du banc : coaching, plombier). *(Préalable fait : Pixabay source principale, Unsplash en secours plafonné.)*
+2. **Écran « Connexions »** et cadre technique des connecteurs (capacités exposées à l'IA).
+3. **Devis et contact réellement reçus** : stockage, notification email, tableau « Demandes reçues ».
+4. **Rendez-vous avec acompte** via Stripe Connect (argent versé directement au commerçant ; mode test en développement).
+5. **Petite boutique** : jusqu'à 50 produits, click & collect, paiement Stripe Connect.
 
-## Lot 9 : bloc sur mesure (mode expert)
-- En mode expert, un type de section « sur mesure » dont le code est généré par l'IA et testé dans le bac à sable E2B avant intégration, pour les besoins hors catalogue.
+## Lot 8 (plus tard) : connecteurs et webhooks
+Connecteurs Shopify/WooCommerce (affichage et achat des produits existants), Google Agenda, Calendly, fiche Google, Brevo ; webhooks sortants signés et documentation Make/Zapier. Un connecteur qui exige une formule payante n'est pas implémenté en réel (signalé).
+
+## Lot 9 (après la mise en production) : serveur MCP de Mihoji
+OAuth par espace ; outils : lire et modifier le site via la description structurée, publier, consulter devis, rendez-vous et commandes. Compatible Claude, ChatGPT et Gemini, puis référencement dans leurs annuaires de connecteurs.
+
+## Tests obligatoires (lots 7 à 9)
+- Un test Playwright par étape, qui rejoue le parcours exact de l'utilisateur dans l'interface (pas seulement l'API).
+- Stripe : test de bout en bout en mode test, cartes de test officielles (paiement réussi, refusé, remboursement), et vérification que l'argent est attribué au compte connecté du commerçant.
+- Connecteurs : versions simulées pour les tests automatiques, plus un test réel quand la clé est disponible et que le service est gratuit.
+- La suite complète passe en UNE seule exécution, entièrement verte. Un test instable est corrigé, pas relancé.
+
+## Économie (règles prioritaires, aussi dans AGENTS.md)
+Aucune génération de site superflue ; tests automatiques avec l'IA simulée (AI_MOCK) ; une seule vraie génération par lot, en fin de lot ; pas de mini-banc ni de banc complet par défaut (banc de 12 sites sur demande explicite) ; annonce et accord avant toute dépense d'IA de plus de 0,10 € ; aucun abonnement ou plan payant tiers ; Stripe en mode test uniquement ; emails simulés dans les tests ; pas d'E2B dans ce lot ; photos hébergées des projets de test supprimées automatiquement et alerte si le stockage Supabase approche des limites gratuites ; pendant le travail, tests ciblés seulement, suite e2e complète à la fin de chaque étape.
 
 ## Lot Q3 : Pexels, plus de « Bientôt disponible », banc réaliste, compositions par métier, formulaires Studio
 1. Photos : **Pixabay** comme second fournisseur à la place de Pexels (Pexels abandonné : pas de clé disponible) — `PIXABAY_API_KEY`, conditions de l'API respectées (photos retenues téléchargées et hébergées, résultats en cache), mêmes contrôles de pertinence. Unsplash reste en mode Demo (50 requêtes/h). Banc avec vraies photos : les deux fournisseurs combinés, cache, requêtes étalées dans le temps (mode « patient »), temps estimé annoncé avant lancement.

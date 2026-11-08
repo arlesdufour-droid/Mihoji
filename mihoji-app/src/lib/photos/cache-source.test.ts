@@ -64,3 +64,13 @@ describe('type réel des images', () => {
     expect(sniffImageType(new Uint8Array([1, 2, 3]))).toBeNull();
   });
 });
+
+import { unsplashAllowed } from './rate-window';
+
+describe('Unsplash en secours', () => {
+  it('est plafonné par site et par quota horaire, sans jamais attendre', () => {
+    expect(unsplashAllowed(40, 0, 4)).toBe(true);
+    expect(unsplashAllowed(40, 4, 4)).toBe(false);
+    expect(unsplashAllowed(0, 0, 4)).toBe(false);
+  });
+});
