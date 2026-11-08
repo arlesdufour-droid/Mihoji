@@ -12,6 +12,24 @@ export const FILE_NAME = /^[a-z0-9-]+\.(jpg|html)$/;
 
 export type ManualRatings = Record<string, number>;
 
+// Comparaison par paires (npm run benchmark:compare) : docs/benchmark/compare/<ancienne>__<nouvelle>/pairs-<modèle juge>.json.
+export type Tally = { newBetter: number; equal: number; oldBetter: number; pValue: number | null };
+export type PairsFile = {
+  oldRun: string; newRun: string; judgeModel: string; rubricVersion: number; createdAt: string; totalCostEur: number;
+  cases: { caseId: string; order: 'old-first' | 'new-first'; costEur: number; verdicts: Record<string, { verdict: 'A' | 'egal' | 'B'; raison: string }>; outcomes: Record<string, 'old_better' | 'equal' | 'new_better'> }[];
+  skipped: { id: string; reason: string }[];
+  aggregate: Record<string, Tally>;
+  positionBias: { decided: number; aShare: number | null };
+};
+
+export function readComparisons(newRun: string): PairsFile[] {
+  const dir = resolve(baseDir(), 'compare');
+  if (!RUN_ID.test(newRun) || !existsSync(dir)) return [];
+  return readdirSync(dir, { withFileTypes: true })
+    .filter((entry) => entry.isDirectory() && entry.name.endsWith(`__${newRun}`))
+    .flatMap((entry) => readdirSync(resolve(dir, entry.name)).filter((name) => /^pairs-[A-Za-z0-9._-]+\.json$/.test(name)).sort().flatMap((name) => { try { return [JSON.parse(readFileSync(resolve(dir, entry.name, name), 'utf8')) as PairsFile]; } catch { return []; } }));
+}
+
 export function runDir(runId: string): string | null {
   if (!RUN_ID.test(runId)) return null;
   const dir = resolve(baseDir(), runId);

@@ -41,8 +41,26 @@ function seed(runId: string, mean: number, costEur: number) {
   writeFileSync(resolve(dir, 'alpha.html'), '<!doctype html><title>x</title>');
 }
 
-test.beforeAll(() => { seed(PREVIOUS, 2.8, 0.03); seed(CURRENT, 3.2, 0.04); });
-test.afterAll(() => { for (const id of [PREVIOUS, CURRENT]) rmSync(resolve(BASE, id), { recursive: true, force: true }); });
+const COMPARE_DIR = resolve(BASE, 'compare', `${PREVIOUS}__${CURRENT}`);
+function seedPairs() {
+  const verdict = (side: 'A' | 'egal' | 'B') => ({ verdict: side, raison: `Raison ${side}.` });
+  const keys = ['texte', 'distinctif', 'hierarchie', 'photos', 'credibilite'];
+  const tally = (newBetter: number, equal: number, oldBetter: number, pValue: number | null) => ({ newBetter, equal, oldBetter, pValue });
+  mkdirSync(COMPARE_DIR, { recursive: true });
+  writeFileSync(resolve(COMPARE_DIR, 'pairs-claude-opus-5-5.json'), JSON.stringify({
+    oldRun: PREVIOUS, newRun: CURRENT, judgeModel: 'claude-opus-5-5', rubricVersion: 2, createdAt: '2026-11-08T10:00:00.000Z', totalCostEur: 0.06,
+    cases: [
+      { caseId: 'alpha', order: 'old-first', costEur: 0.03, verdicts: Object.fromEntries(keys.map((key) => [key, verdict('B')])), outcomes: Object.fromEntries(keys.map((key) => [key, 'new_better'])) },
+      { caseId: 'beta', order: 'new-first', costEur: 0.03, verdicts: Object.fromEntries(keys.map((key) => [key, verdict(key === 'photos' ? 'egal' : 'A')])), outcomes: Object.fromEntries(keys.map((key) => [key, key === 'photos' ? 'equal' : 'new_better'])) },
+    ],
+    skipped: [{ id: 'gamma', reason: 'demande différente' }],
+    aggregate: { texte: tally(2, 0, 0, 0.5), distinctif: tally(2, 0, 0, 0.5), hierarchie: tally(2, 0, 0, 0.5), photos: tally(1, 1, 0, 1), credibilite: tally(2, 0, 0, 0.5), overall: tally(2, 0, 0, 0.5) },
+    positionBias: { decided: 9, aShare: 0.5 },
+  }));
+}
+
+test.beforeAll(() => { seed(PREVIOUS, 2.8, 0.03); seed(CURRENT, 3.2, 0.04); seedPairs(); });
+test.afterAll(() => { for (const id of [PREVIOUS, CURRENT]) rmSync(resolve(BASE, id), { recursive: true, force: true }); rmSync(COMPARE_DIR, { recursive: true, force: true }); });
 
 test('Q6.1 la galerie et ses fichiers sont réservés aux administrateurs', async ({ page, request }) => {
   await page.goto(`/admin/benchmark?run=${CURRENT}`);
@@ -88,4 +106,21 @@ test('Q6.3 la note manuelle est enregistrée avec l’exécution et retrouvée a
   await page.getByTestId('manual-alpha').getByRole('button', { name: 'Note 4 sur 5' }).click();
   await expect(page.getByTestId('manual-alpha')).toContainText('Pas encore notée');
   expect(JSON.parse(readFileSync(resolve(BASE, CURRENT, 'manual.json'), 'utf8'))).toEqual({});
+});
+
+test('Q6.4 la galerie affiche la comparaison par paires : verdicts par critère, valeur p, biais de position et justifications', async ({ page, context }) => {
+  await context.addCookies(authCookies());
+  await page.goto(`/admin/benchmark?run=${CURRENT}`);
+  const pairs = page.getByTestId('benchmark-pairs');
+  await expect(pairs).toContainText(`Comparaison par paires avec ${PREVIOUS}`);
+  await expect(pairs).toContainText('claude-opus-5-5');
+  await expect(pairs).toContainText('1 ignoré (gamma : demande différente)');
+  await expect(page.getByTestId('pairs-photos')).toContainText('Qualité et pertinence des photos');
+  await expect(page.getByTestId('pairs-photos').locator('td').nth(1)).toHaveText('1');
+  await expect(page.getByTestId('pairs-overall').locator('td').nth(1)).toHaveText('2');
+  await expect(page.getByTestId('pairs-bias')).toContainText('50 % de « A meilleur » sur 9 verdicts tranchés');
+  await expect(page.getByTestId('pair-alpha')).toContainText('ancienne en A');
+  await expect(page.getByTestId('pair-beta')).toContainText('nouvelle en A');
+  await expect(page.getByTestId('pair-beta')).toContainText('Qualité et pertinence des photos : égal — Raison egal.');
+  await expect(page.getByTestId('pair-alpha')).toContainText('Crédibilité : nouvelle meilleure — Raison B.');
 });

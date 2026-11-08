@@ -32,20 +32,28 @@ describe('cas du banc d’essai', () => {
 
 describe('grille du juge', () => {
   it('est versionnée et couvre les cinq critères demandés', () => {
-    expect(RUBRIC_VERSION).toBe(1);
+    expect(RUBRIC_VERSION).toBe(2);
     expect(rubricCriteria.map((criterion) => criterion.key)).toEqual(['texte', 'distinctif', 'hierarchie', 'photos', 'credibilite']);
     for (const criterion of rubricCriteria) expect(judgeSystemPrompt).toContain(`"${criterion.key}"`);
-    expect(judgeSystemPrompt).toContain('contacterait-il cette entreprise');
+    // Juge v2 : chaque critère a ses niveaux 1, 3 et 5 décrits, et une observation précède la note.
+    for (const criterion of rubricCriteria) for (const level of [1, 3, 5] as const) { expect(criterion.anchors[level].length, `${criterion.key} niveau ${level}`).toBeGreaterThan(30); expect(judgeSystemPrompt).toContain(criterion.anchors[level]); }
+    expect(judgeSystemPrompt).toContain('OBSERVATION');
+    expect(judgeSystemPrompt).toContain('Utilise toute l\'échelle');
+    expect(judgeSystemPrompt).toContain('observation, note, raison');
+    // Sortie structurée par appel d'outil (le JSON écrit à la main a échoué sur un appel réel) : la consigne le demande.
+    expect(judgeSystemPrompt).toContain('noter_le_site');
+    expect(judgeSystemPrompt).toContain('AUCUN texte en dehors de l\'appel d\'outil');
   });
 
   it('valide des notes entières de 1 à 5 avec une justification', () => {
-    const entry = (note: number) => ({ note, raison: 'Une phrase.' });
+    const entry = (note: number) => ({ observation: 'Ce qui est vu.', note, raison: 'Une phrase.' });
     const ok = { texte: entry(4), distinctif: entry(2), hierarchie: entry(3), photos: entry(5), credibilite: entry(1) };
     expect(judgeSchema.safeParse(ok).success).toBe(true);
     expect(judgeMean(ok)).toBe(3);
     expect(judgeSchema.safeParse({ ...ok, texte: entry(6) }).success).toBe(false);
     expect(judgeSchema.safeParse({ ...ok, texte: entry(2.5) }).success).toBe(false);
-    expect(judgeSchema.safeParse({ ...ok, photos: { note: 3, raison: '' } }).success).toBe(false);
+    expect(judgeSchema.safeParse({ ...ok, photos: { observation: 'x', note: 3, raison: '' } }).success).toBe(false);
+    expect(judgeSchema.safeParse({ ...ok, photos: { note: 3, raison: 'Une phrase.' } }).success).toBe(false); // l'observation est obligatoire
   });
 });
 

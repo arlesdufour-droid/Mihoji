@@ -6,7 +6,7 @@ import { isAdmin } from '@/lib/admin';
 import { formatEur } from '@/lib/ai/pricing';
 import { compareRuns, type LighthouseScores } from '@/lib/site/benchmark';
 import { rubricCriteria } from '@/lib/site/benchmark-rubric';
-import { listRuns, readManual, readRun } from '@/lib/site/benchmark-store';
+import { listRuns, readComparisons, readManual, readRun } from '@/lib/site/benchmark-store';
 import { RatingInput } from './rating-input';
 
 export const instant = false;
@@ -44,6 +44,7 @@ export default async function BenchmarkPage({ searchParams }: { searchParams: Pr
   const comparison = previous ? compareRuns(previous, results) : null;
   const deltaOf = (id: string) => comparison?.deltas.find((delta) => delta.id === id);
   const { totals, uniformity } = results;
+  const pairFiles = readComparisons(runId);
   const manualValues = Object.values(manual);
   const manualMean = manualValues.length ? manualValues.reduce((sum, value) => sum + value, 0) / manualValues.length : null;
 
@@ -82,6 +83,33 @@ export default async function BenchmarkPage({ searchParams }: { searchParams: Pr
             : <p className="mt-2 text-amber-300">Non comparable : {comparison.reason}.</p>}
         </section>
       ) : null}
+
+      {pairFiles.map((pairs) => (
+        <section key={`${pairs.oldRun}__${pairs.newRun}`} aria-label="Comparaison par paires" className="mt-4 rounded-xl border border-slate-700 bg-slate-900 p-5 text-sm" data-testid="benchmark-pairs">
+          <h2 className="text-lg font-semibold">Comparaison par paires avec {pairs.oldRun}</h2>
+          <p className="mt-1 text-xs text-slate-400">Juge {pairs.judgeModel} (grille v{pairs.rubricVersion}) · ordre A/B tiré au hasard, équilibré · {pairs.cases.length} cas jugés{pairs.skipped.length ? `, ${pairs.skipped.length} ignoré${pairs.skipped.length > 1 ? 's' : ''} (${pairs.skipped.map((entry) => `${entry.id} : ${entry.reason}`).join(' ; ')})` : ''} · coût {eur(pairs.totalCostEur)}</p>
+          <table className="mt-3 w-full max-w-2xl text-left" aria-label="Verdicts par critère">
+            <thead className="text-xs uppercase text-slate-400"><tr><th className="py-1">Critère</th><th>Nouvelle meilleure</th><th>Égal</th><th>Ancienne meilleure</th><th>Valeur p</th></tr></thead>
+            <tbody>
+              {[...rubricCriteria.map((criterion) => ({ key: criterion.key, label: criterion.label })), { key: 'overall', label: 'Verdict global du cas (par comptage)' }].map((row) => {
+                const tally = pairs.aggregate[row.key];
+                return tally ? <tr key={row.key} data-testid={`pairs-${row.key}`} className="border-t border-slate-800"><td className="py-1">{row.label}</td><td>{tally.newBetter}</td><td>{tally.equal}</td><td>{tally.oldBetter}</td><td>{tally.pValue === null ? '—' : tally.pValue.toFixed(3)}</td></tr> : null;
+              })}
+            </tbody>
+          </table>
+          <p className="mt-2 text-xs text-slate-400" data-testid="pairs-bias">Biais de position : {pairs.positionBias.aShare === null ? '—' : `${Math.round(pairs.positionBias.aShare * 100)} %`} de « A meilleur » sur {pairs.positionBias.decided} verdicts tranchés (proche de 50 % = pas de biais).</p>
+          <ul className="mt-3 space-y-2">
+            {pairs.cases.map((entry) => (
+              <li key={entry.caseId} data-testid={`pair-${entry.caseId}`}>
+                <strong>{entry.caseId}</strong> <span className="text-xs text-slate-400">({entry.order === 'old-first' ? 'ancienne en A' : 'nouvelle en A'})</span>
+                <ul className="ml-4 list-disc text-xs text-slate-300">
+                  {rubricCriteria.map((criterion) => <li key={criterion.key}>{criterion.label} : {entry.outcomes[criterion.key] === 'new_better' ? 'nouvelle meilleure' : entry.outcomes[criterion.key] === 'old_better' ? 'ancienne meilleure' : 'égal'} — {entry.verdicts[criterion.key]?.raison}</li>)}
+                </ul>
+              </li>
+            ))}
+          </ul>
+        </section>
+      ))}
 
       <div className="mt-8 grid gap-6 xl:grid-cols-2">
         {results.sites.map((site) => {
