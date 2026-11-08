@@ -2,7 +2,7 @@ import { NextResponse, type NextRequest } from 'next/server';
 import { createServerClient } from '@supabase/ssr';
 import { getPublicOrigin } from '@/lib/site-url';
 
-const publicApiRoutes = new Set(['/api/health', '/api/auth/magic-link']);
+const publicApiRoutes = new Set(['/api/health', '/api/auth/magic-link', '/api/public/leads']);
 
 function redirectToLogin(request: NextRequest) {
   const origin = getPublicOrigin(request);

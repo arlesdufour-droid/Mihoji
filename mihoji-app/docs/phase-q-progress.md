@@ -326,3 +326,21 @@ Couvert par `e2e/phase-q-lot-7-1.spec.ts`.
 2. Rechargez la page : Brevo reste connecté. « Déconnecter Brevo » → la clé est supprimée.
 3. Dans l'aperçu, écrivez au chat « Ajoute la prise de rendez-vous avec acompte » : la réponse mentionne Stripe et l'onglet « Connexions ».
 Couvert par `e2e/phase-q-lot-7-2.spec.ts`.
+
+## Lot 7 — étape 3 : devis et contact réellement reçus — terminée
+
+### Fait
+- **Les formulaires des sites envoient au serveur de Mihoji** (plus de `mailto:`) : formulaires de contact, de devis et du module « devis », avec champ piège anti-robot et identifiant du site (`{{site.id}}`, remplacé par l'identifiant du projet à l'aperçu et à la publication ; à la publication l'action devient une adresse absolue). **Aucun JavaScript** (règle du projet « sites sans script ») : envoi natif, le serveur répond par une page « Merci ! ». Pour que cela marche dans l'aperçu du Studio, son bac à sable reçoit `allow-forms`.
+- **Réception** `POST /api/public/leads` (publique, CORS ouvert, validation stricte Zod, limites de 8 demandes par heure et par adresse IP et 60 par heure et par site, robot accepté en apparence mais jamais enregistré, site inconnu refusé) ; **stockage** dans la table `leads` (migration `0024`) ; **notification par email** au commerçant (email de contact de l'entreprise) via le service d'emails existant ; un échec d'envoi n'efface jamais la demande (état de notification conservé : `sent`, `simulated`, `no_recipient`, `failed`).
+- **Onglet « Demandes reçues »** du Studio : tableau (date, type, contact cliquable, prestation et message, champs du devis) avec « Nouvelle / Traitée ».
+- Tests : `leads.test.ts` (6 : validation, robot, email, formulaires sans mailto ni script, publication) ; e2e `phase-q-lot-7-3.spec.ts` (le visiteur envoie un devis depuis l'aperçu → page « Merci ! » → ligne en base → email simulé → ligne dans « Demandes reçues » → marquée traitée ; robot, demande invalide, site inconnu). Suite : 217 tests unitaires, 60 e2e en une exécution.
+
+### Simulé / en attente
+- **Emails simulés** : sans `BREVO_API_KEY`, l'email est « simulé » (journalisé, état `simulated`) ; les e2e forcent la simulation (`BREVO_API_KEY` vide). Envoi réel Brevo non testé ici : il n'a pas été essayé faute de clé disponible dans l'environnement de test.
+- L'envoi par le compte Brevo du commerçant (connecteur) arrive au lot 8 ; pour l'instant, les notifications passent par le service d'emails de Mihoji.
+- Les demandes envoyées depuis l'aperçu sont enregistrées comme celles du site publié (pas de marque « test »).
+
+### Comment vérifier
+1. Studio → aperçu du site d'un plombier, section devis : remplissez nom, email, prestation, message → « Demander mon devis » : page « Merci ! ».
+2. Onglet « Demandes reçues » : la demande apparaît ; cliquez sur « Nouvelle » pour la marquer « Traitée ».
+Couvert par `e2e/phase-q-lot-7-3.spec.ts`.

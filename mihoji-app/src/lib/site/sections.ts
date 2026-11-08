@@ -1,3 +1,4 @@
+import { leadFormNote, leadFormOpen } from './lead-form';
 import { button, esc, head, icon, initials, media, stars, ticks } from './html';
 import { moduleSection } from './module-sections';
 import type { SiteModules } from './modules';
@@ -128,7 +129,7 @@ function contactForm(section: Extract<Section, { type: 'contact' }>): string {
   const select = quote && section.services?.length
     ? `<label>Prestation souhaitée<select name="prestation"><option value="">Choisir…</option>${section.services.map((service) => `<option>${esc(service)}</option>`).join('')}</select></label>`
     : '';
-  return `<form class="form" method="post" action="mailto:{{company.email}}" enctype="text/plain"><div class="form-row"><label>Votre nom<input name="nom" autocomplete="name" required></label><label>Téléphone<input name="telephone" type="tel" autocomplete="tel"></label></div><label>Votre email<input name="email" type="email" autocomplete="email" required></label>${select}<label>${quote ? 'Décrivez votre projet' : 'Votre message'}<textarea name="message" rows="${quote ? 5 : 4}" required></textarea></label><button class="btn btn-primary" type="submit">${esc(section.submitLabel ?? (quote ? 'Demander mon devis' : 'Envoyer le message'))}</button><p class="form-note">Votre message s’ouvre dans votre application de messagerie.</p></form>`;
+  return `${leadFormOpen(quote ? 'quote' : 'contact')}<div class="form-row"><label>Votre nom<input name="nom" autocomplete="name" required></label><label>Téléphone<input name="telephone" type="tel" autocomplete="tel"></label></div><label>Votre email<input name="email" type="email" autocomplete="email" required></label>${select}<label>${quote ? 'Décrivez votre projet' : 'Votre message'}<textarea name="message" rows="${quote ? 5 : 4}" required></textarea></label><button class="btn btn-primary" type="submit">${esc(section.submitLabel ?? (quote ? 'Demander mon devis' : 'Envoyer le message'))}</button>${leadFormNote}</form>`;
 }
 
 function contact(section: Extract<Section, { type: 'contact' }>, context: SectionContext): string {

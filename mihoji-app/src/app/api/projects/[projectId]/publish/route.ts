@@ -6,6 +6,7 @@ import { assertProjectAccess, getSession } from '@/lib/auth';
 import { getPublishProvider } from '@/lib/publish/provider';
 import { complianceMissingLabels, complianceStatus } from '@/lib/compliance';
 import { injectCompanyData } from '@/lib/company/render';
+import { absolutizeLeadActions, injectSiteId } from '@/lib/site/lead-form';
 import { scanPublishedSite } from '@/lib/abuse/site-scan';
 import { getPublicOrigin } from '@/lib/site-url';
 import { renderSite } from '@/lib/site/render';
@@ -30,7 +31,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ pro
   const publishable = site ? Object.entries(renderSite(site, { fontBase: `${assetOrigin ?? ''}/fonts` }).files) : files.filter((file) => file.path !== SITE_FILE).map((file) => [file.path, file.content] as const);
   // Les photos de l'utilisateur sont servies par l'application : adresse absolue dans le site publié.
   const withPhotos = (content: string) => (assetOrigin ? content.replaceAll('src="/api/site-photos/', `src="${assetOrigin}/api/site-photos/`).replaceAll('src="/api/hosted-photos/', `src="${assetOrigin}/api/hosted-photos/`) : content);
-  const siteFiles = Object.fromEntries(publishable.map(([path, content]) => [path, injectCompanyData(withPhotos(content), company)]));
+  const siteFiles = Object.fromEntries(publishable.map(([path, content]) => [path, injectCompanyData(injectSiteId(assetOrigin ? absolutizeLeadActions(withPhotos(content), assetOrigin) : withPhotos(content), projectId), company)]));
   const findings = scanPublishedSite(siteFiles);
   if (findings.length > 0) {
     const [publication] = await getDb().insert(publications).values({ projectId, versionId: version.id, url: 'blocked', status: 'failed' }).returning({ id: publications.id });

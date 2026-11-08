@@ -203,7 +203,7 @@ const SECTION_CSS: Record<SectionType, string> = {
 .form-card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-lg);padding:clamp(1.5rem,4vw,2.5rem);box-shadow:var(--shadow-lg)}
 .form{display:grid;gap:1.1rem}.form-row{display:grid;gap:1.1rem}.form label{display:grid;gap:.45rem;font-weight:700;font-size:.95rem}
 .form input,.form textarea,.form select{font:inherit;font-weight:400;color:var(--text);background:var(--bg);border:1.5px solid color-mix(in srgb,var(--text) 28%,transparent);border-radius:var(--r-sm);padding:.85rem 1rem;width:100%;min-height:3rem}.form textarea{resize:vertical}
-.form .btn{justify-self:start}.form-note{font-size:.85rem;color:var(--muted)}
+.form .btn{justify-self:start}.form-note{font-size:.85rem;color:var(--muted)}.lead-hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}.form-ok{font-weight:700;color:var(--primary);padding:.75rem 1rem;border-radius:var(--r-sm);background:color-mix(in srgb,var(--primary) 10%,var(--surface))}.form-ok[hidden]{display:none}
 @media(min-width:900px){.contact-split{grid-template-columns:.9fr 1.1fr;gap:5rem}.form-row{grid-template-columns:1fr 1fr}}
 `,
   map: `

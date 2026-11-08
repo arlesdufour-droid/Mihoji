@@ -4,6 +4,7 @@ import { getDb } from '@/db/client';
 import { companies, fileBlobs, projectFiles, projects } from '@/db/schema';
 import { assertProjectAccess, getSession } from '@/lib/auth';
 import { injectCompanyData } from '@/lib/company/render';
+import { injectSiteId } from '@/lib/site/lead-form';
 
 export async function GET(_request: Request, { params }: { params: Promise<{ projectId: string }> }) {
   const { projectId } = await params;
@@ -20,5 +21,5 @@ export async function GET(_request: Request, { params }: { params: Promise<{ pro
   const files = await getDb().select({ path: projectFiles.path, content: fileBlobs.content }).from(projectFiles).innerJoin(fileBlobs, eq(projectFiles.hash, fileBlobs.hash)).where(eq(projectFiles.projectId, projectId));
   const [company] = await getDb().select().from(companies).where(eq(companies.workspaceId, session.workspaceId)).limit(1);
   const html = files.find((file) => file.path === 'index.html')?.content ?? '';
-  return NextResponse.json({ ...project, html: injectCompanyData(html, company) });
+  return NextResponse.json({ ...project, html: injectCompanyData(injectSiteId(html, projectId), company) });
 }

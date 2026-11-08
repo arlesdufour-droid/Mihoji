@@ -240,3 +240,21 @@ export const connections = pgTable('connections', {
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
   updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
 }, (table) => [unique('connections_workspace_provider_unique').on(table.workspaceId, table.provider)]);
+
+// Demandes reçues par les formulaires des sites (phase Q, lot 7) : devis et contact.
+export const leads = pgTable('leads', {
+  id: uuid('id').defaultRandom().primaryKey(),
+  workspaceId: uuid('workspace_id').notNull().references(() => workspaces.id, { onDelete: 'cascade' }),
+  projectId: uuid('project_id').notNull().references(() => projects.id, { onDelete: 'cascade' }),
+  kind: text('kind', { enum: ['quote', 'contact'] }).notNull(),
+  name: text('name').notNull(),
+  email: text('email').notNull(),
+  phone: text('phone').notNull().default(''),
+  service: text('service').notNull().default(''),
+  message: text('message').notNull(),
+  extra: jsonb('extra').notNull().default({}),
+  status: text('status', { enum: ['new', 'handled'] }).notNull().default('new'),
+  // pending, sent, simulated (aucun envoi réel), no_recipient ou failed.
+  notification: text('notification').notNull().default('pending'),
+  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+});

@@ -1,3 +1,4 @@
+import { leadFormNote, leadFormOpen } from './lead-form';
 import { esc, head, icon } from './html';
 import { formatDays, formatDuration, formatPrice, formatTime, type SiteModules } from './modules';
 import type { Section } from './schema';
@@ -26,7 +27,7 @@ function quote(module: NonNullable<SiteModules['quote']>): { body: string; aside
   const extra = module.fields.map((field) => field === 'date'
     ? `<label>${FIELDS[field]}<input name="${field}" type="date"></label>`
     : `<label>${FIELDS[field]}<input name="${field}"${field === 'budget' || field === 'surface' ? ' inputmode="numeric"' : ''}></label>`).join('');
-  const form = `<form class="form" method="post" action="mailto:{{company.email}}" enctype="text/plain"><div class="form-row"><label>Votre nom<input name="nom" autocomplete="name" required></label><label>Téléphone<input name="telephone" type="tel" autocomplete="tel"></label></div><label>Votre email<input name="email" type="email" autocomplete="email" required></label><label>Prestation<select name="prestation" required><option value="">Choisir…</option>${module.services.map((service) => `<option>${esc(service)}</option>`).join('')}</select></label>${extra}<label>Décrivez votre besoin<textarea name="message" rows="5" required></textarea></label><button class="btn btn-primary" type="submit">Demander mon devis</button><p class="form-note">Votre demande s’ouvre dans votre application de messagerie.</p></form>`;
+  const form = `${leadFormOpen('quote')}<div class="form-row"><label>Votre nom<input name="nom" autocomplete="name" required></label><label>Téléphone<input name="telephone" type="tel" autocomplete="tel"></label></div><label>Votre email<input name="email" type="email" autocomplete="email" required></label><label>Prestation<select name="prestation" required><option value="">Choisir…</option>${module.services.map((service) => `<option>${esc(service)}</option>`).join('')}</select></label>${extra}<label>Décrivez votre besoin<textarea name="message" rows="5" required></textarea></label><button class="btn btn-primary" type="submit">Demander mon devis</button>${leadFormNote}</form>`;
   const emergency = module.emergency ? `<ul class="mod-fallback"><li class="k">Urgence ?</li><li data-company-opt="phone">${icon('phone')}<a href="tel:{{company.phone}}">Appeler le {{company.phone}}</a></li></ul>` : '';
   return {
     body: `<div class="form-card">${form}</div>`,

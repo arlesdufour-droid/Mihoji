@@ -4,6 +4,7 @@ import { getDb } from '@/db/client';
 import { companies, fileBlobs, projectFiles, projectVersions, projects } from '@/db/schema';
 import { assertProjectAccess, getSession } from '@/lib/auth';
 import { injectCompanyData } from '@/lib/company/render';
+import { injectSiteId } from '@/lib/site/lead-form';
 
 export async function GET(_request: Request, { params }: { params: Promise<{ projectId: string }> }) {
   const { projectId } = await params;
@@ -15,7 +16,7 @@ export async function GET(_request: Request, { params }: { params: Promise<{ pro
   const blobs = hashes.size ? await getDb().select({ hash: fileBlobs.hash, content: fileBlobs.content }).from(fileBlobs).where(inArray(fileBlobs.hash, [...hashes])) : [];
   const contentByHash = new Map(blobs.map((blob) => [blob.hash, blob.content]));
   const [company] = await getDb().select().from(companies).where(eq(companies.workspaceId, session.workspaceId)).limit(1);
-  return NextResponse.json(versions.map((version) => ({ ...version, previewHtml: injectCompanyData(contentByHash.get((version.filesSnapshot as Record<string, string>)['index.html']) ?? '', company) })));
+  return NextResponse.json(versions.map((version) => ({ ...version, previewHtml: injectCompanyData(injectSiteId(contentByHash.get((version.filesSnapshot as Record<string, string>)['index.html']) ?? '', projectId), company) })));
 }
 
 export async function POST(request: Request, { params }: { params: Promise<{ projectId: string }> }) {

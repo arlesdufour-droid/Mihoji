@@ -25,6 +25,7 @@ export default async function globalTeardown(_config: FullConfig) {
         await sql`delete from projects where id in ${sql(projectIds)}`;
       }
       await sql`delete from site_photos where workspace_id in ${sql(workspaceIds)}`;
+      await sql`delete from rate_limit_events where key like 'lead-%'`;
       await sql`delete from credit_ledger where workspace_id in ${sql(workspaceIds)}`;
       await sql`delete from support_requests where workspace_id in ${sql(workspaceIds)}`;
       await sql`delete from subscriptions where workspace_id in ${sql(workspaceIds)}`;

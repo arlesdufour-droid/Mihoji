@@ -13,6 +13,7 @@ import type { ChatMessage } from '@/components/studio/composer';
 import type { DemoProject } from '@/lib/templates/site';
 import { PhotosPanel } from '@/components/studio/photos-panel';
 import { InfosPanel } from '@/components/studio/infos-panel';
+import { RequestsPanel } from '@/components/studio/requests-panel';
 import { ConnectionsPanel } from '@/components/studio/connections-panel';
 import { SiteSettings } from '@/components/settings/site-settings';
 import { formatDateTime } from '@/lib/format';
@@ -79,7 +80,7 @@ export function StudioShell({ projectId, remaining, isDemo, email, workspaceName
             </div>
           )}
           <div className="flex h-[calc(100%-49px)] items-center justify-center overflow-auto bg-slate-950 p-4 md:p-8">
-            <iframe key={`${reload}-${versionPreview?.createdAt ?? 'current'}`} title="Aperçu du site généré" srcDoc={/^\s*<!doctype/i.test(previewHtml) ? previewHtml : `<!doctype html><html lang="fr"><head><script src="https://cdn.tailwindcss.com"></script></head><body>${previewHtml}</body></html>`} className="h-full w-full rounded-xl border border-slate-800 bg-white" sandbox="allow-scripts" />
+            <iframe key={`${reload}-${versionPreview?.createdAt ?? 'current'}`} title="Aperçu du site généré" srcDoc={/^\s*<!doctype/i.test(previewHtml) ? previewHtml : `<!doctype html><html lang="fr"><head><script src="https://cdn.tailwindcss.com"></script></head><body>${previewHtml}</body></html>`} className="h-full w-full rounded-xl border border-slate-800 bg-white" sandbox="allow-scripts allow-forms" />
             <EditDesignBar />
           </div>
         </div>
@@ -87,6 +88,8 @@ export function StudioShell({ projectId, remaining, isDemo, email, workspaceName
         ? <PhotosPanel projectId={projectId} onApplied={refreshProject} />
       : activeTab === 'infos'
         ? <InfosPanel projectId={projectId} onApplied={refreshProject} />
+      : activeTab === 'requests'
+        ? <RequestsPanel projectId={projectId} />
       : activeTab === 'connections'
         ? <ConnectionsPanel />
       : activeTab === 'settings'
