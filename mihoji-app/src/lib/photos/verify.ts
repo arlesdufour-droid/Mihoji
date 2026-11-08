@@ -29,6 +29,14 @@ export function thumbnail(src: string): string {
   }
 }
 
+// Type réel d'une image d'après ses premiers octets : certains serveurs annoncent « image/png » pour un fichier JPEG, ce que l'API refuse.
+export function sniffImageType(bytes: Uint8Array): 'image/jpeg' | 'image/png' | 'image/webp' | null {
+  if (bytes[0] === 0xff && bytes[1] === 0xd8 && bytes[2] === 0xff) return 'image/jpeg';
+  if (bytes[0] === 0x89 && bytes[1] === 0x50 && bytes[2] === 0x4e && bytes[3] === 0x47) return 'image/png';
+  if (bytes.length > 11 && String.fromCharCode(...bytes.slice(0, 4)) === 'RIFF' && String.fromCharCode(...bytes.slice(8, 12)) === 'WEBP') return 'image/webp';
+  return null;
+}
+
 // Photos Pixabay : on télécharge nous-mêmes l'aperçu (jamais d'adresse Pixabay transmise à un tiers ni affichée) et on l'envoie en base64.
 async function imageBlock(candidate: PhotoCandidate): Promise<Anthropic.ContentBlockParam> {
   if (!candidate.previewUrl) return { type: 'image', source: { type: 'url', url: thumbnail(candidate.src) } };
@@ -36,7 +44,9 @@ async function imageBlock(candidate: PhotoCandidate): Promise<Anthropic.ContentB
     const response = await fetch(candidate.previewUrl, { signal: AbortSignal.timeout(15_000) });
     const type = response.headers.get('content-type')?.split(';')[0] ?? '';
     if (!response.ok || !/^image\/(jpeg|png|webp)$/.test(type)) throw new Error(`preview_${response.status}`);
-    return { type: 'image', source: { type: 'base64', media_type: type as 'image/jpeg' | 'image/png' | 'image/webp', data: Buffer.from(await response.arrayBuffer()).toString('base64') } };
+    const bytes = Buffer.from(await response.arrayBuffer());
+    const mediaType = sniffImageType(bytes) ?? (type as 'image/jpeg' | 'image/png' | 'image/webp');
+    return { type: 'image', source: { type: 'base64', media_type: mediaType, data: bytes.toString('base64') } };
   } catch {
     return { type: 'text', text: '(image indisponible : refuse cette photo)' };
   }

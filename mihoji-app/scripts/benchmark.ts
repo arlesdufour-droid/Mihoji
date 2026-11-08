@@ -30,8 +30,17 @@ function stamp(date = new Date()): string {
 
 function staticServer(runDir: string): Promise<{ server: Server; origin: string }> {
   const types: Record<string, string> = { '.html': 'text/html; charset=utf-8', '.woff2': 'font/woff2', '.json': 'application/json' };
-  const server = createServer((request, response) => {
+  const server = createServer(async (request, response) => {
     const path = decodeURIComponent((request.url ?? '/').split('?')[0]);
+    // Photos Pixabay hébergées : lues dans la base, comme le fait l'application pour les sites publiés.
+    const hosted = path.match(/^\/api\/hosted-photos\/([0-9a-f-]{36})$/i);
+    if (hosted) {
+      const { readHostedPhoto } = await import('../src/lib/photos/hosting');
+      const photo = await readHostedPhoto(hosted[1]);
+      if (!photo) { response.writeHead(404).end(); return; }
+      response.writeHead(200, { 'Content-Type': photo.mime }).end(photo.data);
+      return;
+    }
     const file = path.startsWith('/fonts/') ? resolve('public', path.slice(1)) : resolve(runDir, path.slice(1));
     const allowed = path.startsWith('/fonts/') ? file.startsWith(resolve('public/fonts')) : file.startsWith(runDir);
     if (!allowed || !existsSync(file)) { response.writeHead(404).end(); return; }

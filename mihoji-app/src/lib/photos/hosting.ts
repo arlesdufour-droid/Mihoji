@@ -7,6 +7,7 @@ import type { SiteDescription } from '../site/schema';
 import { siteSchema } from '../site/schema';
 import { isPixabayUrl } from './pixabay';
 import type { PhotoCandidate } from './types';
+import { sniffImageType } from './verify';
 
 // Hébergement des photos Pixabay retenues (conditions de l'API) : téléchargées une seule fois, stockées en base, servies par
 // /api/hosted-photos/<id> avec le crédit du photographe. Si un téléchargement échoue, l'emplacement redevient un visuel graphique :
@@ -32,7 +33,8 @@ async function hostOne(photo: PhotoCandidate): Promise<string | null> {
 export async function readHostedPhoto(id: string): Promise<{ data: Buffer; mime: string } | null> {
   if (!/^[0-9a-f-]{36}$/i.test(id)) return null;
   const [row] = await getDb().select({ data: hostedPhotos.data, mime: hostedPhotos.mime }).from(hostedPhotos).where(eq(hostedPhotos.id, id)).limit(1);
-  return row ?? null;
+  // Le type annoncé par le fournisseur est parfois faux (PNG pour un JPEG) : on sert le type réel.
+  return row ? { data: row.data, mime: sniffImageType(row.data) ?? row.mime } : null;
 }
 
 // Remplace dans le site chaque adresse Pixabay par la copie hébergée. Retourne le site et le nombre de photos retirées faute de téléchargement.

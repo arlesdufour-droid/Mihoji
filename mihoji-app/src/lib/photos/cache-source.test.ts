@@ -53,3 +53,14 @@ describe('cache des photos : sources autorisées', () => {
     }
   });
 });
+
+import { sniffImageType } from './verify';
+
+describe('type réel des images', () => {
+  it('reconnaît un JPEG même si le serveur annonce du PNG', () => {
+    expect(sniffImageType(new Uint8Array([0xff, 0xd8, 0xff, 0xe0, 0]))).toBe('image/jpeg');
+    expect(sniffImageType(new Uint8Array([0x89, 0x50, 0x4e, 0x47, 0x0d]))).toBe('image/png');
+    expect(sniffImageType(new TextEncoder().encode('RIFF\0\0\0\0WEBPVP8 '))).toBe('image/webp');
+    expect(sniffImageType(new Uint8Array([1, 2, 3]))).toBeNull();
+  });
+});
