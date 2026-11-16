@@ -8,7 +8,7 @@ export const SIM_SESSION_PREFIX = 'sim_cs_';
 export class SimulatedPayments implements PaymentsProvider {
   readonly simulated = true;
   constructor(private readonly origin: string) {}
-  async createAccount() { return { accountId: `acct_sim_${randomBytes(6).toString('hex')}` }; }
+  async createAccount(profile?: { email?: string; name?: string }) { void profile; return { accountId: `acct_sim_${randomBytes(6).toString('hex')}` }; }
   async onboardingUrl(input: { accountId: string; returnUrl: string; refreshUrl: string }) { void input.refreshUrl; return input.returnUrl; }
   async accountStatus(accountId: string) { return { ready: accountId.startsWith('acct_sim_'), label: `Compte Stripe de test (${accountId.slice(-6)})` }; }
   async createCheckout(input: CheckoutInput): Promise<Checkout> {

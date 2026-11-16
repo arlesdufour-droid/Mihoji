@@ -13,7 +13,7 @@ export async function POST(request: Request) {
   const origin = getRequestOrigin(request);
   try {
     const provider = getPaymentsProvider(origin);
-    const accountId = (await readSecret(session.workspaceId, 'stripe')) ?? (await provider.createAccount()).accountId;
+    const accountId = (await readSecret(session.workspaceId, 'stripe')) ?? (await provider.createAccount({ email: session.user.email, name: session.workspaceName })).accountId;
     await savePendingConnection(session.workspaceId, 'stripe', accountId);
     const returnUrl = `${origin}/api/connections/stripe/return`;
     return NextResponse.json({ url: await provider.onboardingUrl({ accountId, returnUrl, refreshUrl: returnUrl }) });

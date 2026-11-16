@@ -7,7 +7,7 @@ export type PaymentEvent = { type: 'paid' | 'expired'; bookingId: string; sessio
 
 export interface PaymentsProvider {
   readonly simulated: boolean;
-  createAccount(): Promise<{ accountId: string }>;
+  createAccount(profile?: { email?: string; name?: string }): Promise<{ accountId: string }>;
   onboardingUrl(input: { accountId: string; returnUrl: string; refreshUrl: string }): Promise<string>;
   accountStatus(accountId: string): Promise<{ ready: boolean; label: string }>;
   createCheckout(input: CheckoutInput): Promise<Checkout>;

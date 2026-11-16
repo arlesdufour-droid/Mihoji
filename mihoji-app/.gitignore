@@ -51,3 +51,5 @@ docs/benchmark/*
 !docs/benchmark/latest.json
 .next-e2e
 .next-build
+e2e/.stripe-account.json
+.next-stripe
