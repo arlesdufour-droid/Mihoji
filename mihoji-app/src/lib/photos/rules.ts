@@ -18,12 +18,14 @@ export function applyPhotoRules(site: SiteDescription): { site: SiteDescription;
       // Sans photo, un bandeau ou une présentation à cadre photo devient une composition typographique (pas de cadre vide).
       if (section.type === 'hero' && !section.image?.src && section.variant !== 'centered') { section.variant = 'centered'; delete section.image; }
       if (section.type === 'about' && !section.image?.src && section.variant !== 'text') { section.variant = 'text'; delete section.image; }
-      // Une photo par prestation : on garde TOUTES les photos trouvées (variante « cartes »), et une prestation sans photo reçoit à l'affichage
-      // un visuel graphique aux couleurs du thème, avec son icône. Aucune photo trouvée : cartes à icône, sans cadre photo.
+      // Une photo par prestation : si au moins la moitié des prestations ont une vraie photo, on les garde toutes (variante « cartes ») et une prestation
+      // sans photo reçoit à l'affichage un visuel graphique aux couleurs du thème, avec son icône. Si moins de la moitié en ont une, AUCUN cadre photo :
+      // cartes à icône propres, sans « trou » (les rares photos trouvées sont retirées pour ne pas mêler une photo à une majorité de cadres graphiques).
       if (section.type === 'services') {
         const withPhoto = section.items.filter((item) => item.image?.src).length;
-        if (withPhoto > 0 && section.variant !== 'list') section.variant = 'cards';
-        section.items = section.items.map((item) => { if (item.image?.src) return item; const { image, ...rest } = item; void image; return rest; });
+        const enough = withPhoto > 0 && withPhoto * 2 >= section.items.length;
+        if (enough && section.variant !== 'list') section.variant = 'cards';
+        section.items = section.items.map((item) => { if (enough && item.image?.src) return item; const { image, ...rest } = item; void image; return rest; });
       }
       if (section.type === 'products') {
         const withPhoto = section.items.filter((item) => item.image?.src).length;

@@ -46,16 +46,29 @@ describe('une photo par prestation', () => {
     expect((html.match(/class="media-box svc-photo"/g) ?? []).length).toBe(section.items.length);
     expect(html).toContain('svc-item--photo');
   });
-  it('garde les photos trouvées et met un visuel graphique aux prestations restées sans photo', () => {
-    const ruled = applyPhotoRules(withServicePhotos(1)).site;
+  const itemCount = () => { const section = services(base()); if (section.type !== 'services') throw new Error(); return section.items.length; };
+  it('si au moins la moitié des prestations ont une photo, garde toutes les photos trouvées et met un visuel graphique aux autres', () => {
+    const half = Math.ceil(itemCount() / 2);
+    const ruled = applyPhotoRules(withServicePhotos(half)).site;
     const section = services(ruled);
     if (section.type !== 'services') throw new Error();
-    expect(section.items.filter((item) => item.image?.src)).toHaveLength(1);
+    expect(section.items.filter((item) => item.image?.src)).toHaveLength(half);
     const html = renderSite(ruled).files['index.html'];
     expect(html).toContain('svc-item--photo');
-    // une carte à vraie photo, les autres avec le visuel graphique du thème (cadre « placeholder » avec icône, jamais un cadre vide)
-    expect((html.match(/<img class="media"/g) ?? []).length).toBeGreaterThanOrEqual(1);
-    expect((html.match(/media-box svc-photo media--placeholder/g) ?? []).length).toBe(section.items.length - 1);
+    expect((html.match(/<img class="media"/g) ?? []).length).toBeGreaterThanOrEqual(half);
+    expect((html.match(/media-box svc-photo media--placeholder/g) ?? []).length).toBe(section.items.length - half);
+  });
+  it('si moins de la moitié des prestations ont une photo, AUCUN cadre photo : cartes à icône propres, sans « trou »', () => {
+    const fewer = Math.ceil(itemCount() / 2) - 1;
+    expect(fewer).toBeGreaterThanOrEqual(1);
+    const ruled = applyPhotoRules(withServicePhotos(fewer)).site;
+    const section = services(ruled);
+    if (section.type !== 'services') throw new Error();
+    expect(section.items.every((item) => !item.image)).toBe(true);
+    const html = renderSite(ruled).files['index.html'];
+    expect(html).not.toContain('svc-item--photo');
+    expect(html).not.toContain('svc-photo');
+    expect(html).toContain('svc-icon');
   });
   it('sans aucune photo trouvée, les prestations restent des cartes à icône, sans cadre photo', () => {
     const ruled = applyPhotoRules(withServicePhotos(0)).site;

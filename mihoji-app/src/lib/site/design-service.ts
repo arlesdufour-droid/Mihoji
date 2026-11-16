@@ -10,6 +10,7 @@ import { LlmProviderError, type LlmProvider } from '@/lib/ai/providers/types';
 import { designRoute, type DesignTask } from '@/lib/ai/routing';
 import { createSiteDesign, restyleSiteDesign, type Complete, type CreateInput, type DesignResult } from './design';
 import { resolveSitePhotos, type PhotoReport } from '@/lib/photos/service';
+import { dumpDesignDebug } from './design-debug';
 import type { SiteFacts } from './facts';
 import { siteSchema, type SiteDescription } from './schema';
 import { applyUserPhotos, type UserPhoto } from './user-photos';
@@ -51,6 +52,7 @@ export async function runDesignGeneration(input: RunInput, signal?: AbortSignal)
       const withOwn = input.userPhotos?.length ? applyUserPhotos(result.value, input.userPhotos).site : result.value;
       const { site, report } = await resolveSitePhotos(withOwn, { offline: provider === 'mock', local: input.photos === 'local', patient: input.photos === 'real', onWait: (seconds) => console.info(`Quota Unsplash atteint : attente de ${Math.ceil(seconds / 60)} min.`) });
       photoCostEur = report.visionCostEur;
+      dumpDesignDebug({ request: input.request, requested: withOwn, final: site, report });
       result = { ...result, value: siteSchema.parse(site) };
       console.info('Photos resolved.', report);
       input.onPhotos?.(report);

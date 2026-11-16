@@ -83,13 +83,15 @@ export function rankCandidates(candidates: PhotoCandidate[], query: string, limi
 
 // Classement pour un emplacement qui a plusieurs formulations (requête principale + alternatives) : chaque photo prend sa meilleure note,
 // les doublons (même photo trouvée par deux requêtes) sont fusionnés.
-export function rankForSlot(pool: PhotoCandidate[], queries: string[], limit = 3): PhotoCandidate[] {
+// trusted : candidates d'une vraie recherche (Pixabay, Unsplash), dont le texte ne cite pas toujours les mots de la requête (« plumber fixing sink pipe » : 0 photo sur 8
+// gardée par le filtre de couverture dans le cache réel). On n'écarte alors que les motifs hors sujet : le contrôle visuel tranche ensuite.
+export function rankForSlot(pool: PhotoCandidate[], queries: string[], limit = 3, options: { trusted?: boolean } = {}): PhotoCandidate[] {
   const best = new Map<string, { candidate: PhotoCandidate; score: number }>();
   pool.forEach((candidate, rank) => {
     for (const query of queries) {
-      if (coverage(candidate, query) < MIN_COVERAGE) continue;
+      if (options.trusted ? isOffTopic(candidate, query) : coverage(candidate, query) < MIN_COVERAGE) continue;
       const score = scoreCandidate(candidate, query, rank % 20);
-      if (score <= 2) continue;
+      if (!options.trusted && score <= 2) continue;
       const known = best.get(candidate.src);
       if (!known || score > known.score) best.set(candidate.src, { candidate, score });
     }

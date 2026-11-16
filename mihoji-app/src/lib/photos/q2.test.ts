@@ -129,3 +129,22 @@ describe('Pixabay', () => {
     expect(html).not.toContain('Unsplash');
   });
 });
+
+import { rankForSlot as rankSlot } from './select';
+
+describe('classement par emplacement : mode fiable pour les vraies recherches', () => {
+  const candidate = (src: string, alt: string, tags: string[] = []) => ({ src, alt, description: '', tags, credit: { name: 'x', url: 'https://example.com' } }) as never;
+  const pool = [candidate('a', 'woman smiling in an office'), candidate('b', 'american flag on a building', ['flag']), candidate('c', 'massage therapy room', ['spa'])];
+  it('strict (bibliothèque locale) : exige la moitié des mots de la requête dans le texte de la photo', () => {
+    expect(rankSlot(pool, ['friendly physiotherapist portrait clinic'], 3)).toEqual([]);
+  });
+  it('fiable (Pixabay, Unsplash) : garde les photos dont le texte ne cite pas la requête, mais écarte toujours les motifs hors sujet', () => {
+    const kept = rankSlot(pool, ['friendly physiotherapist portrait clinic'], 3, { trusted: true }).map((entry) => (entry as unknown as { src: string }).src);
+    expect(kept).toContain('a');
+    expect(kept).toContain('c');
+    expect(kept).not.toContain('b'); // drapeau
+  });
+  it('respecte la limite demandée', () => {
+    expect(rankSlot(pool, ['office'], 1, { trusted: true })).toHaveLength(1);
+  });
+});

@@ -8,6 +8,7 @@ import { assignSlots, pendingSlots } from './assign';
 import { LocalLibraryProvider } from './local';
 import { hostPixabayPhotos } from './hosting';
 import { PixabayProvider } from './pixabay';
+import { effectiveCacheSource, isCacheFresh } from './cache-policy';
 import { pixabayWindow, unsplashAllowed } from './rate-window';
 import { applyPhotoRules } from './rules';
 import { normalizeQuery, rankCandidates, rankForSlot, simplerQueries } from './select';
@@ -36,7 +37,8 @@ async function cached(key: string): Promise<PhotoCandidate[] | null> {
   const hit = memory.get(key);
   if (hit) return hit;
   const [row] = await getDb().select().from(photoCache).where(and(eq(photoCache.query, key), gt(photoCache.fetchedAt, sql`now() - make_interval(days => ${CACHE_DAYS})`))).limit(1);
-  if (!row) return null;
+  // Les adresses Pixabay expirent : une réponse de plus de 24 h est ignorée (nouvelle recherche), sinon le téléchargement pour l'hébergement échoue.
+  if (!row || !isCacheFresh(effectiveCacheSource(row.source, (row.candidates as PhotoCandidate[]).map((candidate) => candidate.src)), row.fetchedAt)) return null;
   const candidates = row.candidates as PhotoCandidate[];
   memory.set(key, candidates);
   return candidates;
@@ -137,7 +139,7 @@ export async function resolveSitePhotos(site: SiteDescription, options: Options 
   const ranked = slots.map((slot) => {
     const queries = [slot.query as string, ...(slot.alternatives ?? [])].map(normalizeQuery);
     const pool = [...new Map(queries.flatMap((query) => library.get(query) ?? []).map((candidate) => [candidate.src, candidate])).values()];
-    return rankForSlot(pool, queries, 3);
+    return rankForSlot(pool, queries, 3, { trusted: remote });
   });
 
   // Contrôle visuel (un seul appel pour tout le site). Sans contrôle possible (simulation, pas de clé, panne), le classement par mots-clés fait foi.
@@ -172,7 +174,7 @@ export async function resolveSitePhotos(site: SiteDescription, options: Options 
         const result = await unsplash.search(query);
         budget = Math.min(budget - 1, result.remaining === undefined ? budget - 1 : result.remaining - 5);
         report.unsplashCalls += 1;
-        const found = rankForSlot(rankCandidates(result.candidates, query, 8, { trusted: true }), [query], 3);
+        const found = rankForSlot(rankCandidates(result.candidates, query, 8, { trusted: true }), [query], 3, { trusted: true });
         if (found.length) rescue.push({ id, subject: `${slots[id].alt} (recherche : ${slots[id].query})`, candidates: found });
       } catch (error) {
         console.error('Unsplash rescue failed.', error);
