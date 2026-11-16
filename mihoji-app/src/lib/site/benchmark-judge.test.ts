@@ -2,7 +2,7 @@ import sharp from 'sharp';
 import { describe, expect, it } from 'vitest';
 import type Anthropic from '@anthropic-ai/sdk';
 import { cropToSameHeight, judgePair, judgeSite } from './benchmark-judge';
-import { JUDGE_COST_LIMIT_EUR, JUDGE_MODEL, GENERATOR_MODEL, pairSystemPrompt, pairUserMessage } from './benchmark-rubric';
+import { JUDGE_COST_LIMIT_EUR, JUDGE_MODEL, GENERATOR_MODEL, PREMIUM_JUDGE_MODEL, pairSystemPrompt, pairUserMessage } from './benchmark-rubric';
 
 const jpeg = (width: number, height: number) => sharp({ create: { width, height, channels: 3, background: '#cccccc' } }).jpeg().toBuffer();
 // Réponse du modèle : un appel d'outil (objet) ou, pour simuler une panne, du texte sans appel d'outil.
@@ -12,8 +12,10 @@ const pairJson = ({ texte: { verdict: 'A', raison: 'r' }, distinctif: { verdict:
 const absoluteJson = (Object.fromEntries(['texte', 'distinctif', 'hierarchie', 'photos', 'credibilite'].map((key) => [key, { observation: 'o', note: 3, raison: 'r' }]))) as Record<string, unknown>;
 
 describe('choix du modèle juge', () => {
-  it('est différent du modèle générateur et son coût par site reste sous le plafond', () => {
+  it('est différent du modèle générateur ; Haiku par défaut, Opus seulement sur demande explicite', () => {
     expect(JUDGE_MODEL).not.toBe(GENERATOR_MODEL);
+    if (!process.env.AI_MODEL_JUDGE) expect(JUDGE_MODEL).toBe('claude-haiku-5-5');
+    expect(PREMIUM_JUDGE_MODEL).toBe('claude-opus-5-5');
     expect(JUDGE_COST_LIMIT_EUR).toBe(0.05);
   });
 });

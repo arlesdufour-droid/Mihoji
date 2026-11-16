@@ -26,3 +26,7 @@ Dépense d'IA cumulée de la mission (compteur) : mini-banc photos 0,216 € ; a
 - **Banc v3** : les 10 cas complets reçoivent les réponses (prestations, prix, horaires, zone, ton) et une année de création fictive ; les 2 cas « données pauvres » restent tels quels (même entrée). Le banc transmet ces faits au modèle comme l'onboarding. Note : le cas `pauvre-naf` (activité = code brut 47.78C) obtient désormais automatiquement son libellé officiel — l'entrée est inchangée, le résultat s'améliore.
 - **Tests** : NAF (3 tests dont 732 codes), faits et questionnaire (4), cas du banc v3 (3), e2e du questionnaire (E3.1 les cinq réponses enregistrées ; E3.2 aucune réponse = rien d'enregistré, réponse trop longue refusée). Aucune dépense d'IA pour cette étape.
 - **Limite connue** : la suppression de la section « zone » sans zone fournie repose sur la consigne au modèle, pas sur un contrôle automatique ; à mesurer sur le banc de l'étape 4.
+
+## Décisions de l'utilisateur (après l'étape 3)
+- **Étape 4 abandonnée**, ainsi que tout le plan juge/banc : aucun banc de 12 cas lancé dans cette mission.
+- **Juge par défaut = `claude-haiku-5-5`** (≈ 0,0008 € par appel). Opus 5.5 reste disponible sur demande explicite (`AI_MODEL_JUDGE=claude-opus-5-5`, ≈ 0,03 à 0,04 € par appel) : il est plus sensible (hiérarchie 4 → 2 sur la capture dégradée, contre 4 → 3 pour Haiku). Ce choix remplace celui de l'étape 2 (Opus par défaut).

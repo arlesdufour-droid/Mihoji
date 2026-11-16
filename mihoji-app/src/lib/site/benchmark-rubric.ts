@@ -5,9 +5,11 @@ import { z } from 'zod';
 // Le juge n'est ni le générateur ni de la même famille de modèle (le design est fait par claude-sonnet-5-5) et ne partage aucun prompt avec lui.
 export const RUBRIC_VERSION = 2;
 
-// Modèle juge : Claude Opus 5.5 (vision), choisi pour être différent du générateur (évite la préférence d'un modèle pour sa propre production) et plus
-// discriminant que Sonnet ; coût mesuré par site ≤ 0,05 € (voir docs/reports). Modifiable par AI_MODEL_JUDGE (le coût d'un autre modèle n'est alors pas garanti).
-export const JUDGE_MODEL = process.env.AI_MODEL_JUDGE || 'claude-opus-5-5';
+// Modèle juge PAR DÉFAUT : Claude Haiku 5.5 (vision), différent du générateur (évite la préférence d'un modèle pour sa propre production) et environ 0,0008 € par appel.
+// Claude Opus 5.5 est plus sensible (hiérarchie 4 → 2 sur une capture dégradée, contre 4 → 3 pour Haiku) mais coûte 0,03 à 0,04 € par appel :
+// il n'est utilisé que sur demande explicite (AI_MODEL_JUDGE=claude-opus-5-5). Le coût d'un autre modèle n'est pas garanti.
+export const JUDGE_MODEL = process.env.AI_MODEL_JUDGE || 'claude-haiku-5-5';
+export const PREMIUM_JUDGE_MODEL = 'claude-opus-5-5';
 export const GENERATOR_MODEL = 'claude-sonnet-5-5';
 export const JUDGE_COST_LIMIT_EUR = 0.05;
 

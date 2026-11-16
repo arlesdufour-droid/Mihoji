@@ -7,7 +7,7 @@ import { assertE2eEnvironment, loadEnv } from './e2e-guard';
 // Comparaison par paires de deux exécutions du banc (ancienne puis nouvelle) : pour chaque cas commun (même identifiant, même demande),
 // le juge voit « Site A » et « Site B » (ordre tiré au hasard, équilibré) et donne un verdict par critère avec une phrase de justification.
 // Lancer : npm run benchmark:compare -- <exécution ancienne> <exécution nouvelle> [cas…] [--max-cost=0.6]
-// Coût : environ 0,03 € par cas (juge Opus 5.5, quatre captures) ; aucune génération de site.
+// Juge par défaut : Haiku 5.5 (≈ 0,001 € par cas). Opus 5.5 seulement sur demande explicite : AI_MODEL_JUDGE=claude-opus-5-5 (≈ 0,03 € par cas). Aucune génération de site.
 const moduleInternals = Module as unknown as { _resolveFilename: (request: string, ...rest: unknown[]) => string };
 const resolveFilename = moduleInternals._resolveFilename;
 moduleInternals._resolveFilename = (request, ...rest) => (request === 'server-only' ? resolve('scripts/empty-module.cjs') : resolveFilename(request, ...rest));
