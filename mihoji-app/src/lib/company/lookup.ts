@@ -1,3 +1,4 @@
+import nafLabelsJson from './naf-labels.json';
 export type CompanyLookup = {
   siret: string;
   siren: string;
@@ -17,12 +18,14 @@ const legalForms: Record<string, string> = {
   '5306': 'SA à conseil d’administration',
 };
 
-const nafLabels: Record<string, string> = {
-  '10.71C': 'Boulangerie et boulangerie-pâtisserie',
-  '56.10C': 'Restauration de type rapide',
-  '62.01Z': 'Programmation informatique',
-  '43.21A': 'Travaux d’installation électrique dans tous locaux',
-};
+// Nomenclature INSEE complète (NAF rév. 2, 2008, niveau 5 : 732 sous-classes), source : insee.fr, fichier naf2008_liste_n5.
+const nafLabels: Record<string, string> = nafLabelsJson;
+
+// « 4322A », « 43.22a » et « 43.22A » désignent la même sous-classe.
+export function normalizeNaf(code: string): string | null {
+  const match = code.trim().toUpperCase().match(/^(\d{2})\.?(\d{2})([A-Z])$/);
+  return match ? `${match[1]}.${match[2]}${match[3]}` : null;
+}
 
 export function legalFormLabel(code: string | null | undefined) {
   if (!code) return 'Forme juridique non renseignée';
@@ -32,7 +35,8 @@ export function legalFormLabel(code: string | null | undefined) {
 
 export function nafLabel(code: string | null | undefined) {
   if (!code) return 'Activité non renseignée';
-  return nafLabels[code.toUpperCase()] ?? code;
+  const normalized = normalizeNaf(code);
+  return (normalized && nafLabels[normalized]) ?? code;
 }
 
 export function isValidSiret(value: string) {

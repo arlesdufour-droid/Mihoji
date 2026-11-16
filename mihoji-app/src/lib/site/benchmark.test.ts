@@ -3,6 +3,7 @@ import { BENCHMARK_VERSION, benchmarkCases } from './benchmark-cases';
 import { RUBRIC_VERSION, judgeMean, judgeSchema, judgeSystemPrompt, rubricCriteria } from './benchmark-rubric';
 import { compareRuns, computeTotals, computeUniformity, type BenchmarkResults, type SiteResult } from './benchmark';
 import { nafLabel } from '@/lib/company/lookup';
+import { factsLines, factsOf } from './facts';
 
 function site(id: string, sections: string[], style: string, palette: string, extra: Partial<SiteResult> = {}): SiteResult {
   return { id, label: id, request: 'r', status: 'succeeded', sections, style, palette, generation: { id, costEur: 0.04, attempts: 1, durationMs: 1000, promptTokens: 1, completionTokens: 1, cacheReadTokens: 0, cacheWriteTokens: 0, model: 'm' }, ...extra };
@@ -10,7 +11,7 @@ function site(id: string, sections: string[], style: string, palette: string, ex
 
 describe('cas du banc d’essai', () => {
   it('compte 12 cas figés, aux identifiants uniques et aux métiers variés', () => {
-    expect(BENCHMARK_VERSION).toBe(2);
+    expect(BENCHMARK_VERSION).toBe(3);
     expect(benchmarkCases).toHaveLength(12);
     expect(new Set(benchmarkCases.map((item) => item.id)).size).toBe(12);
     expect(new Set(benchmarkCases.map((item) => item.company.activity)).size).toBe(12);
@@ -22,8 +23,9 @@ describe('cas du banc d’essai', () => {
 
   it('contient deux cas à données pauvres : code NAF brut et demande d’une ligne', () => {
     const naf = benchmarkCases.find((item) => item.poorData === 'naf-brut')!;
-    expect(nafLabel(naf.company.activity)).toBe(naf.company.activity);
+    // L'entrée reste un code NAF brut ; depuis la nomenclature complète (étape 3 de la mission qualité), le libellé officiel est retrouvé automatiquement.
     expect(naf.company.activity).toMatch(/^\d{2}\.\d{2}[A-Z]$/);
+    expect(nafLabel(naf.company.activity)).toBe('Autres commerces de détail spécialisés divers');
     const short = benchmarkCases.find((item) => item.poorData === 'demande-courte')!;
     expect(short.request.split(/\r?\n/)).toHaveLength(1);
     expect(short.request.length).toBeLessThan(60);
@@ -104,4 +106,27 @@ describe('comparaison avant/après', () => {
     expect(compareRuns(base, run({ rubricVersion: 2 }, base.sites)).comparable).toBe(false);
     expect(compareRuns(base, run({ photos: 'unsplash' }, base.sites)).reason).toContain('photos');
   });
+});
+
+describe('cas du banc v3 : questionnaire et ancienneté', () => {
+  it('les 10 cas complets ont les cinq réponses et une année de création ; les 2 cas pauvres n’en ont aucune', () => {
+    const complete = benchmarkCases.filter((item) => !item.poorData);
+    expect(complete).toHaveLength(10);
+    for (const item of complete) {
+      expect(item.foundedYear, item.id).toBeGreaterThan(1980);
+      for (const key of ['specialties', 'priceRange', 'hours', 'area', 'tone'] as const) expect(item.profile?.[key]?.length, `${item.id}.${key}`).toBeGreaterThan(3);
+    }
+    for (const item of benchmarkCases.filter((entry) => entry.poorData)) { expect(item.profile).toBeUndefined(); expect(item.foundedYear).toBeUndefined(); }
+  });
+  it('les réponses se transforment en faits pour le modèle, avec ancienneté', () => {
+    const plombier = benchmarkCases.find((item) => item.id === 'plombier')!;
+    const facts = { ...factsOf({ company: { address: plombier.company.address }, profile: plombier.profile, request: plombier.request, city: 'Nantes' }), foundedYear: plombier.foundedYear };
+    const text = factsLines(facts, new Date('2026-11-08T12:00:00Z')).join('\n');
+    expect(text).toContain('diagnostic dès 89 €');
+    expect(text).toContain('Nantes et 30 km autour');
+    expect(text).toContain('Année de création (source officielle) : 2009');
+    const poor = benchmarkCases.find((item) => item.id === 'pauvre-demande')!;
+    expect(factsLines(factsOf({ company: { address: poor.company.address }, request: poor.request, city: 'Tours' }), new Date('2026-11-08T12:00:00Z')).join('\n')).toContain('Prix : NON FOURNIS');
+  });
+  it('la version du banc est la 3', () => { expect(BENCHMARK_VERSION).toBe(3); });
 });

@@ -69,6 +69,7 @@ async function main() {
   const { designRoute } = await import('../src/lib/ai/routing');
   const { designSystemPrompt } = await import('../src/lib/site/design-prompt');
   const { designCompanyOf } = await import('../src/lib/site/onboarding-request');
+  const { factsOf } = await import('../src/lib/site/facts');
   const { renderSite } = await import('../src/lib/site/render');
   const { injectCompanyData } = await import('../src/lib/company/render');
   const { activeModules } = await import('../src/lib/site/modules');
@@ -116,7 +117,9 @@ async function main() {
       console.log(`→ ${item.id}…`);
       const { trade, company } = designCompanyOf({ name: item.company.name, activity: item.company.activity, address: item.company.address, missingFields: { phone: item.company.phone, email: item.company.email } });
       let photoReport: PhotoReport | undefined;
-      const record = await runDesignGeneration({ task: 'create', request: item.request, trade, company, workspaceId: null, photos: photosArg === 'local' ? 'local' : 'real', onPhotos: (report) => { photoReport = report; } });
+      // Mêmes faits que l'onboarding : réponses au questionnaire et année de création (cas fictifs) ; les cas « données pauvres » n'en ont aucun.
+      const facts = { ...factsOf({ company: { address: item.company.address }, profile: item.profile, request: item.request, city: company.city }), foundedYear: item.foundedYear };
+      const record = await runDesignGeneration({ task: 'create', request: item.request, trade, company, facts, workspaceId: null, photos: photosArg === 'local' ? 'local' : 'real', onPhotos: (report) => { photoReport = report; } });
       const result: SiteResult = {
         id: item.id, label: item.label, request: item.request, status: record.status, error: record.error ?? undefined, poorData: item.poorData,
         generation: { id: record.id, costEur: record.shadowCostEur, attempts: record.attempts, durationMs: record.durationMs, promptTokens: record.promptTokens, completionTokens: record.completionTokens, cacheReadTokens: record.cacheReadTokens, cacheWriteTokens: record.cacheWriteTokens, model: record.model },

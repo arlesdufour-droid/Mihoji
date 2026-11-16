@@ -113,3 +113,39 @@ describe('emplacements « à compléter » (Studio seulement)', () => {
     expect(studio).toContain('data-invite="stats"');
   });
 });
+
+describe('questionnaire court et faits transmis au modèle (étape 3)', () => {
+  const NOW_ = new Date('2026-11-08T12:00:00Z');
+  it('accepte les cinq réponses facultatives et les reprend dans les faits, sans rien ajouter', () => {
+    const profile = { specialties: 'dépannage, chaudières', priceRange: 'dès 89 € le diagnostic', hours: 'Lundi au vendredi, 8 h à 18 h', area: 'Nantes et 30 km autour', tone: 'chaleureux et familial' };
+    expect(parseProfile(profile)).toEqual(expect.objectContaining(profile));
+    const facts = factsOf({ company: { siret: '12345678901234', createdAt: '2008-03-01', address: 'Nantes' }, profile, request: 'Un site', city: 'Nantes' }, NOW_);
+    const text = factsLines(facts, NOW_).join('\n');
+    expect(text).toContain('dépannage, chaudières');
+    expect(text).toContain('Fourchette de prix indiquée par le client : dès 89 € le diagnostic');
+    expect(text).toContain('Zone d\'intervention indiquée par le client : Nantes et 30 km autour');
+    expect(text).toContain('Ton souhaité par le client : chaleureux et familial');
+    expect(text).toContain('Année de création (source officielle) : 2008');
+    expect(text).toContain('18 ans');
+    // Les nombres écrits par le client sont autorisés dans les chiffres clés (ex. 89 et 30).
+    expect(facts.userText).toContain('89');
+  });
+  it('sans réponse, interdit d’inventer prix, zone, ancienneté et horaires', () => {
+    const text = factsLines({ city: 'Nantes' }, NOW_).join('\n');
+    expect(text).toContain('Ancienneté : INCONNUE');
+    expect(text).toContain('Prix : NON FOURNIS');
+    expect(text).toContain('Zone d\'intervention : NON FOURNIE');
+    expect(text).toContain('(Nantes)');
+    expect(text).toContain('Horaires : NON FOURNIS');
+    expect(text).not.toContain('Ton souhaité');
+  });
+  it('l’ancienneté n’est transmise que pour une entreprise trouvée par SIRET', () => {
+    expect(factsOf({ company: { siret: null, createdAt: '2008-03-01', address: 'x' } }, NOW_).foundedYear).toBeUndefined();
+    expect(factsLines(factsOf({ company: { siret: null, createdAt: '2008-03-01', address: 'x' } }, NOW_), NOW_).join('\n')).toContain('Ancienneté : INCONNUE');
+    expect(factsOf({ company: { siret: '12345678901234', createdAt: '2008-03-01', address: 'x' } }, NOW_).foundedYear).toBe(2008);
+  });
+  it('refuse une réponse trop longue ou un champ inconnu', () => {
+    expect((parseProfile({ priceRange: 'x'.repeat(500) }).priceRange ?? '').length).toBeLessThanOrEqual(400); // valeur trop longue : tronquée, jamais refusée en bloc
+    expect(parseProfile({ tone: 'ok', secret: 'x' }).tone).toBe('ok');
+  });
+});

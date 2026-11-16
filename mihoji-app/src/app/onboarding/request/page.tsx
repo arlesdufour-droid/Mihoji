@@ -16,6 +16,8 @@ const errorMessages: Record<string, string> = {
   company_required: 'Les informations de votre entreprise sont introuvables. Reprenez depuis le début.',
 };
 
+const toneChoices = ['Chaleureux et familial', 'Professionnel et rassurant', 'Moderne et dynamique', 'Haut de gamme et élégant', 'Simple et direct'];
+
 export default function RequestPage() {
   const router = useRouter();
   const [request, setRequest] = useState('');
@@ -24,6 +26,10 @@ export default function RequestPage() {
   const [error, setError] = useState('');
   const [specialties, setSpecialties] = useState('');
   const [distinction, setDistinction] = useState('');
+  const [priceRange, setPriceRange] = useState('');
+  const [hours, setHours] = useState('');
+  const [area, setArea] = useState('');
+  const [tone, setTone] = useState('');
   const [photos, setPhotos] = useState<UploadedPhoto[]>([]);
   const [uploading, setUploading] = useState(false);
   const [photoError, setPhotoError] = useState('');
@@ -61,7 +67,7 @@ export default function RequestPage() {
     setError('');
     try {
       // Les réponses aux questions courtes sont enregistrées d'abord : elles servent à la rédaction du site.
-      await fetch('/api/onboarding/profile', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ specialties: specialties.trim() || undefined, distinction: distinction.trim() || undefined }) });
+      await fetch('/api/onboarding/profile', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ specialties: specialties.trim() || undefined, distinction: distinction.trim() || undefined, priceRange: priceRange.trim() || undefined, hours: hours.trim() || undefined, area: area.trim() || undefined, tone: tone || undefined }) });
       const response = await fetch('/api/onboarding/site', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ request: request.trim(), ...(style ? { style } : {}) }) });
       const body = await response.json().catch(() => ({})) as { id?: string; error?: string };
       if (!response.ok || !body.id) throw new Error(body.error ?? 'generation_failed');
@@ -88,12 +94,27 @@ export default function RequestPage() {
             </div>
           </div>
           <fieldset disabled={busy || uploading} className="space-y-4 rounded-xl border border-slate-800 p-4">
-            <legend className="px-1 text-sm font-medium">Pour un site qui vous ressemble <span className="font-normal text-slate-400">(facultatif, 3 questions courtes)</span></legend>
-            <label className="block text-sm"><span className="text-slate-300">Vos spécialités</span>
-              <input value={specialties} onChange={(event) => setSpecialties(event.target.value)} maxLength={400} placeholder="Ex. pain au levain, viennoiseries, gâteaux d’anniversaire" className="mt-1 w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm outline-none focus:border-indigo-400" />
+            <legend className="px-1 text-sm font-medium">Pour un site qui vous ressemble <span className="font-normal text-slate-400">(facultatif : ce que vous ne dites pas, nous ne l’inventons pas)</span></legend>
+            <label className="block text-sm"><span className="text-slate-300">Vos principales prestations</span>
+              <input value={specialties} onChange={(event) => setSpecialties(event.target.value)} maxLength={400} placeholder="Ex. dépannage, remplacement de chaudière, salle de bain clés en main" className="mt-1 w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm outline-none focus:border-indigo-400" />
             </label>
             <label className="block text-sm"><span className="text-slate-300">Ce qui vous distingue</span>
               <input value={distinction} onChange={(event) => setDistinction(event.target.value)} maxLength={400} placeholder="Ex. farines locales, fabrication sur place depuis trois générations" className="mt-1 w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm outline-none focus:border-indigo-400" />
+            </label>
+            <label className="block text-sm"><span className="text-slate-300">Votre fourchette de prix</span>
+              <input value={priceRange} onChange={(event) => setPriceRange(event.target.value)} maxLength={200} placeholder="Ex. diagnostic dès 89 €, dépannage de 80 à 150 €" className="mt-1 w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm outline-none focus:border-indigo-400" />
+            </label>
+            <label className="block text-sm"><span className="text-slate-300">Vos horaires</span>
+              <input value={hours} onChange={(event) => setHours(event.target.value)} maxLength={300} placeholder="Ex. du lundi au vendredi, 8 h à 18 h ; urgences 7 jours sur 7" className="mt-1 w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm outline-none focus:border-indigo-400" />
+            </label>
+            <label className="block text-sm"><span className="text-slate-300">Votre zone d’intervention</span>
+              <input value={area} onChange={(event) => setArea(event.target.value)} maxLength={300} placeholder="Ex. Nantes et 30 km autour" className="mt-1 w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm outline-none focus:border-indigo-400" />
+            </label>
+            <label className="block text-sm"><span className="text-slate-300">Le ton souhaité</span>
+              <select value={tone} onChange={(event) => setTone(event.target.value)} className="mt-1 w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm outline-none focus:border-indigo-400">
+                <option value="">Mihoji choisit</option>
+                {toneChoices.map((choice) => <option key={choice} value={choice}>{choice}</option>)}
+              </select>
             </label>
             <div className="text-sm">
               <p className="text-slate-300">Vos photos <span className="text-slate-500">(utilisées à la place des photos libres de droits)</span></p>

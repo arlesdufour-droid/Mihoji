@@ -23,7 +23,7 @@ test('Q2.1 questions courtes, photos de l’utilisateur prioritaires, emplacemen
   await onboardUntilRequest(page, context);
 
   // Trois questions courtes : spécialités, ce qui distingue, photos.
-  await page.getByLabel('Vos spécialités').fill('pain au levain, viennoiseries');
+  await page.getByLabel('Vos principales prestations').fill('pain au levain, viennoiseries');
   await page.getByLabel('Ce qui vous distingue').fill('farines locales, fabrication sur place');
   await page.getByLabel('Mon logo').setInputFiles(photo('logo.png'));
   await page.getByLabel('Ma boutique ou mon atelier').setInputFiles(photo('boutique.png'));

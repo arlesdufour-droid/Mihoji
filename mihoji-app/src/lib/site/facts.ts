@@ -6,10 +6,14 @@ import { collectStrings, siteSchema, type InviteKind, type SiteDescription } fro
 // Le modèle reçoit uniquement des faits vérifiables ; tout ce qu'il invente malgré les consignes est refusé ou retiré.
 
 // Réponses de l'onboarding (colonne companies.profile). Toutes facultatives, en texte libre court.
+// Questionnaire court (tout facultatif) : principales prestations (clé « specialties »), ce qui distingue, fourchette de prix, horaires, zone d'intervention, ton souhaité.
 export const profileSchema = z.object({
   specialties: z.string().trim().max(400).optional(),
   distinction: z.string().trim().max(400).optional(),
   hours: z.string().trim().max(300).optional(),
+  priceRange: z.string().trim().max(200).optional(),
+  area: z.string().trim().max(300).optional(),
+  tone: z.string().trim().max(80).optional(),
 }).strict();
 export type CompanyProfile = z.infer<typeof profileSchema>;
 
@@ -19,7 +23,7 @@ export function parseProfile(value: unknown): CompanyProfile {
   // Valeur ancienne ou partiellement invalide : on garde les champs textuels connus.
   const record = value && typeof value === 'object' ? value as Record<string, unknown> : {};
   const pick = (key: string) => (typeof record[key] === 'string' ? (record[key] as string).trim().slice(0, 400) || undefined : undefined);
-  return { specialties: pick('specialties'), distinction: pick('distinction'), hours: pick('hours') };
+  return { specialties: pick('specialties'), distinction: pick('distinction'), hours: pick('hours'), priceRange: pick('priceRange'), area: pick('area'), tone: pick('tone') };
 }
 
 export type SiteFacts = {
@@ -30,6 +34,12 @@ export type SiteFacts = {
   specialties?: string;
   distinction?: string;
   hours?: string;
+  /** Fourchette de prix indiquée par le client (« 60 à 90 € la séance »). */
+  priceRange?: string;
+  /** Zone d'intervention indiquée par le client (« Nantes et 30 km autour »). */
+  area?: string;
+  /** Ton souhaité (« chaleureux et familial »). */
+  tone?: string;
   /** Texte libre fourni par l'utilisateur dans cette demande (sert à autoriser ses propres chiffres et labels). */
   userText?: string;
 };
@@ -48,16 +58,29 @@ export function factsOf(input: { company: { siret?: string | null; createdAt?: D
     specialties: profile.specialties || undefined,
     distinction: profile.distinction || undefined,
     hours: profile.hours || undefined,
-    userText: [input.request, profile.specialties, profile.distinction, profile.hours].filter(Boolean).join(' \n '),
+    priceRange: profile.priceRange || undefined,
+    area: profile.area || undefined,
+    tone: profile.tone || undefined,
+    userText: [input.request, profile.specialties, profile.distinction, profile.hours, profile.priceRange, profile.area, profile.tone].filter(Boolean).join(' \n '),
   };
 }
 
 // Lignes de faits injectées dans le message envoyé au modèle.
 export function factsLines(facts: SiteFacts, now = new Date()): string[] {
   const lines: string[] = [];
-  if (facts.foundedYear) lines.push(`- Année de création (source officielle) : ${facts.foundedYear} — environ ${now.getUTCFullYear() - facts.foundedYear} ans d'existence ; tu peux l'utiliser (« depuis ${facts.foundedYear} »).`);
-  if (facts.specialties) lines.push(`- Spécialités indiquées par le client : ${facts.specialties}`);
+  // Ancienneté : seulement si elle vient d'une source officielle ; sinon on interdit explicitement d'en inventer une.
+  lines.push(facts.foundedYear
+    ? `- Année de création (source officielle) : ${facts.foundedYear} — environ ${now.getUTCFullYear() - facts.foundedYear} ans d'existence ; tu peux l'utiliser (« depuis ${facts.foundedYear} ») et en faire un chiffre clé`
+    : '- Ancienneté : INCONNUE (n\'écris aucune année de création, aucun « depuis… », aucun nombre d\'années d\'existence)');
+  if (facts.specialties) lines.push(`- Principales prestations indiquées par le client : ${facts.specialties} (à présenter en priorité, avec ces mots ; n'ajoute que des prestations courantes du métier, sans détail inventé)`);
   if (facts.distinction) lines.push(`- Ce qui distingue l'entreprise (mots du client, à reformuler sans rien ajouter) : ${facts.distinction}`);
+  lines.push(facts.priceRange
+    ? `- Fourchette de prix indiquée par le client : ${facts.priceRange} (les seuls prix à afficher dans les textes, présentés comme indicatifs)`
+    : '- Prix : NON FOURNIS (n\'écris aucun prix chiffré dans les textes : « sur devis » ou « tarif communiqué sur demande » ; seuls les modules qui l\'exigent — boutique, paiement, rendez-vous payant — portent des prix, présentés comme indicatifs)');
+  lines.push(facts.area
+    ? `- Zone d'intervention indiquée par le client : ${facts.area} (à reprendre telle quelle dans la section "area" et les textes ; ne cite aucune autre commune)`
+    : `- Zone d'intervention : NON FOURNIE (aucune section "area" ; ne cite aucune commune autre que la ville de l'entreprise${facts.city ? ` (${facts.city})` : ''})`);
+  if (facts.tone) lines.push(`- Ton souhaité par le client : ${facts.tone} (guide le vocabulaire des textes et le choix du style et de la palette)`);
   lines.push(facts.hours ? `- Horaires fournis par le client (à reprendre tels quels dans une section "hours") : ${facts.hours}` : '- Horaires : NON FOURNIS (aucune section "hours", ne donne aucun horaire)');
   return lines;
 }
