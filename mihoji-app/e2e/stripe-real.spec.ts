@@ -28,17 +28,46 @@ function nextOpenDay(minDaysAhead: number): string {
   return date.toISOString().slice(0, 10);
 }
 
-// Remplit la vraie page de paiement Stripe avec une carte de test et valide.
+// Remplit la vraie page de paiement Stripe avec une carte de test et valide. Le formulaire de paiement est dans un cadre intégré (iframe) de Stripe.
+async function paymentFrame(page: Page) {
+  for (let attempt = 0; attempt < 60; attempt += 1) {
+    for (const frame of page.frames()) {
+      if (!frame.url().includes('js.stripe.com/v3/elements-inner')) continue;
+      if (await frame.getByText('Card', { exact: true }).count() || await frame.locator('input[name="number"]').count()) return frame;
+    }
+    await page.waitForTimeout(1000);
+  }
+  throw new Error('formulaire de paiement Stripe introuvable');
+}
+
 async function payWith(page: Page, card: string) {
-  await page.locator('#cardNumber').waitFor({ timeout: 60_000 });
-  await page.locator('#cardNumber').fill(card);
-  await page.locator('#cardExpiry').fill('12 / 34');
-  await page.locator('#cardCvc').fill('123');
-  const name = page.locator('#billingName');
-  if (await name.count()) await name.fill('Marie Dupont');
-  const postal = page.locator('#billingPostalCode');
-  if (await postal.count()) await postal.fill('75001');
-  await page.locator('[data-testid="hosted-payment-submit-button"], button.SubmitButton').first().click();
+  const frame = await paymentFrame(page);
+  if (!(await frame.locator('input[name="number"]').isVisible().catch(() => false))) await frame.getByText('Card', { exact: true }).first().click();
+  await frame.locator('input[name="number"]').waitFor({ timeout: 60_000 });
+  await frame.locator('input[name="number"]').fill(card);
+  await frame.locator('input[name="expiry"]').fill('12 / 34');
+  await frame.locator('input[name="cvc"]').fill('123');
+  const name = frame.locator('input[name="name"], input[name="billingName"]');
+  if (await name.count()) await name.first().fill('Marie Dupont');
+  const postal = frame.locator('input[name="postalCode"]');
+  if (await postal.count()) await postal.first().fill('75001');
+  // Le bouton « Pay » peut être dans la page ou dans un cadre intégré de Stripe : on le cherche partout.
+  for (let attempt = 0; attempt < 30; attempt += 1) {
+    for (const target of [page.mainFrame(), ...page.frames()]) {
+      const pay = target.getByRole('button', { name: 'Pay', exact: true }).first(); // bouton principal (les boutons express portent « Pay with … »)
+      if (await pay.count() && await pay.isVisible().catch(() => false)) { await pay.click({ timeout: 30_000 }); return; }
+    }
+    await page.waitForTimeout(1000);
+  }
+  throw new Error('bouton « Pay » de Stripe introuvable');
+}
+
+// Le message de refus de Stripe s'affiche dans le cadre de paiement intégré, pas dans la page principale.
+async function expectDeclined(page: Page) {
+  await expect.poll(async () => {
+    for (const frame of page.frames()) if (/declined/i.test(await frame.locator('body').innerText().catch(() => ''))) return true;
+    return false;
+  }, { timeout: 60_000, message: 'Stripe doit afficher le refus de la carte 4000 0000 0000 0002' }).toBe(true);
 }
 
 test.describe.configure({ mode: 'serial' });
@@ -69,7 +98,7 @@ async function createSiteWithStripeConnected(page: Page, context: import('@playw
   const sql = postgres(process.env.DATABASE_URL!, { prepare: false });
   const [project] = await sql<{ workspace_id: string }[]>`select workspace_id from projects where id = ${projectId}`;
   const capabilities = connectors.find((connector) => connector.id === 'stripe')!.capabilities;
-  await sql`insert into connections (workspace_id, provider, account_label, credentials, scopes) values (${project.workspace_id}, 'stripe', 'Compte Stripe de test', ${encryptSecret(accountId(), loadEncryptionKey())}, ${sql.array([...capabilities])})`;
+  await sql`insert into connections (workspace_id, provider, account_label, credentials, scopes) values (${project.workspace_id}, 'stripe', 'Compte Stripe de test', ${encryptSecret(accountId(), loadEncryptionKey())}, ${`{${capabilities.join(',')}}`}::text[])`;
   return { projectId, sql };
 }
 
@@ -142,7 +171,7 @@ test('S2 rendez-vous avec acompte (7.4) : carte refusée puis acceptée, argent 
     await expect(page.locator('body')).toContainText('26.70');
     // Carte refusée : Stripe affiche le refus, rien n'est confirmé chez Mihoji.
     await payWith(page, DECLINED);
-    await expect(page.locator('body')).toContainText(/declined/i, { timeout: 60_000 });
+    await expectDeclined(page);
     expect(await sql`select 1 from bookings where project_id = ${projectId} and status = 'confirmed'`).toHaveLength(0);
     // Carte de test acceptée : redirection vers la page de retour, puis confirmation par le WEBHOOK réel.
     await page.reload();
@@ -182,7 +211,7 @@ test('S3 boutique (7.5) : commande de 178 € payée sur Stripe, argent sur le c
     await page.goto(checkoutUrl);
     await expect(page.locator('body')).toContainText('178.00');
     await payWith(page, DECLINED);
-    await expect(page.locator('body')).toContainText(/declined/i, { timeout: 60_000 });
+    await expectDeclined(page);
     expect(await sql`select 1 from orders where project_id = ${projectId} and status = 'confirmed'`).toHaveLength(0);
     await page.reload();
     await payWith(page, GOOD);

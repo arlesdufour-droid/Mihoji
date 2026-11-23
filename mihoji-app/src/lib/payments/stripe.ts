@@ -37,6 +37,8 @@ export class StripePayments implements PaymentsProvider {
   async createCheckout(input: CheckoutInput): Promise<Checkout> {
     const session = await this.stripe.checkout.sessions.create({
       mode: 'payment',
+      // Le commerçant vend en euros : pas de conversion de devise proposée au client (Adaptive Pricing présélectionnait des livres sterling dans le test réel).
+      adaptive_pricing: { enabled: false },
       line_items: [{ quantity: 1, price_data: { currency: input.currency, unit_amount: input.amountCents, product_data: { name: input.description } } }],
       success_url: input.successUrl,
       cancel_url: input.cancelUrl,
