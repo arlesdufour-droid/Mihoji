@@ -1,0 +1,407 @@
+{
+  "slug": "coach",
+  "label": "Coach sportif (rendez-vous, acompte)",
+  "family": "sport",
+  "module": "booking-deposit",
+  "request": "Je suis coach sportif à domicile et en extérieur. Je veux que mes clients puissent réserver une séance en ligne avec un acompte, et acheter un forfait de séances.",
+  "company": {
+    "name": "Elan Coaching Sportif",
+    "activity": "Enseignement de disciplines sportives et d’activités de loisirs",
+    "address": "24 rue Sainte-Catherine, 33000 Bordeaux",
+    "phone": "06 39 98 41 72",
+    "email": "contact@elan-coaching.example"
+  },
+  "profile": {
+    "specialties": "coaching à domicile et en extérieur, préparation physique, remise en forme",
+    "priceRange": "séance de 60 à 70 €, forfait de 10 séances à 580 €",
+    "hours": "Lundi au samedi, 7 h à 20 h",
+    "area": "Bordeaux Métropole",
+    "tone": "Moderne et dynamique"
+  },
+  "model": "claude-sonnet-5-5",
+  "costEur": 0.078819,
+  "attempts": 2,
+  "generatedAt": "2026-11-23T21:46:44.727Z",
+  "photos": 6,
+  "description": {
+    "version": 1,
+    "theme": {
+      "style": "dynamique",
+      "palette": "corail",
+      "header": "bar",
+      "reason": "Un coach sportif au ton moderne et dynamique appelle le style Dynamique, avec le corail, une couleur d'énergie franche, et un en-tête simple (logo à gauche, menu à droite) qui laisse le bouton de réservation bien visible."
+    },
+    "seo": {
+      "title": "Coach sportif à Bordeaux | {{company.name}}",
+      "description": "Coaching à domicile et en extérieur, préparation physique et remise en forme à Bordeaux Métropole. Réservez votre séance en ligne avec acompte."
+    },
+    "primaryCta": {
+      "label": "Réserver une séance",
+      "href": "#reservation"
+    },
+    "pages": [
+      {
+        "slug": "index",
+        "title": "Accueil",
+        "sections": [
+          {
+            "type": "hero",
+            "variant": "photo",
+            "eyebrow": "Coach sportif à {{company.city}}",
+            "title": "Votre séance, chez vous ou en plein air. Vous bougez, je vous suis.",
+            "subtitle": "Coaching à domicile et en extérieur, préparation physique et remise en forme sur Bordeaux Métropole. Réservez en ligne, je m'occupe du reste.",
+            "cta": {
+              "label": "Réserver une séance",
+              "href": "#reservation"
+            },
+            "secondaryCta": {
+              "label": "Voir le forfait",
+              "href": "#tarifs"
+            },
+            "highlights": [
+              "À domicile ou en extérieur",
+              "Séance de 60 à 70 € (indicatif)",
+              "Réservation en ligne",
+              "Du lundi au samedi"
+            ],
+            "image": {
+              "query": "personal trainer outdoor workout park",
+              "alternatives": [
+                "fitness coach training client outdoors",
+                "personal trainer exercise session morning"
+              ],
+              "src": "/vitrine/coach/photo-01.webp",
+              "alt": "Coach sportif encadrant une séance d'entraînement en extérieur",
+              "credit": {
+                "name": "Gabin_Vallet",
+                "url": "https://pixabay.com/users/Gabin_Vallet-19520706/"
+              }
+            }
+          },
+          {
+            "id": "seances",
+            "type": "services",
+            "variant": "cards",
+            "eyebrow": "Mes séances",
+            "title": "Trois façons de vous remettre en mouvement",
+            "intro": "Chaque séance est construite autour de votre objectif, de votre niveau et de votre emploi du temps. Tarif indicatif : de 60 à 70 € la séance.",
+            "items": [
+              {
+                "title": "Coaching à domicile",
+                "description": "Je viens chez vous avec le matériel utile. Vous vous entraînez dans votre salon ou votre jardin, sans trajet ni contrainte.",
+                "icon": "home",
+                "price": "de 60 à 70 €",
+                "image": {
+                  "query": "personal trainer home living room workout",
+                  "src": "/vitrine/coach/photo-02.webp",
+                  "alt": "Séance de coaching sportif à domicile dans un salon",
+                  "credit": {
+                    "name": "rob9040",
+                    "url": "https://pixabay.com/users/rob9040-3800981/"
+                  }
+                }
+              },
+              {
+                "title": "Coaching en extérieur",
+                "description": "Parc, bord de l'eau, escaliers, pelouse : on profite de l'air libre pour travailler cardio, force et mobilité.",
+                "icon": "sun",
+                "price": "de 60 à 70 €",
+                "image": {
+                  "query": "outdoor fitness training riverside running",
+                  "src": "/vitrine/coach/photo-03.webp",
+                  "alt": "Entraînement sportif en extérieur au bord de l'eau",
+                  "credit": {
+                    "name": "sasint",
+                    "url": "https://pixabay.com/users/sasint-3639875/"
+                  }
+                }
+              },
+              {
+                "title": "Préparation physique",
+                "description": "Un programme progressif pour préparer un objectif sportif : endurance, explosivité, renforcement et prévention des blessures.",
+                "icon": "dumbbell",
+                "price": "de 60 à 70 €",
+                "image": {
+                  "query": "athlete conditioning kettlebell training",
+                  "src": "/vitrine/coach/photo-04.webp",
+                  "alt": "Sportif en préparation physique avec un kettlebell",
+                  "credit": {
+                    "name": "tacofleur",
+                    "url": "https://pixabay.com/users/tacofleur-2688180/"
+                  }
+                }
+              },
+              {
+                "title": "Remise en forme",
+                "description": "Reprise en douceur ou remise à niveau : on retrouve du souffle, de la tonicité et de l'énergie, à votre rythme.",
+                "icon": "heart",
+                "price": "de 60 à 70 €",
+                "image": {
+                  "query": "coach guiding woman stretching exercise",
+                  "src": "/vitrine/coach/photo-05.webp",
+                  "alt": "Coach accompagnant une cliente lors d'exercices de remise en forme",
+                  "credit": {
+                    "name": "Pexels",
+                    "url": "https://pixabay.com/users/Pexels-2286921/"
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "id": "deroule",
+            "type": "services",
+            "variant": "list",
+            "eyebrow": "Comment ça se passe",
+            "title": "De la réservation à la dernière répétition",
+            "items": [
+              {
+                "title": "1. Vous réservez en ligne",
+                "description": "Choisissez votre séance, votre créneau et réglez l'acompte pour confirmer.",
+                "icon": "calendar"
+              },
+              {
+                "title": "2. On fait le point",
+                "description": "Lors de la première séance, nous parlons de votre objectif, de votre niveau et de vos éventuelles contraintes physiques.",
+                "icon": "check"
+              },
+              {
+                "title": "3. Vous vous entraînez",
+                "description": "Échauffement, travail principal, retour au calme : chaque séance est guidée et adaptée en direct.",
+                "icon": "dumbbell"
+              },
+              {
+                "title": "4. On ajuste",
+                "description": "Le programme évolue avec vos progrès pour rester motivant et efficace.",
+                "icon": "sparkles"
+              }
+            ]
+          },
+          {
+            "type": "module",
+            "variant": "split",
+            "module": "booking",
+            "eyebrow": "Réservation en ligne",
+            "title": "Choisissez votre séance et votre créneau",
+            "intro": "Sélectionnez votre séance, un horaire disponible, puis réglez un acompte de 30 % pour confirmer. Le solde se règle le jour de la séance."
+          },
+          {
+            "id": "coach",
+            "type": "about",
+            "variant": "image-left",
+            "eyebrow": "Votre coach",
+            "title": "Un accompagnement qui vous ressemble",
+            "paragraphs": [
+              "Avec {{company.name}}, le sport s'adapte à votre vie, pas l'inverse. Je viens à vous, à domicile ou en extérieur, et je construis chaque séance selon votre objectif : perdre du poids, retrouver la forme, préparer une échéance sportive.",
+              "Un échange en début de parcours permet de faire le point sur votre niveau et vos envies. Ensuite, on avance séance après séance, avec des exercices clairs et un suivi attentif."
+            ],
+            "highlights": [
+              "Séances sur mesure",
+              "Matériel apporté sur place",
+              "Progression adaptée à votre niveau"
+            ],
+            "image": {
+              "query": "friendly coach portrait outdoor sportswear",
+              "alternatives": [
+                "smiling personal trainer portrait park",
+                "fitness coach portrait gym"
+              ],
+              "src": "/vitrine/coach/photo-06.webp",
+              "alt": "Portrait du coach sportif souriant en tenue de sport",
+              "credit": {
+                "name": "ireshapeu",
+                "url": "https://pixabay.com/users/ireshapeu-1819814/"
+              }
+            }
+          },
+          {
+            "type": "faq",
+            "variant": "accordion",
+            "eyebrow": "Questions fréquentes",
+            "title": "Avant votre première séance",
+            "items": [
+              {
+                "question": "Dois-je avoir du matériel chez moi ?",
+                "answer": "Non. Un peu d'espace et une tenue confortable suffisent. J'apporte le matériel nécessaire à la séance."
+              },
+              {
+                "question": "Combien coûte une séance ?",
+                "answer": "À titre indicatif, une séance de 60 minutes coûte de 60 à 70 €. Le forfait de 10 séances est proposé à 580 €."
+              },
+              {
+                "question": "Comment fonctionne l'acompte ?",
+                "answer": "Au moment de réserver, vous réglez un acompte de 30 % en ligne pour confirmer votre créneau. Le solde se règle le jour de la séance."
+              },
+              {
+                "question": "Puis-je annuler ou déplacer une séance ?",
+                "answer": "Oui, l'annulation est gratuite jusqu'à 24 h avant la séance. Passé ce délai, contactez-moi pour trouver une solution."
+              },
+              {
+                "question": "Je n'ai pas fait de sport depuis longtemps, est-ce adapté ?",
+                "answer": "Oui. La remise en forme est faite pour cela : on reprend progressivement, avec des exercices adaptés à votre niveau et à vos objectifs."
+              }
+            ]
+          },
+          {
+            "type": "hours",
+            "variant": "card",
+            "eyebrow": "Disponibilités",
+            "title": "Des séances du lundi au samedi",
+            "rows": [
+              {
+                "day": "Lundi au samedi",
+                "hours": "7 h à 20 h"
+              }
+            ]
+          },
+          {
+            "id": "contact",
+            "type": "contact",
+            "variant": "split",
+            "mode": "contact",
+            "eyebrow": "Contact",
+            "title": "Une question avant de réserver ?",
+            "intro": "Décrivez-moi votre objectif et vos disponibilités, je vous réponds rapidement.",
+            "services": [
+              "Coaching à domicile",
+              "Coaching en extérieur",
+              "Préparation physique",
+              "Remise en forme"
+            ],
+            "submitLabel": "Envoyer ma demande"
+          },
+          {
+            "type": "module",
+            "variant": "panel",
+            "module": "payment",
+            "eyebrow": "Forfait",
+            "title": "Le forfait 10 séances à 580 €",
+            "intro": "Pour vous engager sur la durée et progresser avec régularité : dix séances de coaching à planifier à votre rythme. Tarif indicatif."
+          },
+          {
+            "id": "zone",
+            "type": "area",
+            "variant": "chips",
+            "eyebrow": "Zone d'intervention",
+            "title": "Je me déplace sur Bordeaux Métropole",
+            "intro": "Séances à domicile et en extérieur sur l'ensemble de Bordeaux Métropole.",
+            "places": [
+              "Bordeaux Métropole",
+              "Bordeaux",
+              "À domicile et en extérieur"
+            ],
+            "note": "Vous êtes en limite de zone ? Contactez-moi pour en discuter."
+          },
+          {
+            "type": "footer",
+            "variant": "simple",
+            "tagline": "{{company.name}} : coach sportif à domicile et en extérieur, {{company.city}} et Bordeaux Métropole.",
+            "links": [
+              {
+                "label": "Séances",
+                "href": "#seances"
+              },
+              {
+                "label": "Réserver",
+                "href": "#reservation"
+              },
+              {
+                "label": "Forfait",
+                "href": "#tarifs"
+              },
+              {
+                "label": "Contact",
+                "href": "#contact"
+              }
+            ]
+          }
+        ],
+        "invites": [
+          {
+            "kind": "testimonials",
+            "before": "faq"
+          },
+          {
+            "kind": "stats",
+            "before": "cta"
+          }
+        ]
+      }
+    ],
+    "modules": {
+      "booking": {
+        "services": [
+          {
+            "name": "Séance de coaching à domicile",
+            "durationMinutes": 60,
+            "price": 65,
+            "location": "home"
+          },
+          {
+            "name": "Séance de coaching en extérieur",
+            "durationMinutes": 60,
+            "price": 60,
+            "location": "outdoor"
+          },
+          {
+            "name": "Séance de préparation physique",
+            "durationMinutes": 60,
+            "price": 70,
+            "location": "outdoor"
+          },
+          {
+            "name": "Séance de remise en forme",
+            "durationMinutes": 60,
+            "price": 60,
+            "location": "home"
+          }
+        ],
+        "schedule": {
+          "days": [
+            "lundi",
+            "mardi",
+            "mercredi",
+            "jeudi",
+            "vendredi",
+            "samedi"
+          ],
+          "start": "07:00",
+          "end": "20:00"
+        },
+        "slotMinutes": 60,
+        "leadTimeHours": 12,
+        "cancellationPolicy": "Annulation gratuite jusqu'à 24 h avant la séance.",
+        "payment": "deposit",
+        "depositPercent": 30,
+        "reminders": true
+      },
+      "payment": {
+        "offers": [
+          {
+            "name": "Forfait 10 séances",
+            "description": "Dix séances de coaching à utiliser à votre rythme, à domicile ou en extérieur.",
+            "price": 580,
+            "kind": "pack",
+            "sessions": 10
+          }
+        ]
+      },
+      "widgets": [
+        {
+          "type": "whatsapp",
+          "message": "Bonjour, je souhaite des informations sur le coaching sportif."
+        },
+        {
+          "type": "instagram"
+        }
+      ],
+      "webhooks": {
+        "events": [
+          "booking.created",
+          "payment.succeeded",
+          "contact.created"
+        ]
+      }
+    }
+  }
+}

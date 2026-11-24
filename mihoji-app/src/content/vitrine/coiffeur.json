@@ -1,0 +1,357 @@
+{
+  "slug": "coiffeur",
+  "label": "Salon de coiffure (rendez-vous avec acompte)",
+  "family": "beaute",
+  "module": "booking-deposit",
+  "request": "Je tiens un salon de coiffure mixte. Je veux que mes clients réservent leur rendez-vous en ligne et versent un petit acompte pour éviter les rendez-vous manqués.",
+  "company": {
+    "name": "Atelier Mathilde, coiffure",
+    "activity": "Coiffure",
+    "address": "27 rue du Port, 29200 Brest",
+    "phone": "02 61 91 77 30",
+    "email": "contact@atelier-mathilde.example"
+  },
+  "profile": {
+    "specialties": "coupes femme et homme, couleurs, soins, coiffures de cérémonie",
+    "priceRange": "coupe dès 25 €, couleur dès 55 €",
+    "hours": "Mardi au samedi, 9 h à 18 h 30",
+    "area": "Brest",
+    "tone": "Moderne et dynamique"
+  },
+  "model": "claude-sonnet-5-5",
+  "costEur": 0.039259,
+  "attempts": 1,
+  "generatedAt": "2026-11-23T21:45:43.923Z",
+  "photos": 0,
+  "description": {
+    "version": 1,
+    "theme": {
+      "style": "dynamique",
+      "palette": "corail",
+      "header": "bar",
+      "reason": "Le ton moderne et dynamique demandé pour un salon mixte appelle le style dynamique, avec un corail franc et énergique. L'en-tête en barre garde le bouton de réservation toujours visible."
+    },
+    "seo": {
+      "title": "Atelier Mathilde, coiffure mixte à Brest | Réservation en ligne",
+      "description": "Salon de coiffure mixte à Brest : coupes femme et homme, couleurs, soins et coiffures de cérémonie. Réservez en ligne et sécurisez votre créneau avec un petit acompte."
+    },
+    "primaryCta": {
+      "label": "Réserver mon rendez-vous",
+      "href": "#reservation"
+    },
+    "pages": [
+      {
+        "slug": "index",
+        "title": "Accueil",
+        "sections": [
+          {
+            "type": "hero",
+            "variant": "photo",
+            "eyebrow": "Salon de coiffure mixte · {{company.city}}",
+            "title": "Une coupe qui vous ressemble, un rendez-vous qui se réserve en 2 minutes",
+            "subtitle": "Coupes femme et homme, couleurs, soins et coiffures de cérémonie à {{company.city}}. Choisissez votre créneau en ligne, nous nous occupons du reste.",
+            "cta": {
+              "label": "Réserver mon rendez-vous",
+              "href": "#reservation"
+            },
+            "secondaryCta": {
+              "label": "Découvrir les prestations",
+              "href": "#services"
+            },
+            "highlights": [
+              "Réservation en ligne",
+              "Petit acompte pour garantir le créneau",
+              "Ouvert du mardi au samedi"
+            ],
+            "image": {
+              "query": "hairdresser cutting woman hair salon",
+              "alternatives": [
+                "hair stylist blow drying client salon",
+                "hairdresser scissors comb modern salon"
+              ],
+              "src": "https://images.unsplash.com/photo-1647462741351-4e7a5e7317c7",
+              "alt": "Coiffeuse en train de couper les cheveux d'une cliente dans un salon lumineux",
+              "credit": {
+                "name": "Gabriela",
+                "url": "https://unsplash.com/@gabigi?utm_source=mihoji&utm_medium=referral"
+              }
+            }
+          },
+          {
+            "id": "services",
+            "type": "services",
+            "variant": "cards",
+            "eyebrow": "Les prestations",
+            "title": "Du quotidien aux grandes occasions",
+            "intro": "Coupe dès 25 €, couleur dès 55 € (tarifs indicatifs). Le prix final dépend de la longueur et du travail demandé.",
+            "items": [
+              {
+                "title": "Coupes femme",
+                "description": "Coupe, mise en forme et conseils adaptés à votre type de cheveux et à votre quotidien.",
+                "icon": "scissors",
+                "price": "dès 25 €",
+                "image": {
+                  "query": "woman haircut scissors salon",
+                  "src": "https://images.unsplash.com/photo-1761839256840-7780a45b85dc",
+                  "alt": "Coupe de cheveux pour femme au salon",
+                  "credit": {
+                    "name": "Land O'Lakes, Inc.",
+                    "url": "https://unsplash.com/@landolakesinc?utm_source=mihoji&utm_medium=referral"
+                  }
+                }
+              },
+              {
+                "title": "Coupes homme",
+                "description": "Coupe nette aux ciseaux ou à la tondeuse, finitions soignées sur la nuque et les contours.",
+                "icon": "scissors",
+                "price": "dès 25 €",
+                "image": {
+                  "query": "barber trimming men haircut clippers",
+                  "src": "https://images.unsplash.com/photo-1493256338651-d82f7acb2b38",
+                  "alt": "Coupe de cheveux pour homme à la tondeuse",
+                  "credit": {
+                    "name": "Hai Phung",
+                    "url": "https://unsplash.com/@itspminhai?utm_source=mihoji&utm_medium=referral"
+                  }
+                }
+              },
+              {
+                "title": "Couleurs",
+                "description": "Couleur, reflets ou rafraîchissement : un diagnostic avant de commencer pour un résultat qui vous va.",
+                "icon": "brush",
+                "price": "dès 55 €",
+                "image": {
+                  "query": "hair colorist applying hair dye brush",
+                  "src": "https://images.unsplash.com/photo-1590540179852-2110a54f813a",
+                  "alt": "Application d'une couleur sur les cheveux au pinceau",
+                  "credit": {
+                    "name": "mostafa meraji",
+                    "url": "https://unsplash.com/@mostafa_meraji?utm_source=mihoji&utm_medium=referral"
+                  }
+                }
+              },
+              {
+                "title": "Soins",
+                "description": "Soins pour nourrir, réparer et redonner de la brillance aux cheveux fatigués.",
+                "icon": "sparkles"
+              },
+              {
+                "title": "Coiffures de cérémonie",
+                "description": "Chignon, tresses ou coiffure travaillée pour un mariage, un baptême ou une soirée.",
+                "icon": "star"
+              }
+            ]
+          },
+          {
+            "type": "module",
+            "variant": "panel",
+            "module": "booking",
+            "eyebrow": "Réservation en ligne",
+            "title": "Choisissez votre créneau",
+            "intro": "Sélectionnez la prestation, le jour et l'heure. Un petit acompte confirme votre rendez-vous."
+          },
+          {
+            "type": "about",
+            "variant": "text",
+            "eyebrow": "Le salon",
+            "title": "{{company.name}}, un salon mixte à {{company.city}}",
+            "paragraphs": [
+              "Ici, on coiffe les femmes comme les hommes, dans une ambiance détendue et moderne. Chaque rendez-vous commence par une discussion : vos envies, vos cheveux, votre rythme de vie.",
+              "Coupes, couleurs, soins ou coiffure de cérémonie : vous repartez avec un résultat facile à coiffer chez vous."
+            ],
+            "highlights": [
+              "Salon mixte",
+              "Coupes, couleurs, soins",
+              "Coiffures de cérémonie"
+            ]
+          },
+          {
+            "type": "faq",
+            "variant": "accordion",
+            "eyebrow": "Questions fréquentes",
+            "title": "Avant de réserver",
+            "items": [
+              {
+                "question": "Comment réserver mon rendez-vous ?",
+                "answer": "Directement en ligne : choisissez la prestation, le jour et l'heure, puis versez le petit acompte pour valider votre créneau."
+              },
+              {
+                "question": "Pourquoi un acompte ?",
+                "answer": "Il garantit votre créneau et évite les rendez-vous manqués, qui bloquent une place que d'autres clients auraient pu avoir."
+              },
+              {
+                "question": "Que se passe-t-il si je dois annuler ?",
+                "answer": "Prévenez-nous au moins 24 h à l'avance, par téléphone ou par email, pour que nous puissions proposer le créneau à quelqu'un d'autre."
+              },
+              {
+                "question": "Coiffez-vous les hommes comme les femmes ?",
+                "answer": "Oui, {{company.name}} est un salon mixte : coupes femme et homme, couleurs et soins."
+              },
+              {
+                "question": "Combien coûte une coupe ou une couleur ?",
+                "answer": "À titre indicatif, la coupe démarre à 25 € et la couleur à 55 €. Le tarif final dépend de la longueur et de la technique choisie."
+              },
+              {
+                "question": "Proposez-vous des coiffures pour un mariage ou une fête ?",
+                "answer": "Oui, nous réalisons des coiffures de cérémonie. Réservez-les en ligne ou contactez-nous pour en parler à l'avance."
+              }
+            ]
+          },
+          {
+            "type": "hours",
+            "variant": "card",
+            "eyebrow": "Horaires",
+            "title": "Quand passer au salon",
+            "rows": [
+              {
+                "day": "Mardi au samedi",
+                "hours": "9 h à 18 h 30"
+              }
+            ],
+            "note": "Réservez en ligne pour être sûr(e) d'avoir votre créneau."
+          },
+          {
+            "type": "contact",
+            "variant": "centered",
+            "mode": "contact",
+            "eyebrow": "Contact",
+            "title": "Une question avant de venir ?",
+            "intro": "Écrivez-nous ou appelez le {{company.phone}} : nous vous répondons avec plaisir.",
+            "services": [
+              "Coupe femme",
+              "Coupe homme",
+              "Couleur",
+              "Soin",
+              "Coiffure de cérémonie"
+            ],
+            "submitLabel": "Envoyer mon message"
+          },
+          {
+            "type": "map",
+            "variant": "split",
+            "eyebrow": "Nous trouver",
+            "title": "Au salon, à {{company.city}}",
+            "intro": "{{company.address}}",
+            "access": [
+              "Pour toute question d'accès, appelez-nous au {{company.phone}}."
+            ]
+          },
+          {
+            "type": "module",
+            "variant": "split",
+            "module": "payment",
+            "eyebrow": "Acompte",
+            "title": "Un petit acompte, zéro rendez-vous manqué",
+            "intro": "Il confirme votre réservation et garantit votre place dans l'agenda. Pour toute question avant de réserver, appelez-nous."
+          },
+          {
+            "type": "footer",
+            "variant": "simple",
+            "tagline": "{{company.name}} · Salon de coiffure mixte à {{company.city}}",
+            "links": [
+              {
+                "label": "Prestations",
+                "href": "#services"
+              },
+              {
+                "label": "Réserver",
+                "href": "#reservation"
+              },
+              {
+                "label": "Horaires",
+                "href": "#hours"
+              },
+              {
+                "label": "Contact",
+                "href": "#contact"
+              }
+            ]
+          }
+        ],
+        "invites": [
+          {
+            "kind": "testimonials",
+            "before": "faq"
+          },
+          {
+            "kind": "stats",
+            "before": "cta"
+          }
+        ]
+      }
+    ],
+    "modules": {
+      "booking": {
+        "services": [
+          {
+            "name": "Coupe femme",
+            "durationMinutes": 60,
+            "price": 25,
+            "location": "onsite"
+          },
+          {
+            "name": "Coupe homme",
+            "durationMinutes": 30,
+            "price": 25,
+            "location": "onsite"
+          },
+          {
+            "name": "Couleur",
+            "durationMinutes": 120,
+            "price": 55,
+            "location": "onsite"
+          },
+          {
+            "name": "Soin",
+            "durationMinutes": 30,
+            "location": "onsite"
+          },
+          {
+            "name": "Coiffure de cérémonie",
+            "durationMinutes": 90,
+            "location": "onsite"
+          }
+        ],
+        "schedule": {
+          "days": [
+            "mardi",
+            "mercredi",
+            "jeudi",
+            "vendredi",
+            "samedi"
+          ],
+          "start": "09:00",
+          "end": "18:30"
+        },
+        "slotMinutes": 30,
+        "leadTimeHours": 12,
+        "cancellationPolicy": "Merci de prévenir au moins 24 h à l'avance en cas d'empêchement : l'acompte permet de libérer le créneau pour un autre client.",
+        "payment": "deposit",
+        "depositPercent": 20,
+        "reminders": true
+      },
+      "payment": {
+        "offers": [
+          {
+            "name": "Acompte de réservation",
+            "description": "Versé en ligne au moment de la réservation pour garantir votre créneau.",
+            "price": 10,
+            "kind": "deposit"
+          }
+        ]
+      },
+      "widgets": [
+        {
+          "type": "google-maps"
+        }
+      ],
+      "webhooks": {
+        "events": [
+          "booking.created",
+          "payment.succeeded",
+          "contact.created"
+        ]
+      }
+    }
+  }
+}

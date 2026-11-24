@@ -94,9 +94,15 @@ export default async function globalSetup(config: FullConfig) {
       '/login', '/onboarding/manual', '/onboarding/siret',
       ...['preview', 'photos', 'infos', 'requests', 'bookings', 'orders', 'connections', 'settings', 'code'].map((tab) => `/studio/${siteProjectId}/${tab}`),
       `/api/projects/${siteProjectId}`, `/api/projects/${siteProjectId}/versions`, `/api/projects/${siteProjectId}/chat`, `/api/projects/${siteProjectId}/real-data`,
+      '/admin/vitrine', '/admin/vitrine/preview/plombier', '/admin/benchmark',
       `/api/projects/${siteProjectId}/leads`, `/api/projects/${siteProjectId}/bookings`, `/api/projects/${siteProjectId}/orders`, '/api/connections', '/api/user-photos', '/api/company',
     ];
     for (const path of paths) await fetch(`${baseURL}${path}`, { headers: { cookie }, redirect: 'manual' }).then((response) => response.arrayBuffer()).catch(() => undefined);
+    // Chemin complet du chat (projet historique, puis projet au nouveau format) : demande sans effet (« Raconte-moi une blague » ne produit aucune modification ni version),
+    // pour que la première vraie demande d'un test ne paie pas la compilation à froid de toute la chaîne (dépassement de délai observé sur le test « chat en mode simple »).
+    for (const project of [projectId, siteProjectId]) {
+      await fetch(`${baseURL}/api/generate`, { method: 'POST', headers: { cookie, 'Content-Type': 'application/json' }, body: JSON.stringify({ projectId: project, task: 'chat', messages: [{ role: 'user', content: 'Raconte-moi une blague' }] }) }).then((response) => response.arrayBuffer()).catch(() => undefined);
+    }
     // Routes publiques et paiement simulé (requêtes sans effet : refusées par la validation).
     for (const path of ['/api/public/leads', '/api/public/bookings', '/api/public/orders']) await fetch(`${baseURL}${path}`, { method: 'POST', body: new FormData() }).then((response) => response.arrayBuffer()).catch(() => undefined);
     await fetch(`${baseURL}/api/public/payments/sim?session=none`).then((response) => response.arrayBuffer()).catch(() => undefined);

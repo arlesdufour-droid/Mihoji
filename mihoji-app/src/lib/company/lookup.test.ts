@@ -50,3 +50,20 @@ describe('nomenclature NAF complète (INSEE)', () => {
     expect(nafLabel(null)).toBe('Activité non renseignée');
   });
 });
+
+import { injectCompanyData } from './render';
+
+describe('rendu des coordonnées dans le HTML', () => {
+  it('remplace un ancien code NAF brut par le libellé de l’activité', () => {
+    const html = injectCompanyData('<main><p>10.71C</p></main>', { name: 'B', activity: '10.71C', address: '', legalForm: 'SAS' });
+    expect(html).toContain('Boulangerie et boulangerie-pâtisserie');
+    expect(html).not.toContain('10.71C');
+  });
+  it('injecte les données de l’entreprise et retire les jetons', () => {
+    const html = injectCompanyData('<h1>{{company.name}}</h1><p>{{company.activity}}</p><p>{{company.email}}</p>', { name: 'Atelier X', activity: '43.22A', address: '', legalForm: 'SAS', missingFields: { email: 'a@b.fr' } });
+    expect(html).toContain('Atelier X');
+    expect(html).toContain('a@b.fr');
+    expect(html).toContain("Travaux d&#039;installation d&#039;eau et de gaz en tous locaux");
+    expect(html).not.toContain('{{company.');
+  });
+});

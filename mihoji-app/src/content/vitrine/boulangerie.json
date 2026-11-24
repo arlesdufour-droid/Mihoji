@@ -1,0 +1,441 @@
+{
+  "slug": "boulangerie",
+  "label": "Boulangerie (click & collect)",
+  "family": "commerce",
+  "module": "shop",
+  "request": "Je tiens une boulangerie artisanale : pain au levain, viennoiseries, gâteaux sur commande. Mes clients doivent pouvoir commander en ligne et retirer leur commande en boutique.",
+  "company": {
+    "name": "Maison Lemoine, boulangerie",
+    "activity": "Boulangerie et boulangerie-pâtisserie",
+    "address": "8 place du Marché, 21000 Dijon",
+    "phone": "03 53 01 22 64",
+    "email": "contact@maison-lemoine.example"
+  },
+  "profile": {
+    "specialties": "pain au levain, viennoiseries pur beurre, gâteaux sur commande",
+    "priceRange": "baguette 1,20 €, croissant 1,40 €, gâteaux dès 22 €",
+    "hours": "Mardi au samedi, 6 h 30 à 19 h ; dimanche 7 h à 13 h",
+    "area": "Dijon (retrait en boutique)",
+    "tone": "Chaleureux et familial"
+  },
+  "model": "claude-sonnet-5-5",
+  "costEur": 0.075426,
+  "attempts": 2,
+  "generatedAt": "2026-11-23T21:43:25.882Z",
+  "photos": 9,
+  "description": {
+    "version": 1,
+    "theme": {
+      "style": "artisan",
+      "palette": "terracotta",
+      "header": "bar",
+      "reason": "Boulangerie de quartier au ton chaleureux et familial : le style artisan et la palette terracotta évoquent la croûte dorée et le four, l'en-tête à barre simple met le bouton de commande en avant."
+    },
+    "seo": {
+      "title": "Maison Lemoine – Boulangerie artisanale à Dijon, commande en ligne",
+      "description": "Pain au levain, viennoiseries pur beurre et gâteaux sur commande à Dijon. Commandez en ligne et retirez votre commande en boutique."
+    },
+    "primaryCta": {
+      "label": "Commander en ligne",
+      "href": "#commande"
+    },
+    "pages": [
+      {
+        "slug": "index",
+        "title": "Accueil",
+        "sections": [
+          {
+            "type": "hero",
+            "variant": "photo",
+            "eyebrow": "Boulangerie artisanale à {{company.city}}",
+            "title": "Du pain au levain, croustillant et encore tiède",
+            "subtitle": "Chez {{company.name}}, on pétrit, on façonne et on cuit chaque jour. Commandez en ligne, retirez en boutique.",
+            "cta": {
+              "label": "Commander en ligne",
+              "href": "#commande"
+            },
+            "secondaryCta": {
+              "label": "Un gâteau sur commande",
+              "href": "#contact"
+            },
+            "highlights": [
+              "Pain au levain",
+              "Viennoiseries pur beurre",
+              "Gâteaux sur commande",
+              "Retrait en boutique"
+            ],
+            "image": {
+              "query": "artisan baker sourdough bread bakery",
+              "alternatives": [
+                "fresh baked bread loaves bakery shelf",
+                "baker pulling bread from oven"
+              ],
+              "src": "/vitrine/boulangerie/photo-01.jpg",
+              "alt": "Pains au levain fraîchement sortis du four dans une boulangerie artisanale",
+              "credit": {
+                "name": "267490",
+                "url": "https://pixabay.com/users/267490-267490/"
+              }
+            }
+          },
+          {
+            "id": "nos-pains",
+            "type": "products",
+            "variant": "grid",
+            "eyebrow": "La fournée du jour",
+            "title": "Nos pains et viennoiseries",
+            "intro": "Quelques repères indicatifs : baguette 1,20 €, croissant 1,40 €.",
+            "items": [
+              {
+                "name": "Baguette",
+                "description": "Croûte dorée, mie souple, cuite chaque jour.",
+                "price": "1,20 €",
+                "tag": "Du quotidien",
+                "image": {
+                  "query": "golden french baguettes basket",
+                  "alternatives": [
+                    "baguette bakery counter",
+                    "baker holding baguette"
+                  ],
+                  "src": "/vitrine/boulangerie/photo-02.webp",
+                  "alt": "Baguettes dorées dans un panier",
+                  "credit": {
+                    "name": "laustkehlet",
+                    "url": "https://pixabay.com/users/laustkehlet-6034860/"
+                  }
+                }
+              },
+              {
+                "name": "Pain au levain",
+                "description": "Levain naturel, longue fermentation, croûte bien colorée.",
+                "tag": "Au levain",
+                "image": {
+                  "query": "sourdough loaf sliced crumb",
+                  "alternatives": [
+                    "rustic sourdough bread wooden board",
+                    "scoring sourdough dough loaf"
+                  ],
+                  "src": "/vitrine/boulangerie/photo-03.webp",
+                  "alt": "Pain au levain tranché montrant sa mie alvéolée",
+                  "credit": {
+                    "name": "dolfinmagikpro",
+                    "url": "https://pixabay.com/users/dolfinmagikpro-3013061/"
+                  }
+                }
+              },
+              {
+                "name": "Croissant pur beurre",
+                "description": "Feuilletage fin et croustillant, au beurre.",
+                "price": "1,40 €",
+                "tag": "Pur beurre",
+                "image": {
+                  "query": "butter croissants golden tray",
+                  "alternatives": [
+                    "croissant flaky layers close",
+                    "fresh croissants bakery display"
+                  ],
+                  "src": "/vitrine/boulangerie/photo-04.webp",
+                  "alt": "Croissants pur beurre dorés sur une plaque",
+                  "credit": {
+                    "name": "HenryLesnussa",
+                    "url": "https://pixabay.com/users/HenryLesnussa-50078444/"
+                  }
+                }
+              },
+              {
+                "name": "Viennoiseries du matin",
+                "description": "Pains au chocolat et autres viennoiseries pur beurre, à retrouver en boutique.",
+                "tag": "Pur beurre",
+                "image": {
+                  "query": "pain au chocolat viennoiserie pastry",
+                  "alternatives": [
+                    "assorted viennoiseries bakery morning",
+                    "pastry display bakery counter"
+                  ],
+                  "src": "/vitrine/boulangerie/photo-05.webp",
+                  "alt": "Assortiment de viennoiseries pur beurre",
+                  "credit": {
+                    "name": "blandinejoannic",
+                    "url": "https://pixabay.com/users/blandinejoannic-15617008/"
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "type": "module",
+            "variant": "panel",
+            "module": "shop",
+            "eyebrow": "Click & collect",
+            "title": "Commandez en ligne, retirez en boutique",
+            "intro": "Choisissez vos pains et viennoiseries, indiquez votre créneau, puis passez les prendre à {{company.city}}."
+          },
+          {
+            "id": "fournil",
+            "type": "about",
+            "variant": "image-right",
+            "eyebrow": "Le fournil",
+            "title": "Une boulangerie de quartier, faite maison",
+            "paragraphs": [
+              "{{company.name}} est une boulangerie-pâtisserie artisanale à {{company.city}}. Ici, on travaille le levain, on laisse le temps à la pâte et on beurre généreusement les viennoiseries.",
+              "Du pain du quotidien au gâteau de famille, chaque fournée est préparée avec soin pour vous accueillir comme à la maison."
+            ],
+            "highlights": [
+              "Pain au levain",
+              "Viennoiseries pur beurre",
+              "Gâteaux sur commande"
+            ],
+            "image": {
+              "query": "baker kneading dough flour bakery",
+              "alternatives": [
+                "bakery workshop dough shaping",
+                "baker hands flour bread"
+              ],
+              "src": "/vitrine/boulangerie/photo-06.webp",
+              "alt": "Boulanger pétrissant la pâte dans le fournil",
+              "credit": {
+                "name": "giulioperricone",
+                "url": "https://pixabay.com/users/giulioperricone-6466513/"
+              }
+            }
+          },
+          {
+            "type": "hours",
+            "variant": "card",
+            "eyebrow": "Passez nous voir",
+            "title": "Horaires de la boutique",
+            "intro": "Retrait des commandes en boutique à {{company.city}}.",
+            "rows": [
+              {
+                "day": "Mardi au samedi",
+                "hours": "6 h 30 à 19 h"
+              },
+              {
+                "day": "Dimanche",
+                "hours": "7 h à 13 h"
+              }
+            ]
+          },
+          {
+            "type": "map",
+            "variant": "split",
+            "eyebrow": "Nous trouver",
+            "title": "La boutique à {{company.city}}",
+            "intro": "{{company.address}}",
+            "access": [
+              "Retrait de vos commandes en boutique à {{company.city}}"
+            ]
+          },
+          {
+            "id": "contact",
+            "type": "contact",
+            "variant": "split",
+            "mode": "contact",
+            "eyebrow": "Une question, un gâteau à commander ?",
+            "title": "Écrivez-nous",
+            "intro": "Précisez la date, le nombre de parts et vos envies : nous vous répondons rapidement.",
+            "services": [
+              "Gâteau sur commande",
+              "Pain au levain",
+              "Viennoiseries",
+              "Autre demande"
+            ],
+            "submitLabel": "Envoyer ma demande"
+          },
+          {
+            "id": "gateaux",
+            "type": "services",
+            "variant": "cards",
+            "eyebrow": "Pour vos fêtes",
+            "title": "Gâteaux sur commande",
+            "intro": "Anniversaire, baptême, repas de famille : gâteaux dès 22 € (tarif indicatif). Contactez-nous pour en discuter.",
+            "items": [
+              {
+                "title": "Gâteaux d'anniversaire",
+                "description": "Un gâteau pour souffler les bougies, choisi avec vous selon le nombre de parts.",
+                "icon": "cake",
+                "price": "dès 22 €",
+                "image": {
+                  "query": "birthday cake bakery decorated",
+                  "alternatives": [
+                    "homemade cake candles table",
+                    "pastry chef decorating cake"
+                  ],
+                  "src": "/vitrine/boulangerie/photo-07.webp",
+                  "alt": "Gâteau d'anniversaire décoré",
+                  "credit": {
+                    "name": "StockSnap",
+                    "url": "https://pixabay.com/users/StockSnap-894430/"
+                  }
+                }
+              },
+              {
+                "title": "Gâteaux pour repas de famille",
+                "description": "Un dessert à partager pour vos déjeuners et réceptions.",
+                "icon": "heart",
+                "price": "dès 22 €",
+                "image": {
+                  "query": "layered cake slice cream dessert",
+                  "alternatives": [
+                    "family dessert cake table",
+                    "fruit tart pastry bakery"
+                  ],
+                  "src": "/vitrine/boulangerie/photo-08.webp",
+                  "alt": "Part de gâteau à étages",
+                  "credit": {
+                    "name": "tehzeebkazmii",
+                    "url": "https://pixabay.com/users/tehzeebkazmii-46957846/"
+                  }
+                }
+              },
+              {
+                "title": "Commande sur mesure",
+                "description": "Une envie particulière ? Décrivez-la, nous vous répondons pour la préparer.",
+                "icon": "sparkles",
+                "image": {
+                  "query": "pastry chef piping cream cake",
+                  "alternatives": [
+                    "baker writing cake icing",
+                    "custom cake workshop"
+                  ],
+                  "src": "/vitrine/boulangerie/photo-09.webp",
+                  "alt": "Pâtissier décorant un gâteau",
+                  "credit": {
+                    "name": "Pexels",
+                    "url": "https://pixabay.com/users/Pexels-2286921/"
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "type": "faq",
+            "variant": "accordion",
+            "eyebrow": "Questions fréquentes",
+            "title": "Commander et retirer",
+            "items": [
+              {
+                "question": "Comment commander ?",
+                "answer": "Choisissez vos produits dans la commande en ligne, indiquez votre créneau de retrait et validez. Vous pouvez régler en ligne ou au retrait."
+              },
+              {
+                "question": "Où retirer ma commande ?",
+                "answer": "En boutique, à {{company.city}}, pendant nos horaires d'ouverture : du mardi au samedi de 6 h 30 à 19 h, le dimanche de 7 h à 13 h."
+              },
+              {
+                "question": "Comment commander un gâteau ?",
+                "answer": "Écrivez-nous via le formulaire ou appelez-nous au {{company.phone}} en précisant la date et le nombre de parts. Nos gâteaux démarrent à 22 €, tarif indicatif."
+              },
+              {
+                "question": "Vos viennoiseries sont-elles au beurre ?",
+                "answer": "Oui, nos viennoiseries sont pur beurre."
+              }
+            ]
+          },
+          {
+            "type": "footer",
+            "variant": "simple",
+            "tagline": "{{company.name}} – boulangerie artisanale à {{company.city}}.",
+            "links": [
+              {
+                "label": "Commander",
+                "href": "#commande"
+              },
+              {
+                "label": "Gâteaux",
+                "href": "#gateaux"
+              },
+              {
+                "label": "Horaires",
+                "href": "#hours"
+              },
+              {
+                "label": "Contact",
+                "href": "#contact"
+              }
+            ]
+          }
+        ],
+        "invites": [
+          {
+            "kind": "testimonials",
+            "before": "faq"
+          },
+          {
+            "kind": "stats",
+            "before": "cta"
+          }
+        ]
+      }
+    ],
+    "modules": {
+      "shop": {
+        "mode": "click-collect",
+        "products": [
+          {
+            "name": "Baguette",
+            "description": "La baguette du quotidien, croustillante et bien cuite.",
+            "price": 1.2,
+            "unit": "pièce",
+            "category": "Pains"
+          },
+          {
+            "name": "Pain au levain",
+            "description": "Pain au levain à la mie aérée et à la croûte épaisse.",
+            "price": 4.5,
+            "unit": "pièce",
+            "category": "Pains"
+          },
+          {
+            "name": "Croissant pur beurre",
+            "description": "Feuilleté, doré, préparé au beurre.",
+            "price": 1.4,
+            "unit": "pièce",
+            "category": "Viennoiseries"
+          },
+          {
+            "name": "Pain au chocolat pur beurre",
+            "description": "Pâte feuilletée au beurre et deux barres de chocolat.",
+            "price": 1.6,
+            "unit": "pièce",
+            "category": "Viennoiseries"
+          },
+          {
+            "name": "Gâteau sur commande",
+            "description": "Gâteau pour vos fêtes et repas de famille. Tarif indicatif, à préciser selon le nombre de parts et la recette.",
+            "price": 22,
+            "unit": "à partir de",
+            "category": "Gâteaux sur commande",
+            "preorderHours": 48
+          }
+        ],
+        "pickup": {
+          "schedule": {
+            "days": [
+              "mardi",
+              "mercredi",
+              "jeudi",
+              "vendredi",
+              "samedi"
+            ],
+            "start": "06:30",
+            "end": "19:00"
+          },
+          "leadTimeHours": 2
+        },
+        "payment": "both"
+      },
+      "widgets": [
+        {
+          "type": "google-maps"
+        }
+      ],
+      "webhooks": {
+        "events": [
+          "order.created",
+          "contact.created"
+        ]
+      }
+    }
+  }
+}

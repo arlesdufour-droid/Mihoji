@@ -1,0 +1,348 @@
+{
+  "slug": "plombier",
+  "label": "Plombier-chauffagiste",
+  "family": "artisan",
+  "module": "quote",
+  "request": "Site pour mon entreprise de plomberie-chauffage : dépannage, rénovation de salle de bain, remplacement de chaudière. Je veux recevoir des demandes de devis en ligne, avec des photos du problème.",
+  "company": {
+    "name": "Dubois Plomberie Chauffage",
+    "activity": "Travaux d’installation d’eau et de gaz en tous locaux",
+    "address": "12 rue des Tilleuls, 49000 Angers",
+    "phone": "01 99 00 41 27",
+    "email": "contact@dubois-plomberie.example"
+  },
+  "profile": {
+    "specialties": "dépannage fuite et chauffage, remplacement de chaudière, rénovation de salle de bain",
+    "priceRange": "diagnostic dès 89 €, dépannage de 80 à 150 €",
+    "hours": "Lundi au vendredi, 8 h à 18 h ; urgences 7 jours sur 7",
+    "area": "Angers et 25 km autour",
+    "tone": "Professionnel et rassurant"
+  },
+  "model": "claude-sonnet-5-5",
+  "costEur": 0.089776,
+  "attempts": 2,
+  "generatedAt": "2026-11-23T21:42:22.891Z",
+  "photos": 5,
+  "description": {
+    "version": 1,
+    "theme": {
+      "style": "moderne",
+      "palette": "bleu",
+      "header": "bar",
+      "reason": "Un plombier-chauffagiste relève des services techniques et du dépannage : le style moderne épuré, avec un bleu associé à l'eau et à la confiance, sert le ton professionnel et rassurant. L'en-tête « bar » met le bouton de devis bien en vue."
+    },
+    "seo": {
+      "title": "Plombier-chauffagiste à Angers | {{company.name}}",
+      "description": "Dépannage fuite et chauffage, remplacement de chaudière, rénovation de salle de bain à Angers et 25 km autour. Devis en ligne avec photos."
+    },
+    "primaryCta": {
+      "label": "Demander un devis",
+      "href": "#devis"
+    },
+    "pages": [
+      {
+        "slug": "index",
+        "title": "Accueil",
+        "sections": [
+          {
+            "type": "hero",
+            "variant": "photo",
+            "eyebrow": "Plombier-chauffagiste à {{company.city}}",
+            "title": "Une fuite, une panne de chauffage ? Nous intervenons vite et proprement.",
+            "subtitle": "{{company.name}} dépanne, remplace votre chaudière et rénove votre salle de bain à {{company.city}} et dans un rayon de 25 km. Envoyez-nous des photos du problème, nous vous répondons avec un devis clair.",
+            "cta": {
+              "label": "Demander un devis",
+              "href": "#devis"
+            },
+            "secondaryCta": {
+              "label": "Appeler maintenant",
+              "href": "tel:{{company.phone}}"
+            },
+            "highlights": [
+              "Urgences 7 jours sur 7",
+              "Diagnostic dès 89 €",
+              "Devis en ligne avec photos"
+            ],
+            "image": {
+              "query": "plumber fixing sink pipe",
+              "alternatives": [
+                "plumber repairing leak under sink",
+                "plumber tightening copper pipe wrench"
+              ],
+              "src": "/vitrine/plombier/photo-01.webp",
+              "alt": "Plombier en train de réparer une canalisation sous un évier",
+              "credit": {
+                "name": "Sunriseforever",
+                "url": "https://pixabay.com/users/Sunriseforever-6314823/"
+              }
+            }
+          },
+          {
+            "type": "module",
+            "variant": "split",
+            "module": "quote",
+            "eyebrow": "Devis en ligne",
+            "title": "Décrivez votre problème, joignez des photos",
+            "intro": "Indiquez votre adresse, ajoutez quelques photos de la fuite, de la chaudière ou de la pièce à rénover : nous préparons un devis adapté. Pour une urgence, appelez-nous directement."
+          },
+          {
+            "id": "services",
+            "type": "services",
+            "variant": "cards",
+            "eyebrow": "Nos interventions",
+            "title": "Dépannage, chaudière, salle de bain : ce que nous faisons",
+            "intro": "Trois savoir-faire pour votre eau, votre chauffage et votre confort au quotidien.",
+            "items": [
+              {
+                "title": "Dépannage fuite et chauffage",
+                "description": "Fuite d'eau, radiateur froid, panne de chauffage : nous cherchons la cause, réparons et vous expliquons ce qui a été fait. Diagnostic dès 89 €, dépannage de 80 à 150 € (tarifs indicatifs).",
+                "icon": "droplets",
+                "price": "dépannage de 80 à 150 €",
+                "image": {
+                  "query": "plumber repairing water leak pipe",
+                  "alternatives": [
+                    "plumber checking radiator heating",
+                    "plumber wrench leaking pipe"
+                  ],
+                  "src": "/vitrine/plombier/photo-02.webp",
+                  "alt": "Plombier réparant une fuite sur une canalisation",
+                  "credit": {
+                    "name": "Sunriseforever",
+                    "url": "https://pixabay.com/users/Sunriseforever-6314823/"
+                  }
+                }
+              },
+              {
+                "title": "Remplacement de chaudière",
+                "description": "Dépose de l'ancienne chaudière, pose du nouveau modèle, raccordements et mise en service. Nous vous conseillons sur l'appareil adapté à votre logement.",
+                "icon": "flame",
+                "image": {
+                  "query": "technician installing gas boiler",
+                  "alternatives": [
+                    "boiler installation wall home",
+                    "heating engineer servicing boiler"
+                  ],
+                  "src": "/vitrine/plombier/photo-03.webp",
+                  "alt": "Chauffagiste installant une chaudière murale",
+                  "credit": {
+                    "name": "byrev",
+                    "url": "https://pixabay.com/users/byrev-23277/"
+                  }
+                }
+              },
+              {
+                "title": "Rénovation de salle de bain",
+                "description": "Dépose, plomberie, pose de la douche ou de la baignoire, du meuble vasque et des robinetteries : nous menons la partie plomberie de votre projet jusqu'à la finition.",
+                "icon": "home",
+                "image": {
+                  "query": "modern bathroom renovation shower installation",
+                  "alternatives": [
+                    "bathroom plumbing vanity faucet install",
+                    "renovated bathroom walk-in shower"
+                  ],
+                  "src": "/vitrine/plombier/photo-04.jpg",
+                  "alt": "Salle de bain rénovée avec douche à l'italienne",
+                  "credit": {
+                    "name": "Pexels",
+                    "url": "https://pixabay.com/users/Pexels-2286921/"
+                  }
+                }
+              },
+              {
+                "title": "Installation d'eau et de gaz",
+                "description": "Création ou modification de circuits d'eau et de gaz en tous locaux : logements, commerces, bureaux.",
+                "icon": "wrench",
+                "image": {
+                  "query": "plumber installing copper pipes",
+                  "alternatives": [
+                    "gas pipe installation technician",
+                    "copper pipework wall plumbing"
+                  ],
+                  "src": "/vitrine/plombier/photo-05.webp",
+                  "alt": "Tuyauterie en cuivre en cours d'installation",
+                  "credit": {
+                    "name": "Eugene_Brennan",
+                    "url": "https://pixabay.com/users/Eugene_Brennan-1552183/"
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "id": "deroulement",
+            "type": "services",
+            "variant": "list",
+            "eyebrow": "Déroulé d'une intervention",
+            "title": "De votre demande au chantier terminé",
+            "items": [
+              {
+                "title": "1. Vous nous envoyez votre demande",
+                "description": "Via le formulaire de devis, avec quelques photos du problème, ou par téléphone en cas d'urgence.",
+                "icon": "mail"
+              },
+              {
+                "title": "2. Nous établissons le devis",
+                "description": "Nous analysons votre situation et vous proposons un devis détaillé, sans surprise.",
+                "icon": "check"
+              },
+              {
+                "title": "3. Nous intervenons",
+                "description": "Réparation, remplacement ou rénovation, dans le respect de votre intérieur.",
+                "icon": "wrench"
+              },
+              {
+                "title": "4. Nous vérifions et expliquons",
+                "description": "Essais, mise en service et explications sur le fonctionnement de votre installation.",
+                "icon": "shield"
+              }
+            ]
+          },
+          {
+            "id": "entreprise",
+            "type": "about",
+            "variant": "text",
+            "eyebrow": "Votre plombier à {{company.city}}",
+            "title": "Un interlocuteur unique, du diagnostic à la mise en service",
+            "paragraphs": [
+              "{{company.name}} est une entreprise de plomberie et de chauffage installée à {{company.city}}. Nous réalisons des travaux d'installation d'eau et de gaz en tous locaux, du dépannage à la rénovation complète. Nous nous déplaçons à {{company.city}} et dans un rayon de 25 km autour.",
+              "Nous annonçons le prix avant d'intervenir, nous protégeons vos sols et nous laissons le chantier propre. Vous savez toujours ce qui est fait, et pourquoi."
+            ],
+            "highlights": [
+              "Diagnostic dès 89 €",
+              "Devis avant intervention",
+              "Chantier laissé propre"
+            ]
+          },
+          {
+            "id": "faq",
+            "type": "faq",
+            "variant": "accordion",
+            "eyebrow": "Questions fréquentes",
+            "title": "Avant de nous appeler",
+            "items": [
+              {
+                "question": "Combien coûte un dépannage ?",
+                "answer": "À titre indicatif, le diagnostic démarre à 89 € et un dépannage se situe entre 80 et 150 €. Le tarif exact dépend de la panne et vous est annoncé avant l'intervention."
+              },
+              {
+                "question": "Pourquoi joindre des photos à ma demande de devis ?",
+                "answer": "Elles nous permettent de repérer le problème, de préparer le bon matériel et de vous répondre plus précisément. Photographiez la fuite, la chaudière et sa plaque signalétique, ou la pièce à rénover."
+              },
+              {
+                "question": "Intervenez-vous en urgence ?",
+                "answer": "Oui, nous assurons les urgences 7 jours sur 7. En semaine, nous sommes joignables de 8 h à 18 h. Appelez-nous directement pour une fuite ou une panne de chauffage."
+              },
+              {
+                "question": "Dans quelle zone vous déplacez-vous ?",
+                "answer": "Nous intervenons à {{company.city}} et dans un rayon de 25 km autour de la ville. Vous hésitez sur votre adresse ? Appelez-nous, nous vous répondons."
+              },
+              {
+                "question": "Pouvez-vous remplacer ma chaudière ?",
+                "answer": "Oui. Nous déposons l'ancienne chaudière, installons la nouvelle, effectuons les raccordements et la mise en service. Envoyez-nous des photos de l'installation actuelle pour un devis adapté."
+              }
+            ]
+          },
+          {
+            "id": "contact",
+            "type": "contact",
+            "variant": "split",
+            "mode": "contact",
+            "eyebrow": "Contact",
+            "title": "Une question avant de demander un devis ?",
+            "intro": "Écrivez-nous ou appelez-nous au {{company.phone}}. Nous vous répondons rapidement.",
+            "services": [
+              "Dépannage fuite",
+              "Dépannage chauffage",
+              "Remplacement de chaudière",
+              "Rénovation de salle de bain",
+              "Autre"
+            ],
+            "submitLabel": "Envoyer ma question"
+          },
+          {
+            "type": "hours",
+            "variant": "card",
+            "eyebrow": "Disponibilités",
+            "title": "Quand nous joindre",
+            "rows": [
+              {
+                "day": "Lundi au vendredi",
+                "hours": "8 h à 18 h"
+              },
+              {
+                "day": "Urgences",
+                "hours": "7 jours sur 7"
+              }
+            ],
+            "note": "Fuite importante ou panne de chauffage : appelez-nous, c'est le canal le plus rapide."
+          },
+          {
+            "type": "footer",
+            "variant": "simple",
+            "tagline": "{{company.name}} – plomberie et chauffage à {{company.city}} et 25 km autour.",
+            "links": [
+              {
+                "label": "Interventions",
+                "href": "#services"
+              },
+              {
+                "label": "Devis en ligne",
+                "href": "#devis"
+              },
+              {
+                "label": "Questions fréquentes",
+                "href": "#faq"
+              },
+              {
+                "label": "Contact",
+                "href": "#contact"
+              }
+            ]
+          }
+        ],
+        "invites": [
+          {
+            "kind": "testimonials",
+            "before": "faq"
+          },
+          {
+            "kind": "stats",
+            "before": "cta"
+          }
+        ]
+      }
+    ],
+    "modules": {
+      "quote": {
+        "services": [
+          "Dépannage fuite",
+          "Dépannage chauffage",
+          "Remplacement de chaudière",
+          "Rénovation de salle de bain",
+          "Autre intervention de plomberie"
+        ],
+        "fields": [
+          "address",
+          "photos",
+          "date"
+        ],
+        "responseDelay": "Réponse rapide à chaque demande de devis",
+        "emergency": true
+      },
+      "widgets": [
+        {
+          "type": "google-maps"
+        },
+        {
+          "type": "google-reviews"
+        }
+      ],
+      "webhooks": {
+        "events": [
+          "quote.created",
+          "contact.created"
+        ]
+      }
+    }
+  }
+}

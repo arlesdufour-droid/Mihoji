@@ -1,4 +1,5 @@
 import { expect, test } from '@playwright/test';
+import { listKeptEntries } from '../src/lib/vitrine/store';
 import { authCookies, readState } from './helpers';
 
 const state = readState();
@@ -12,7 +13,8 @@ test('1.1 la page d’accueil TPE : titre, SIRET central, garanties, exemples, 3
   await expect(page.getByRole('button', { name: 'Créer mon site' })).toBeVisible();
   await expect(page.getByRole('link', { name: 'Pas encore de SIRET ? Décrivez votre activité' })).toBeVisible();
   for (const guarantee of ['Mentions légales et RGPD inclus', 'Hébergé en France', 'Sans engagement']) await expect(page.getByText(guarantee, { exact: false }).first()).toBeVisible();
-  for (const label of ['Plombier', 'Boulangerie', 'Kinésithérapeute', 'Consultant']) await expect(page.getByRole('link', { name: new RegExp(label) })).toBeVisible();
+  // Vitrine : les sites d'exemple gardés dans /admin/vitrine, chacun avec un aperçu visuel (détail dans e2e/home-vitrine.spec.ts).
+  for (const entry of listKeptEntries()) await expect(page.getByRole('link', { name: new RegExp(entry.label.replace(/ \(.*\)$/, '')) }).first()).toBeVisible();
   await expect(page.getByRole('heading', { name: 'Comment ça marche' })).toBeVisible();
   await expect(page.locator('ol > li')).toHaveCount(3);
   expect(await page.locator('body').innerText()).not.toMatch(/\b(IA|prompt|crédits?)\b/i);
@@ -70,8 +72,9 @@ test('1.6 un exemple métier est cliquable et mène à un vrai site d’exemple'
   await page.goto('/');
   await page.getByRole('link', { name: /Plombier/ }).click();
   await expect(page).toHaveURL(/\/exemples\/plombier$/);
-  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Exemple : plombier');
-  await expect(page.frameLocator('iframe[title="Exemple de site : Plombier"]').getByRole('heading', { level: 1 })).toHaveText('Dupont Plomberie');
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Exemple : plombier-chauffagiste');
+  await expect(page.frameLocator('iframe[title^="Exemple de site : Plombier"]').first().getByRole('heading', { level: 1 })).toContainText('Une fuite');
+  await expect(page.frameLocator('iframe[title^="Exemple de site : Plombier"]').first().locator('.demo-notice')).toContainText('Entreprise fictive');
   await expect(page.getByRole('link', { name: 'Créer un site comme celui-ci' })).toHaveAttribute('href', '/login?intent=business');
   expect((await page.goto('/exemples/inconnu'))?.status()).toBe(404);
 });

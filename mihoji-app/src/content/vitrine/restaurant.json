@@ -1,0 +1,353 @@
+{
+  "slug": "restaurant",
+  "label": "Restaurant (réservation avec acompte)",
+  "family": "restauration",
+  "module": "booking-deposit",
+  "request": "Je tiens un restaurant de cuisine de marché avec une carte courte qui change chaque semaine. Je veux présenter la carte et que mes clients puissent réserver une table en ligne, avec un acompte pour les groupes.",
+  "company": {
+    "name": "Le Comptoir des Halles",
+    "activity": "Restauration traditionnelle",
+    "address": "14 rue Mercière, 69002 Lyon",
+    "phone": "04 65 71 38 52",
+    "email": "contact@comptoir-des-halles.example"
+  },
+  "profile": {
+    "specialties": "cuisine de marché, carte courte renouvelée chaque semaine, vins naturels",
+    "priceRange": "menu du midi 24 €, plats de 18 à 32 €",
+    "hours": "Mardi au samedi, midi et soir ; fermé dimanche et lundi",
+    "area": "Presqu’île de Lyon",
+    "tone": "Simple et direct"
+  },
+  "model": "claude-sonnet-5-5",
+  "costEur": 0.061727,
+  "attempts": 2,
+  "generatedAt": "2026-11-23T21:44:05.653Z",
+  "photos": 2,
+  "description": {
+    "version": 1,
+    "theme": {
+      "style": "retro",
+      "palette": "bistrot",
+      "header": "split",
+      "reason": "Un restaurant de cuisine de marché au ton simple et direct appelle l'esprit bistrot : palette Bistrot, contours francs, et un en-tête split plus éditorial, comme une ardoise de carte."
+    },
+    "seo": {
+      "title": "Le Comptoir des Halles – Cuisine de marché à Lyon",
+      "description": "Restaurant de cuisine de marché à Lyon : carte courte renouvelée chaque semaine, vins naturels. Réservez votre table en ligne."
+    },
+    "primaryCta": {
+      "label": "Réserver une table",
+      "href": "#reservation"
+    },
+    "pages": [
+      {
+        "slug": "index",
+        "title": "Accueil",
+        "sections": [
+          {
+            "type": "hero",
+            "variant": "photo",
+            "eyebrow": "Cuisine de marché · Lyon",
+            "title": "La carte change chaque semaine, le marché décide.",
+            "subtitle": "{{company.name}} sert une carte courte, des produits de saison et des vins naturels, au cœur de la Presqu’île de {{company.city}}.",
+            "cta": {
+              "label": "Réserver une table",
+              "href": "#reservation"
+            },
+            "secondaryCta": {
+              "label": "Voir la carte",
+              "href": "#carte"
+            },
+            "highlights": [
+              "Menu du midi 24 €",
+              "Plats de 18 à 32 €",
+              "Vins naturels"
+            ],
+            "image": {
+              "query": "bistro dish served on table",
+              "alternatives": [
+                "chef plating seasonal vegetables",
+                "restaurant table wine glasses food"
+              ],
+              "src": "/vitrine/restaurant/photo-01.webp",
+              "alt": "Plat de saison dressé sur une table de bistrot",
+              "credit": {
+                "name": "Engin_Akyurt",
+                "url": "https://pixabay.com/users/Engin_Akyurt-3656355/"
+              }
+            }
+          },
+          {
+            "id": "carte",
+            "type": "products",
+            "variant": "menu",
+            "eyebrow": "La carte de la semaine",
+            "title": "Courte, de saison, renouvelée chaque semaine",
+            "intro": "Quelques entrées, quelques plats, quelques desserts, selon l'arrivage. Menu du midi à 24 €, plats de 18 à 32 € (prix indicatifs). La carte exacte vous est communiquée sur place ou par téléphone.",
+            "items": [
+              {
+                "name": "Entrées de saison",
+                "description": "Légumes et produits du marché, apprêtés simplement. Elles changent chaque semaine.",
+                "tag": "Selon marché"
+              },
+              {
+                "name": "Plats du marché",
+                "description": "Poisson, viande ou plat végétal, selon ce que le marché offre cette semaine. De 18 à 32 €.",
+                "price": "de 18 à 32 €"
+              },
+              {
+                "name": "Menu du midi",
+                "description": "Une formule courte au rythme de la carte, du mardi au samedi midi.",
+                "price": "24 €",
+                "tag": "Midi"
+              },
+              {
+                "name": "Desserts maison",
+                "description": "Un petit choix de desserts, selon la saison et l'inspiration du moment."
+              },
+              {
+                "name": "Vins naturels",
+                "description": "Une sélection de vins naturels pour accompagner la carte. Demandez conseil en salle.",
+                "tag": "À la carte"
+              }
+            ]
+          },
+          {
+            "type": "module",
+            "variant": "split",
+            "module": "booking",
+            "eyebrow": "Réservation en ligne",
+            "title": "Réservez votre table",
+            "intro": "Choisissez le service, le jour et l'heure. Pour un groupe, un acompte confirme la réservation."
+          },
+          {
+            "type": "about",
+            "variant": "image-right",
+            "eyebrow": "La maison",
+            "title": "Un comptoir, un marché, une ardoise",
+            "paragraphs": [
+              "{{company.name}} cuisine ce que le marché apporte. La carte est courte pour rester fraîche : elle change chaque semaine, au gré des saisons et des arrivages.",
+              "Côté verre, des vins naturels choisis pour accompagner cette cuisine simple. Ici, on parle franchement : de ce qu'il y a dans l'assiette, et de ce qu'il y a dans le verre."
+            ],
+            "highlights": [
+              "Cuisine de marché",
+              "Carte courte",
+              "Vins naturels"
+            ],
+            "image": {
+              "query": "chef cooking in restaurant kitchen",
+              "alternatives": [
+                "cook preparing fresh vegetables",
+                "restaurant kitchen plating dish"
+              ],
+              "src": "/vitrine/restaurant/photo-02.webp",
+              "alt": "Cuisinier au travail dans la cuisine du restaurant",
+              "credit": {
+                "name": "Pexels",
+                "url": "https://pixabay.com/users/Pexels-2286921/"
+              }
+            }
+          },
+          {
+            "type": "hours",
+            "variant": "card",
+            "eyebrow": "Quand venir",
+            "title": "Horaires d'ouverture",
+            "rows": [
+              {
+                "day": "Mardi au samedi",
+                "hours": "Midi et soir"
+              },
+              {
+                "day": "Dimanche et lundi",
+                "hours": "Fermé"
+              }
+            ],
+            "note": "Réservation conseillée, en ligne ou par téléphone."
+          },
+          {
+            "type": "faq",
+            "variant": "accordion",
+            "eyebrow": "Bon à savoir",
+            "title": "Questions fréquentes",
+            "items": [
+              {
+                "question": "La carte est-elle la même toute l'année ?",
+                "answer": "Non. La carte est courte et change chaque semaine selon le marché et les saisons."
+              },
+              {
+                "question": "Comment réserver pour un groupe ?",
+                "answer": "Réservez en ligne en choisissant la table de groupe. Un acompte est demandé pour confirmer la réservation."
+              },
+              {
+                "question": "Quels sont vos tarifs ?",
+                "answer": "À titre indicatif : menu du midi à 24 €, plats de 18 à 32 €."
+              },
+              {
+                "question": "Proposez-vous des vins naturels ?",
+                "answer": "Oui, notre sélection de vins naturels accompagne la carte. N'hésitez pas à demander conseil."
+              },
+              {
+                "question": "Quels jours êtes-vous ouverts ?",
+                "answer": "Du mardi au samedi, midi et soir. Nous sommes fermés le dimanche et le lundi."
+              }
+            ]
+          },
+          {
+            "type": "contact",
+            "variant": "split",
+            "mode": "contact",
+            "eyebrow": "Une question ?",
+            "title": "Écrivez-nous ou appelez-nous",
+            "intro": "Pour la carte de la semaine, une demande particulière ou un grand groupe, contactez-nous au {{company.phone}} ou à {{company.email}}.",
+            "submitLabel": "Envoyer le message"
+          },
+          {
+            "type": "module",
+            "variant": "panel",
+            "module": "payment",
+            "eyebrow": "Groupes",
+            "title": "Acompte pour les groupes",
+            "intro": "Pour confirmer la réservation d'une table de groupe, réglez l'acompte en ligne en quelques clics."
+          },
+          {
+            "type": "services",
+            "variant": "icons",
+            "eyebrow": "À table",
+            "title": "Ce que nous proposons",
+            "items": [
+              {
+                "title": "Cuisine de marché",
+                "description": "Des produits de saison, travaillés simplement, selon l'arrivage.",
+                "icon": "utensils"
+              },
+              {
+                "title": "Carte renouvelée chaque semaine",
+                "description": "Une carte courte, pour cuisiner frais et changer souvent.",
+                "icon": "calendar"
+              },
+              {
+                "title": "Vins naturels",
+                "description": "Une sélection de vins naturels à la carte, avec conseils en salle.",
+                "icon": "sparkles"
+              },
+              {
+                "title": "Groupes",
+                "description": "Réservation de table pour les groupes, confirmée par un acompte en ligne.",
+                "icon": "users"
+              }
+            ]
+          },
+          {
+            "type": "area",
+            "variant": "chips",
+            "eyebrow": "Où nous trouver",
+            "title": "Dans la Presqu’île de {{company.city}}",
+            "intro": "Le restaurant se trouve au cœur de la Presqu’île de {{company.city}}.",
+            "places": [
+              "Presqu’île de Lyon",
+              "Lyon",
+              "Presqu’île"
+            ]
+          },
+          {
+            "type": "footer",
+            "variant": "simple",
+            "tagline": "{{company.name}} · Cuisine de marché à {{company.city}}",
+            "links": [
+              {
+                "label": "La carte",
+                "href": "#carte"
+              },
+              {
+                "label": "Réserver",
+                "href": "#reservation"
+              },
+              {
+                "label": "Horaires",
+                "href": "#hours"
+              },
+              {
+                "label": "Contact",
+                "href": "#contact"
+              }
+            ]
+          }
+        ],
+        "invites": [
+          {
+            "kind": "testimonials",
+            "before": "faq"
+          },
+          {
+            "kind": "stats",
+            "before": "cta"
+          }
+        ]
+      }
+    ],
+    "modules": {
+      "booking": {
+        "services": [
+          {
+            "name": "Table déjeuner",
+            "durationMinutes": 90,
+            "price": 0,
+            "location": "onsite"
+          },
+          {
+            "name": "Table dîner",
+            "durationMinutes": 120,
+            "price": 0,
+            "location": "onsite"
+          },
+          {
+            "name": "Table de groupe (acompte)",
+            "durationMinutes": 150,
+            "price": 0,
+            "location": "onsite"
+          }
+        ],
+        "schedule": {
+          "days": [
+            "mardi",
+            "mercredi",
+            "jeudi",
+            "vendredi",
+            "samedi"
+          ],
+          "start": "12:00",
+          "end": "22:00"
+        },
+        "slotMinutes": 30,
+        "leadTimeHours": 2,
+        "cancellationPolicy": "Annulation gratuite jusqu'à 24 h avant. L'acompte des groupes n'est pas remboursé en cas d'annulation tardive.",
+        "payment": "deposit",
+        "depositPercent": 30,
+        "reminders": true
+      },
+      "payment": {
+        "offers": [
+          {
+            "name": "Acompte table de groupe",
+            "description": "Acompte à régler pour confirmer la réservation d'un groupe.",
+            "price": 50,
+            "kind": "deposit"
+          }
+        ]
+      },
+      "widgets": [
+        {
+          "type": "google-maps"
+        }
+      ],
+      "webhooks": {
+        "events": [
+          "booking.created",
+          "payment.succeeded",
+          "contact.created"
+        ]
+      }
+    }
+  }
+}

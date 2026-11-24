@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { MarketingTopBar } from '@/components/marketing/top-bar';
 import { SiretStartForm } from '@/components/marketing/siret-start-form';
-import { examples } from '@/lib/marketing-examples';
+import { listKeptEntries, moduleLabels } from '@/lib/vitrine/store';
 
 export const metadata = { title: 'Mihoji — le site de votre entreprise, en ligne en 10 minutes' };
 
@@ -18,6 +18,8 @@ const steps = [
 ];
 
 export default function Home() {
+  // Sites d'exemple de la vitrine (entreprises fictives, créés par Mihoji et enregistrés dans le dépôt) : ceux gardés dans /admin/vitrine.
+  const examples = listKeptEntries();
   return (
     <div className="min-h-screen bg-slate-950 text-slate-50 selection:bg-indigo-500 selection:text-white">
       <MarketingTopBar audience="business" />
@@ -42,14 +44,21 @@ export default function Home() {
 
         <section aria-labelledby="exemples" className="mx-auto max-w-6xl px-5 pb-16">
           <h2 id="exemples" className="text-2xl font-bold">Des sites pour tous les métiers</h2>
-          <p className="mt-2 text-slate-400">Cliquez sur un exemple pour voir le site que vous pourriez avoir.</p>
-          <ul className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          <p className="mt-2 text-slate-400">Cliquez sur un exemple pour voir le site que vous pourriez avoir (entreprises fictives).</p>
+          <ul className="mt-6 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
             {examples.map((example) => (
               <li key={example.slug}>
-                <Link href={`/exemples/${example.slug}`} className="block h-full rounded-2xl border border-slate-800 bg-slate-900 p-5 transition hover:border-indigo-400 hover:bg-slate-800">
-                  <span className="text-3xl" aria-hidden="true">{example.emoji}</span>
-                  <span className="mt-3 block text-lg font-semibold">{example.label}</span>
-                  <span className="mt-1 block text-sm text-slate-400">{example.description}</span>
+                <Link href={`/exemples/${example.slug}`} className="group block h-full overflow-hidden rounded-2xl border border-slate-800 bg-slate-900 transition hover:border-indigo-400 hover:bg-slate-800">
+                  {/* Aperçu visuel du vrai site (capture du haut de page, versionnée dans le dépôt) : version mobile sur petit écran, ordinateur sinon. */}
+                  <picture>
+                    <source media="(max-width: 639px)" srcSet={`/vitrine/${example.slug}/apercu-mobile.webp`} />
+                    <img src={`/vitrine/${example.slug}/apercu-ordinateur.webp`} width={800} height={500} loading="lazy" decoding="async" alt={`Aperçu du site d’exemple : ${example.label.replace(/ \(.*\)$/, '')}`} className="aspect-[8/5] w-full bg-slate-800 object-cover object-top" />
+                  </picture>
+                  <span className="block p-5">
+                    <span className="block text-lg font-semibold">{example.label.replace(/ \(.*\)$/, '')}</span>
+                    <span className="mt-1 block text-sm text-slate-400">{moduleLabels[example.module]}</span>
+                    <span className="mt-2 block text-xs text-slate-500">{example.company.name} · entreprise fictive</span>
+                  </span>
                 </Link>
               </li>
             ))}

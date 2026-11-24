@@ -1,0 +1,342 @@
+{
+  "slug": "kinesitherapeute",
+  "label": "Kinésithérapeute (rendez-vous)",
+  "family": "sante",
+  "module": "booking",
+  "request": "Je suis kinésithérapeute, spécialisée en rééducation sportive et en douleurs de dos. Je veux que mes patients puissent prendre rendez-vous en ligne et trouver facilement les informations pratiques.",
+  "company": {
+    "name": "Cabinet de kinésithérapie Moreau",
+    "activity": "Activités des professionnels de la rééducation, de l’appareillage et des pédicures-podologues",
+    "address": "3 rue de Nantes, 35000 Rennes",
+    "phone": "02 61 91 54 08",
+    "email": "contact@kine-moreau.example"
+  },
+  "profile": {
+    "specialties": "rééducation sportive, douleurs de dos, rééducation après opération",
+    "priceRange": "séances conventionnées, remboursées par l’Assurance maladie",
+    "hours": "Lundi au vendredi, 8 h à 19 h ; samedi matin",
+    "area": "Rennes et Cesson-Sévigné",
+    "tone": "Professionnel et rassurant"
+  },
+  "model": "claude-sonnet-5-5",
+  "costEur": 0.068079,
+  "attempts": 2,
+  "generatedAt": "2026-11-23T21:45:02.353Z",
+  "photos": 4,
+  "description": {
+    "version": 1,
+    "theme": {
+      "style": "naturel",
+      "palette": "sauge",
+      "header": "bar",
+      "reason": "Le style naturel et la palette sauge apportent le calme et la confiance attendus d'un cabinet de santé douce ; l'en-tête « bar » reste sobre et laisse le bouton de rendez-vous bien visible."
+    },
+    "seo": {
+      "title": "Kinésithérapeute à Rennes | Rééducation sportive et dos",
+      "description": "{{company.name}} à {{company.city}} : rééducation sportive, douleurs de dos et rééducation après opération. Séances conventionnées, rendez-vous en ligne."
+    },
+    "primaryCta": {
+      "label": "Prendre rendez-vous",
+      "href": "#reservation"
+    },
+    "pages": [
+      {
+        "slug": "index",
+        "title": "Accueil",
+        "sections": [
+          {
+            "type": "hero",
+            "variant": "split",
+            "eyebrow": "Kinésithérapie à {{company.city}}",
+            "title": "Retrouvez votre mobilité, à votre rythme",
+            "subtitle": "{{company.name}} vous accompagne en rééducation sportive, pour les douleurs de dos et après une opération. Un suivi attentif, des explications claires, des séances conventionnées.",
+            "cta": {
+              "label": "Prendre rendez-vous",
+              "href": "#reservation"
+            },
+            "secondaryCta": {
+              "label": "Informations pratiques",
+              "href": "#horaires"
+            },
+            "highlights": [
+              "Rééducation sportive",
+              "Douleurs de dos",
+              "Après opération",
+              "Séances remboursées"
+            ],
+            "image": {
+              "query": "physiotherapist treating patient back",
+              "alternatives": [
+                "physiotherapy session treatment room",
+                "physiotherapist massaging shoulder patient"
+              ],
+              "src": "/vitrine/kinesitherapeute/photo-01.webp",
+              "alt": "Kinésithérapeute prenant en charge le dos d'un patient en cabinet",
+              "credit": {
+                "name": "u_atk62mjqnp",
+                "url": "https://pixabay.com/users/u_atk62mjqnp-38629935/"
+              }
+            }
+          },
+          {
+            "id": "soins",
+            "type": "services",
+            "variant": "cards",
+            "eyebrow": "Les soins du cabinet",
+            "title": "Trois domaines de rééducation",
+            "intro": "Chaque prise en charge commence par un bilan, puis un programme adapté à votre situation et à vos objectifs.",
+            "items": [
+              {
+                "title": "Rééducation sportive",
+                "description": "Reprise après une blessure musculaire ou articulaire, retour progressif à l'effort, prévention des rechutes. Un accompagnement pensé pour votre pratique.",
+                "icon": "dumbbell",
+                "image": {
+                  "query": "physiotherapist sports knee rehabilitation exercise",
+                  "src": "/vitrine/kinesitherapeute/photo-02.webp",
+                  "alt": "Exercice de rééducation du genou pour un sportif",
+                  "credit": {
+                    "name": "whitesession",
+                    "url": "https://pixabay.com/users/whitesession-4645995/"
+                  }
+                }
+              },
+              {
+                "title": "Douleurs de dos",
+                "description": "Lombalgies, dorsalgies, tensions cervicales : soulagement de la douleur, travail de la mobilité et conseils pour éviter qu'elle ne revienne au quotidien.",
+                "icon": "heart",
+                "image": {
+                  "query": "physiotherapist lower back manual therapy",
+                  "src": "/vitrine/kinesitherapeute/photo-03.webp",
+                  "alt": "Thérapie manuelle du bas du dos sur table de soins",
+                  "credit": {
+                    "name": "MobileMassagenMD",
+                    "url": "https://pixabay.com/users/MobileMassagenMD-503719/"
+                  }
+                }
+              },
+              {
+                "title": "Rééducation après opération",
+                "description": "Récupération de la force et de l'amplitude après une intervention orthopédique, en lien avec les consignes de votre chirurgien et de votre médecin.",
+                "icon": "stethoscope",
+                "image": {
+                  "query": "physiotherapist shoulder rehabilitation elastic band",
+                  "src": "/vitrine/kinesitherapeute/photo-04.webp",
+                  "alt": "Rééducation de l'épaule avec un élastique après une opération",
+                  "credit": {
+                    "name": "stevepb",
+                    "url": "https://pixabay.com/users/stevepb-282134/"
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "id": "deroulement",
+            "type": "services",
+            "variant": "list",
+            "eyebrow": "Votre première séance",
+            "title": "Comment se déroule la prise en charge",
+            "items": [
+              {
+                "title": "1. Le bilan",
+                "description": "Nous faisons le point sur votre douleur, votre histoire et vos objectifs. Pensez à apporter votre ordonnance et, si vous en avez, vos examens.",
+                "icon": "check"
+              },
+              {
+                "title": "2. Le soin",
+                "description": "Techniques manuelles, mobilisation et exercices ciblés, expliqués à chaque étape.",
+                "icon": "heart"
+              },
+              {
+                "title": "3. Le suivi",
+                "description": "Nous ajustons le programme au fil des séances et vous remettons des exercices à pratiquer entre deux rendez-vous.",
+                "icon": "calendar"
+              }
+            ]
+          },
+          {
+            "type": "module",
+            "variant": "panel",
+            "module": "booking",
+            "eyebrow": "Rendez-vous en ligne",
+            "title": "Réservez votre séance en quelques clics",
+            "intro": "Choisissez le type de séance et un créneau disponible. Séances conventionnées, remboursées par l'Assurance maladie."
+          },
+          {
+            "id": "cabinet",
+            "type": "about",
+            "variant": "image-right",
+            "eyebrow": "Votre kinésithérapeute",
+            "title": "Un suivi à l'écoute, sans jargon",
+            "paragraphs": [
+              "Au {{company.name}}, à {{company.city}}, chaque patient est reçu pour un bilan complet avant tout soin. Vous savez où vous en êtes, ce que nous allons travailler et pourquoi.",
+              "Ma pratique est centrée sur la rééducation sportive et les douleurs de dos. Les séances associent des techniques manuelles et des exercices que vous pouvez poursuivre chez vous.",
+              "Le cabinet accueille les patients de Rennes et de Cesson-Sévigné."
+            ],
+            "highlights": [
+              "Bilan en début de prise en charge",
+              "Séances conventionnées",
+              "Exercices adaptés à votre quotidien"
+            ],
+            "image": {
+              "query": "friendly physiotherapist portrait clinic",
+              "alternatives": [
+                "female physiotherapist smiling treatment room",
+                "physiotherapist portrait white uniform"
+              ],
+              "src": "https://images.unsplash.com/photo-1709127347874-3f4674be5bc8",
+              "alt": "Portrait de la kinésithérapeute dans son cabinet",
+              "credit": {
+                "name": "Ortopediatri Çocuk Ortopedi Akademisi",
+                "url": "https://unsplash.com/@ortopediatri?utm_source=mihoji&utm_medium=referral"
+              }
+            }
+          },
+          {
+            "type": "faq",
+            "variant": "accordion",
+            "eyebrow": "Questions fréquentes",
+            "title": "Avant votre rendez-vous",
+            "items": [
+              {
+                "question": "Les séances sont-elles remboursées ?",
+                "answer": "Les séances sont conventionnées et remboursées par l'Assurance maladie, selon votre situation et votre couverture complémentaire."
+              },
+              {
+                "question": "Faut-il une ordonnance ?",
+                "answer": "Pour une prise en charge remboursée, une prescription médicale est en général nécessaire. Apportez-la à la première séance, avec vos éventuels examens d'imagerie."
+              },
+              {
+                "question": "Que dois-je apporter à la première séance ?",
+                "answer": "Votre carte Vitale, votre ordonnance, votre carte de mutuelle et vos examens récents. Prévoyez une tenue confortable permettant de bouger facilement."
+              },
+              {
+                "question": "Comment annuler ou déplacer un rendez-vous ?",
+                "answer": "Prévenez-nous au moins 24 h à l'avance par téléphone ou par email, afin que le créneau puisse être proposé à un autre patient."
+              }
+            ]
+          },
+          {
+            "id": "horaires",
+            "type": "hours",
+            "variant": "card",
+            "eyebrow": "Informations pratiques",
+            "title": "Horaires du cabinet",
+            "rows": [
+              {
+                "day": "Lundi au vendredi",
+                "hours": "8 h à 19 h"
+              },
+              {
+                "day": "Samedi",
+                "hours": "Matin"
+              }
+            ],
+            "note": "Prise de rendez-vous en ligne ou par téléphone au {{company.phone}}."
+          },
+          {
+            "type": "contact",
+            "variant": "split",
+            "mode": "contact",
+            "eyebrow": "Contact",
+            "title": "Une question avant de venir ?",
+            "intro": "Écrivez-nous ou appelez le {{company.phone}}. Nous vous répondons dès que possible.",
+            "submitLabel": "Envoyer mon message"
+          },
+          {
+            "type": "map",
+            "variant": "split",
+            "eyebrow": "Accès",
+            "title": "Le cabinet à {{company.city}}",
+            "intro": "Retrouvez le cabinet à l'adresse {{company.address}}.",
+            "access": [
+              "Accès en transports en commun et à pied selon votre quartier",
+              "Renseignez-vous par téléphone pour le stationnement"
+            ]
+          },
+          {
+            "type": "footer",
+            "variant": "simple",
+            "tagline": "{{company.name}} · Kinésithérapie à {{company.city}} et Cesson-Sévigné",
+            "links": [
+              {
+                "label": "Soins",
+                "href": "#soins"
+              },
+              {
+                "label": "Rendez-vous",
+                "href": "#reservation"
+              },
+              {
+                "label": "Horaires",
+                "href": "#horaires"
+              },
+              {
+                "label": "Contact",
+                "href": "#contact"
+              }
+            ]
+          }
+        ],
+        "invites": [
+          {
+            "kind": "testimonials",
+            "before": "faq"
+          },
+          {
+            "kind": "stats",
+            "before": "cta"
+          }
+        ]
+      }
+    ],
+    "modules": {
+      "booking": {
+        "services": [
+          {
+            "name": "Séance de rééducation sportive",
+            "durationMinutes": 30,
+            "location": "onsite"
+          },
+          {
+            "name": "Séance pour douleurs de dos",
+            "durationMinutes": 30,
+            "location": "onsite"
+          },
+          {
+            "name": "Rééducation après opération",
+            "durationMinutes": 30,
+            "location": "onsite"
+          }
+        ],
+        "schedule": {
+          "days": [
+            "lundi",
+            "mardi",
+            "mercredi",
+            "jeudi",
+            "vendredi"
+          ],
+          "start": "08:00",
+          "end": "19:00"
+        },
+        "slotMinutes": 30,
+        "leadTimeHours": 12,
+        "cancellationPolicy": "Merci de prévenir au moins 24 h à l'avance en cas d'empêchement, afin de libérer le créneau pour un autre patient.",
+        "payment": "none",
+        "reminders": true
+      },
+      "widgets": [
+        {
+          "type": "google-maps"
+        }
+      ],
+      "webhooks": {
+        "events": [
+          "booking.created",
+          "contact.created"
+        ]
+      }
+    }
+  }
+}

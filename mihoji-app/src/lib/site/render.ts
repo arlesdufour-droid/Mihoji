@@ -12,6 +12,8 @@ export type RenderOptions = {
   inlineCss?: boolean;
   // Aperçu du Studio : affiche aussi les emplacements « à compléter » (jamais dans le site publié).
   studio?: boolean;
+  // Mention visible en permanence (barre fixe en bas de page), pour les sites d'exemple de la vitrine : « entreprise fictive ». Jamais sur un vrai site.
+  notice?: string;
 };
 
 export type RenderedSite = { files: Record<string, string>; sectionTypes: SectionType[] };
@@ -128,7 +130,7 @@ export function renderSite(site: SiteDescription, options: RenderOptions = {}): 
     const title = page.slug === 'index' ? site.seo.title : `${page.title} — {{company.name}}`;
     const description = page.description ?? site.seo.description;
     const stylesheet = options.inlineCss ? `<style>${css}</style>` : `<link rel="stylesheet" href="styles.css">`;
-    files[pageFile(page.slug)] = `<!doctype html><html lang="fr" data-style="${style.id}" data-palette="${palette.id}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${esc(title)}</title><meta name="description" content="${esc(description)}"><meta name="theme-color" content="${palette.bg}">${preload}${stylesheet}</head><body id="top"><a class="skip" href="#main">Aller au contenu</a>${siteHeader(site, nav)}<main id="main">${hero}${body.join('')}</main>${footer}</body></html>`;
+    files[pageFile(page.slug)] = `<!doctype html><html lang="fr" data-style="${style.id}" data-palette="${palette.id}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${esc(title)}</title><meta name="description" content="${esc(description)}"><meta name="theme-color" content="${palette.bg}">${preload}${stylesheet}</head><body id="top">${options.notice ? `<div class="demo-notice" role="note">${esc(options.notice)}</div>` : ''}<a class="skip" href="#main">Aller au contenu</a>${siteHeader(site, nav)}<main id="main">${hero}${body.join('')}</main>${footer}</body></html>`;
   });
   return { files, sectionTypes: [...used] };
 }
