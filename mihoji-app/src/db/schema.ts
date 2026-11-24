@@ -147,8 +147,26 @@ export const customDomains = pgTable('custom_domains', {
   id: uuid('id').defaultRandom().primaryKey(),
   projectId: uuid('project_id').notNull().references(() => projects.id),
   hostname: text('hostname').notNull().unique(),
-  status: text('status', { enum: ['pending', 'active', 'failed'] }).notNull().default('pending'),
+  status: text('status', { enum: ['pending', 'verified', 'error'] }).notNull().default('pending'),
+  // Enregistrements DNS à créer chez le registraire (type, nom, valeur), fournis par le fournisseur de domaines.
+  records: jsonb('records').notNull().default([]),
+  // Domaine nu : nom du domaine vers lequel rediriger (www.<domaine>).
+  redirectTo: text('redirect_to'),
+  lastError: text('last_error'),
+  checkedAt: timestamp('checked_at', { withTimezone: true }),
+  verifiedAt: timestamp('verified_at', { withTimezone: true }),
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+});
+
+// Site publié : sous-domaine unique + copie figée de la version publiée (le brouillon du Studio n'est jamais servi).
+export const publishedSites = pgTable('published_sites', {
+  projectId: uuid('project_id').primaryKey().references(() => projects.id, { onDelete: 'cascade' }),
+  subdomain: text('subdomain').notNull().unique(),
+  versionId: uuid('version_id').references(() => projectVersions.id, { onDelete: 'set null' }),
+  status: text('status', { enum: ['live', 'unpublished', 'blocked'] }).notNull().default('live'),
+  snapshot: jsonb('snapshot').notNull(),
+  publishedAt: timestamp('published_at', { withTimezone: true }).defaultNow().notNull(),
+  updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
 });
 
 export const rateLimitEvents = pgTable('rate_limit_events', {

@@ -1,1 +1,15 @@
-@import "tailwindcss";
+Nouvelle tâche importante : publication multi-tenant des sites clients (indispensable pour la mise en ligne). Lis d'abord src/lib/publish/provider.ts et la route /api/projects/[projectId]/publish.
+
+DÉCISION : on abandonne « un déploiement Vercel par site » (VercelPublishProvider). Une seule application Next.js sert TOUS les sites publiés selon le nom d'hôte de la requête.
+
+À faire, dans cet ordre, chaque étape testée :
+1. Modèle de données : chaque site publié a un sous-domaine unique (slug dérivé du nom de l'entreprise, modifiable, unicité garantie, mots réservés interdits : www, app, admin, api…) et, en option, des domaines personnalisés (table custom_domains existante, à compléter : statut en attente / vérifié / erreur).
+2. Routage : dans le proxy Next.js (proxy.ts), si l'hôte est <slug>.<PUBLISHED_SITES_DOMAIN> ou un domaine personnalisé vérifié, réécrire vers une route interne qui rend la version PUBLIÉE du site depuis sa description structurée (pas le brouillon du Studio). Hôte principal de l'application : comportement inchangé.
+3. Performance : pages publiées mises en cache, cache invalidé par étiquette au moment de la publication (pas de rendu à chaque visite). Sitemap, robots.txt et balise canonique propres à chaque site.
+4. Modules : devis, rendez-vous, boutique, paiements Stripe et formulaires doivent fonctionner depuis le sous-domaine et depuis un domaine personnalisé (adresses absolues, CORS si nécessaire).
+5. Domaines personnalisés : fournisseur de domaines avec une implémentation Vercel (API Domaines de Vercel : ajout, vérification, suppression) et une implémentation simulée pour le dev et les tests. Écran « Domaines » du Studio en français simple : instructions DNS claires (CNAME pour www, A pour le domaine nu, redirection domaine nu vers www), statut de vérification. Aucun achat de domaine.
+6. Dépublication : un site dépublié ou bloqué par l'anti-abus renvoie une page « site indisponible » propre.
+7. Développement : comme le Codespace ne gère pas les sous-domaines, prévois un accès de test par chemin (ex. /_site/<slug>) réservé au développement, et des tests e2e qui simulent l'en-tête Host.
+8. Supprime le code du déploiement par site devenu inutile. Mets à jour .env.example (noms de variables seulement : PUBLISHED_SITES_DOMAIN, VERCEL_TOKEN, VERCEL_PROJECT_ID, VERCEL_TEAM_ID) et documente dans docs/ ce que je devrai configurer chez Vercel et pour le domaine au moment de la mise en ligne.
+
+Règles : aucune IA réelle, aucun déploiement, aucun achat, aucun appel réel à l'API Vercel. Tests ciblés pendant le travail, suite e2e complète à la fin (si la mémoire manque, en deux moitiés). Commit et push à chaque étape terminée. Résumé en 5 lignes à la fin, avec ce qui reste à faire de mon côté.@import "tailwindcss";

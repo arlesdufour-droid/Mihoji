@@ -85,3 +85,21 @@ export async function fillMissingFields(page: Page) {
   await page.getByLabel('Téléphone de contact').fill('0546000000');
   await page.getByRole('button', { name: 'Continuer' }).click();
 }
+
+// Mentions légales complètes pour l'entreprise de test pendant un test de publication (restaurées ensuite : d'autres tests attendent « incomplet »).
+export async function withCompleteCompliance<T>(workspaceId: string, run: () => Promise<T>): Promise<T> {
+  const { default: postgres } = await import('postgres');
+  const sql = postgres(process.env.DATABASE_URL!, { prepare: false });
+  const [row] = await sql<{ raw: string | null }[]>`select missing_fields::text as raw from companies where workspace_id = ${workspaceId}`;
+  try {
+    // Le champ est stocké tel que l'installation des tests l'a écrit (texte JSON) : on le relit, on le complète, puis on remet l'original à l'identique.
+    let current: Record<string, string> = {};
+    try { const parsed: unknown = JSON.parse(row?.raw ?? '{}'); current = (typeof parsed === 'string' ? JSON.parse(parsed) : parsed) as Record<string, string>; } catch { /* champ vide */ }
+    const complete = JSON.stringify({ email: 'contact@e2e.test', phone: '0500000000', ...current, director: 'Camille Test', capital: '1 000 €', registry: 'RCS La Rochelle 123 456 789' });
+    await sql`update companies set missing_fields = ${complete}::jsonb where workspace_id = ${workspaceId}`;
+    return await run();
+  } finally {
+    await sql`update companies set missing_fields = ${row?.raw ?? 'null'}::jsonb where workspace_id = ${workspaceId}`;
+    await sql.end();
+  }
+}

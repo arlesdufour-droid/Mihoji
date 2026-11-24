@@ -1,3 +1,4 @@
+import { setPublishedStatus } from '@/lib/publish/store';
 import { NextResponse } from 'next/server';
 import { eq, desc, sql } from 'drizzle-orm';
 import { getDb } from '@/db/client';
@@ -33,6 +34,7 @@ export async function POST(request: Request) {
     const [publication] = await db.select({ projectId: publications.projectId }).from(publications).where(eq(publications.id, parsed.data.publicationId)).limit(1);
     if (!publication) return NextResponse.json({ error: 'publication_not_found' }, { status: 404 });
     await db.update(publications).set({ status: 'suspended' }).where(eq(publications.projectId, publication.projectId));
+    await setPublishedStatus(publication.projectId, 'blocked'); // anti-abus : le site servi répond « indisponible » et ne peut plus être remis en ligne par son propriétaire
     return NextResponse.json({ ok: true });
   }
   if (parsed.data.action === 'add_credits' && parsed.data.workspaceId && parsed.data.amount) {

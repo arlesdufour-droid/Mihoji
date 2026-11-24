@@ -3,6 +3,7 @@ import { eq } from 'drizzle-orm';
 import { getDb } from '@/db/client';
 import { publications } from '@/db/schema';
 import { assertProjectAccess, getSession } from '@/lib/auth';
+import { setPublishedStatus } from '@/lib/publish/store';
 
 export async function POST(_request: Request, { params }: { params: Promise<{ publicationId: string }> }) {
   const { publicationId } = await params;
@@ -13,5 +14,6 @@ export async function POST(_request: Request, { params }: { params: Promise<{ pu
   try { await assertProjectAccess(session, publication.projectId); } catch { return NextResponse.json({ error: 'publication_not_found' }, { status: 404 }); }
   // Suspendre un site = suspendre toutes les publications de son projet.
   await getDb().update(publications).set({ status: 'suspended' }).where(eq(publications.projectId, publication.projectId));
+  await setPublishedStatus(publication.projectId, 'unpublished'); // le site servi répond « indisponible » tout de suite
   return NextResponse.json({ ok: true, message: 'Site suspendu' });
 }
