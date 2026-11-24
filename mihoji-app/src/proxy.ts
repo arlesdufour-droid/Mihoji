@@ -1,6 +1,9 @@
 import { NextResponse, type NextRequest } from 'next/server';
 import { createServerClient } from '@supabase/ssr';
 import { getRequestOrigin } from '@/lib/site-url';
+import { devSitePathEnabled, ROUTED_HEADER } from '@/lib/publish/config';
+import { isSharedAssetPath, resolveHost, siteKeyOf } from '@/lib/publish/hosts';
+import { notFoundPageHtml } from '@/lib/publish/pages';
 
 const publicApiRoutes = new Set(['/api/health', '/api/auth/magic-link', '/api/public/leads', '/api/webhooks/stripe']);
 
@@ -14,6 +17,27 @@ export async function proxy(request: NextRequest) {
     const secureUrl = request.nextUrl.clone();
     secureUrl.protocol = 'https:';
     return NextResponse.redirect(secureUrl, 308);
+  }
+  // Publication multi-tenant : une seule application sert tous les sites publiés, selon le nom d'hôte de la requête.
+  // L'en-tête interne est effacé sur toute requête entrante : seul ce proxy peut l'ajouter.
+  const forwarded = new Headers(request.headers);
+  forwarded.delete(ROUTED_HEADER);
+  const target = resolveHost(request.headers.get('x-forwarded-host') ?? request.headers.get('host'));
+  if (target.kind === 'invalid') return new NextResponse(notFoundPageHtml(), { status: 404, headers: { 'Content-Type': 'text/html; charset=utf-8', 'X-Robots-Tag': 'noindex' } });
+  if (target.kind !== 'app') {
+    // Sur le nom d'hôte d'un site : formulaires, photos et polices restent servis par l'application ; tout le reste est le site (jamais le Studio ni l'API privée).
+    if (isSharedAssetPath(pathname, request.method)) return NextResponse.next({ request: { headers: forwarded } });
+    // Next réexécute le proxy sur l'adresse réécrite : une requête déjà routée vers ce site passe telle quelle (sinon la réécriture se répéterait).
+    const siteKey = siteKeyOf(target);
+    if (request.headers.get(ROUTED_HEADER) === '1' && (pathname === `/_site/${siteKey}` || pathname.startsWith(`/_site/${siteKey}/`))) return NextResponse.next();
+    const url = request.nextUrl.clone();
+    url.pathname = `/_site/${siteKey}${pathname === '/' ? '' : pathname}`;
+    forwarded.set(ROUTED_HEADER, '1');
+    return NextResponse.rewrite(url, { request: { headers: forwarded } });
+  }
+  // Chemin interne /_site : accès de test réservé au développement.
+  if (pathname === '/_site' || pathname.startsWith('/_site/')) {
+    return devSitePathEnabled() ? NextResponse.next({ request: { headers: forwarded } }) : new NextResponse(notFoundPageHtml(), { status: 404, headers: { 'Content-Type': 'text/html; charset=utf-8', 'X-Robots-Tag': 'noindex' } });
   }
   const protectedPage = ['/studio', '/settings', '/onboarding', '/agency'].some((prefix) => pathname === prefix || pathname.startsWith(`${prefix}/`));
   // Les photos des utilisateurs sont lues par les sites publiés : lecture publique (identifiant non devinable), jamais l'écriture.
@@ -50,5 +74,6 @@ export async function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/studio/:path*', '/settings/:path*', '/onboarding/:path*', '/agency/:path*', '/api/:path*'],
+  // Toutes les pages (le nom d'hôte décide), sauf les fichiers statiques de Next.
+  matcher: ['/((?!_next/static|_next/image|favicon.ico).*)'],
 };

@@ -11,7 +11,7 @@ test('P1 la première publication donne un sous-domaine dérivé du nom de l’e
   expect(first.status(), await first.text()).toBe(200);
   const published = JSON.parse(await first.text()) as { url: string; subdomain: string };
   expect(published.subdomain).toMatch(/^boulangerie-e2e(-\d+)?$/);
-  expect(published.url).toContain(`/_site/${published.subdomain}/`); // en développement : accès de test par chemin
+  expect(published.url).toContain(`/_site/${published.subdomain}`); // en développement : accès de test par chemin
   const again = await (await page.request.post(`/api/projects/${state.siteProjectId}/publish`)).json() as { subdomain: string };
   expect(again.subdomain).toBe(published.subdomain);
   const info = await (await page.request.get(`/api/projects/${state.siteProjectId}/site-address`)).json() as { published: boolean; subdomain: string; status: string };
@@ -42,7 +42,7 @@ test('P2 l’adresse est modifiable, unique, et refuse les mots réservés et le
   const renamed = await put(state.projectId, `e2e-${Date.now().toString(36)}`);
   expect(renamed.status()).toBe(200);
   const body = await renamed.json() as { subdomain: string; url: string };
-  expect(body.url).toContain(`/_site/${body.subdomain}/`);
+  expect(body.url).toContain(`/_site/${body.subdomain}`);
   expect((await put(state.legacyProjectId, 'quelque-chose')).status()).toBe(404); // jamais publié
 }));
 

@@ -6,6 +6,9 @@ export function publishedDomain(): string | null {
   return value || null;
 }
 
+// En-tête posé par le proxy quand il réécrit une requête vers un site publié (effacé sur toute requête entrante : non falsifiable).
+export const ROUTED_HEADER = 'x-mihoji-routed';
+
 // Accès de test par chemin (/_site/<sous-domaine>/…) : jamais en production (le Codespace ne gère pas les sous-domaines).
 export function devSitePathEnabled(): boolean {
   return process.env.NODE_ENV !== 'production' && process.env.APP_ENV !== 'production';

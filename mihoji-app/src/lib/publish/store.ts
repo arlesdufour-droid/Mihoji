@@ -89,7 +89,7 @@ export async function setPublishedStatus(projectId: string, status: 'live' | 'un
 
 // Adresse publique d'un site : <sous-domaine>.<domaine des sites>. En développement, accès de test par chemin (le Codespace ne gère pas les sous-domaines).
 export function publishedSiteUrl(subdomain: string, appOrigin: string | null): string {
-  if (devSitePathEnabled()) return `${appOrigin ?? ''}/_site/${subdomain}/`;
+  if (devSitePathEnabled()) return `${appOrigin ?? ''}/_site/${subdomain}`;
   const domain = publishedDomain();
   if (!domain) throw new Error('published_sites_domain_missing');
   return `https://${subdomain}.${domain}`;
