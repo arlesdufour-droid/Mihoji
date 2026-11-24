@@ -64,16 +64,16 @@
               "Devis en ligne avec photos"
             ],
             "image": {
-              "query": "plumber fixing sink pipe",
+              "query": "plumber working under sink repairing kitchen tap",
               "alternatives": [
-                "plumber repairing leak under sink",
-                "plumber tightening copper pipe wrench"
+                "plumber hands fixing faucet",
+                "plumber repairing kitchen sink"
               ],
               "src": "/vitrine/plombier/photo-01.webp",
-              "alt": "Plombier en train de réparer une canalisation sous un évier",
+              "alt": "Plombier en train de réparer un robinet de cuisine au-dessus d’un évier",
               "credit": {
-                "name": "Sunriseforever",
-                "url": "https://pixabay.com/users/Sunriseforever-6314823/"
+                "name": "fran1",
+                "url": "https://pixabay.com/users/fran1-112250/"
               }
             }
           },
@@ -99,16 +99,16 @@
                 "icon": "droplets",
                 "price": "dépannage de 80 à 150 €",
                 "image": {
-                  "query": "plumber repairing water leak pipe",
+                  "query": "plumber hands wrench pipe",
                   "alternatives": [
-                    "plumber checking radiator heating",
-                    "plumber wrench leaking pipe"
+                    "hands tightening pipe wrench",
+                    "plumbing repair pipe fitting hands"
                   ],
                   "src": "/vitrine/plombier/photo-02.webp",
-                  "alt": "Plombier réparant une fuite sur une canalisation",
+                  "alt": "Mains d’un plombier serrant un tuyau avec une clé à molette et une pince",
                   "credit": {
-                    "name": "Sunriseforever",
-                    "url": "https://pixabay.com/users/Sunriseforever-6314823/"
+                    "name": "Irina_kukuts",
+                    "url": "https://pixabay.com/users/Irina_kukuts-1213707/"
                   }
                 }
               },
