@@ -6,6 +6,13 @@ import { getRequestOrigin } from '@/lib/site-url';
 // Commande click & collect depuis un site (formulaire natif, sans JavaScript) : les prix sont recalculés côté serveur depuis le site enregistré.
 const failure = (message: string, status = 422) => publicPage('Commande non enregistrée', `<p>${escapeHtml(message)}</p><p><a href="javascript:history.back()">Retour au site</a></p>`, status);
 
+// CORS ouvert : le site publié est servi sous un autre nom d'hôte (sous-domaine ou domaine personnalisé) que l'application.
+const corsHeaders = { 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Methods': 'POST, OPTIONS', 'Access-Control-Allow-Headers': 'Content-Type, Accept' };
+
+export function OPTIONS() {
+  return new Response(null, { status: 204, headers: corsHeaders });
+}
+
 export async function POST(request: Request) {
   const form = await request.formData().catch(() => null);
   if (!form) return failure('Demande illisible.', 400);

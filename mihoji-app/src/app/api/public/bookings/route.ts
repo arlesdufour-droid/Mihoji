@@ -7,6 +7,13 @@ import { getRequestOrigin } from '@/lib/site-url';
 // Prise de rendez-vous depuis un site (formulaire natif, sans JavaScript) : validation stricte, limites, puis paiement de l'acompte si nécessaire.
 const failure = (message: string, status = 422) => publicPage('Rendez-vous non enregistré', `<p>${escapeHtml(message)}</p><p><a href="javascript:history.back()">Retour au site</a></p>`, status);
 
+// CORS ouvert : le site publié est servi sous un autre nom d'hôte (sous-domaine ou domaine personnalisé) que l'application.
+const corsHeaders = { 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Methods': 'POST, OPTIONS', 'Access-Control-Allow-Headers': 'Content-Type, Accept' };
+
+export function OPTIONS() {
+  return new Response(null, { status: 204, headers: corsHeaders });
+}
+
 export async function POST(request: Request) {
   const form = await request.formData().catch(() => null);
   if (!form) return failure('Demande illisible.', 400);
