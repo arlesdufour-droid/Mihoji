@@ -42,6 +42,15 @@ describe('référencement propre à chaque site', () => {
     expect(again['index.html'].match(/rel="canonical"/g)).toHaveLength(1);
   });
 
+  it('un ancien site (fragment HTML sans <head>) reçoit aussi sa balise canonique', () => {
+    const out = withSeo({ 'index.html': '<main><h1>Bonjour</h1></main>' }, 'https://ancien.sites.example');
+    expect(out['index.html']).toContain('<link rel="canonical" href="https://ancien.sites.example/">');
+    expect(out['index.html']).toContain('<main><h1>Bonjour</h1></main>');
+    expect(out['index.html'].startsWith('<!doctype html>')).toBe(true);
+    const withHead = withSeo({ 'index.html': '<html><head><meta charset="utf-8"></head><body>x</body></html>' }, 'https://a.example');
+    expect(withHead['index.html']).toContain('<head><link rel="canonical" href="https://a.example/"><meta charset="utf-8">');
+  });
+
   it('robots.txt et sitemap.xml donnent l’adresse du site, jamais celle de l’application', () => {
     expect(seo['robots.txt']).toContain('Sitemap: https://maison-test.sites.example/sitemap.xml');
     expect(seo['sitemap.xml']).toContain('<loc>https://maison-test.sites.example/</loc>');

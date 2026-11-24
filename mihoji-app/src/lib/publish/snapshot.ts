@@ -59,7 +59,11 @@ export function withSeo(files: Record<string, string>, canonicalOrigin: string, 
     if (!isHtmlFile(file)) { out[file] = content; continue; }
     pages.push(file);
     const canonical = `<link rel="canonical" href="${esc(`${canonicalOrigin}${urlPathOf(file)}`)}">`;
-    out[file] = content.replace(/<link rel="canonical"[^>]*>/g, '').replace('</title>', `</title>${canonical}`);
+    const bare = content.replace(/<link rel="canonical"[^>]*>/g, '');
+    if (bare.includes('</title>')) out[file] = bare.replace('</title>', `</title>${canonical}`);
+    else if (/<head[\s>]/i.test(bare)) out[file] = bare.replace(/<head(\s[^>]*)?>/i, (head) => `${head}${canonical}`);
+    // Ancien site (fragment HTML sans <head>) : enveloppé dans un document minimal pour porter la balise canonique.
+    else out[file] = `<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">${canonical}</head><body>${bare}</body></html>`;
   }
   out['robots.txt'] = indexable ? `User-agent: *\nAllow: /\n\nSitemap: ${canonicalOrigin}/sitemap.xml\n` : 'User-agent: *\nDisallow: /\n';
   out['sitemap.xml'] = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${pages.sort((a, b) => (a === pageFile('index') ? -1 : b === pageFile('index') ? 1 : a.localeCompare(b))).map((file) => `  <url><loc>${esc(`${canonicalOrigin}${urlPathOf(file)}`)}</loc></url>`).join('\n')}\n</urlset>\n`;
